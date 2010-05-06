@@ -1,0 +1,82 @@
+@prefix :     <http://usefulinc.com/ns/doap#> .
+@prefix dc:   <http://purl.org/dc/terms/> .
+@prefix my:   <http://purl.org/NET/cpan-uri/dist/RDF-LinkedData/> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix dcs:  <http://ontologi.es/doap-changeset#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+
+<>
+    dc:title     "DOAP for RDF-LinkedData"@en ;
+    dc:subject   my:project ;
+    dc:creator   <http://www.kjetil.kjernsmo.net/foaf#me> .
+
+my:project	 
+    a           :Project ;
+    :name       "RDF-RDFa-Template" ;
+    :shortdesc  "Base class and scripts for servers that serve RDF as Linked Data."@en ;
+    :created    "2009-04-23"^^xsd:date ;
+    :programming-language "Perl" ;
+    :maintainer <http://www.kjetil.kjernsmo.net/foaf#me> ;
+    :maintainer <http://kasei.us/about/foaf.xrdf#greg> ;
+    :bug-database <http://rt.cpan.org/NoAuth/ReportBug.html?Queue=RDF-RDFa-Template> ;
+    :release    my:v_0_03 ;
+    :release    my:v_0_02 ;
+    :release    my:v_0_01 ;
+    :release    my:pre .
+
+<http://www.kjetil.kjernsmo.net/foaf#me>
+    a           foaf:Person ;
+    owl:sameAs  <http://purl.org/NET/cpan-uri/person/kjetilk> ;
+    foaf:name   "Kjetil Kjernsmo" ;
+    foaf:mbox   <mailto:kjetilk@cpan.org> .
+
+<http://kasei.us/about/foaf.xrdf#greg>
+    a           foaf:Person ;
+    owl:sameAs  <http://purl.org/NET/cpan-uri/person/gwilliams> ;
+    foaf:name   "Gregory Todd Williams" ;
+    foaf:mbox   <mailto:gwilliams@cpan.org> .
+
+my:v_0_03
+    a           :Version ;
+    dc:issued   "2010-05-06"^^xsd:date ;
+    rdfs:label  "Add page method to use foaf:page for redirects."@en ;
+    :revision   "0.03"^^xsd:string ;
+    dcs:changeset [
+      dcs:item
+        [ rdfs:label "Really does require RDF::Trine 0.122."@en ; a dcs:Bugfix ] ,
+        [ rdfs:label "Minor cleanups."@en ] ,
+        [ rdfs:label "Add a page method that uses foaf:homepage or foaf:page to override the default page for redirect."@en ; a dcs:Addition ] ,
+	[ rdfs:label "Remove boilerplate tests."@en ; a dcs:Removal ]	
+    ] .
+
+my:v_0_02
+    a           :Version ;
+    dc:issued   "2010-05-05"^^xsd:date ;
+    rdfs:label  "Use RDF::Trine's conneg and bounded description code."@en ;
+    :revision   "0.02"^^xsd:string ;
+    dcs:changeset [
+      dcs:item
+        [ rdfs:label "Require RDF::Trine 0.121."@en ] ,
+        [ rdfs:label "Use RDF::Trine's content negotiation code."@en ; a dcs:Addition ] ,
+        [ rdfs:label "Use RDF::Trine's bounded description code."@en ; a dcs:Addition ] ,
+        [ rdfs:label "Use a HTTP::Headers object for conneg."@en ; a dcs:Addition ] ,
+        [ rdfs:label "Add some log messages."@en ; a dcs:Addition ] ,
+        [ rdfs:label "Add and improve a type method that returns page or data."@en ; a dcs:Addition ] ,
+	[ rdfs:label "Remove the negotiate method."@en ; a dcs:Removal ]	
+    ] .
+
+
+my:v_0_01
+    a           :Version ;
+    dc:issued   "2010-04-29"^^xsd:date ;
+    rdfs:label "Initial release. Kjetil Kjernsmo refactored Gregs code to separate the web server logic from the rest."@en ;
+    :revision   "0.01"^^xsd:string .
+
+my:pre
+    a           :Version ;
+    rdfs:label "Code on Github by Gregory Todd Williams."@en ;
+    :revision   "0.001_01"^^xsd:string .
+
+

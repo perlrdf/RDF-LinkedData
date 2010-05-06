@@ -1,0 +1,46 @@
+RDF-LinkedData
+--------------
+
+This is an alpha release of a server framework for serving RDF Linked Data.
+It follows the basic best practice recommendations with 303 redirects
+from the URIs that point to the physical or abstract things to
+documents that describe them. There are some open issues, especially
+with content negotation, not all content types are supported and it
+may not quite do the right thing if the desired the content type is
+not found.
+
+The distribution contains a script called
+linked_data_mojoserver.pl. This sets up a basic Web server based on
+Mojolicious::Lite, which is a simple and high-performance
+framework. Running this script will give you a web server with all the
+features of this module.
+
+Currently, RDF::LinkedData contains several methods that superclass
+may inherit to provide their own functionality. It is not quite clear
+yet if this is the Right Way to do it, so the API of this module may
+change.
+
+
+
+SUPPORT AND DOCUMENTATION
+
+After installing, you can find documentation for this module with the
+perldoc command.
+
+    perldoc RDF::LinkedData
+
+You can also look for information at:
+
+    RT, CPAN's request tracker
+        http://rt.cpan.org/NoAuth/Bugs.html?Dist=RDF-LinkedData
+
+    AnnoCPAN, Annotated CPAN documentation
+        http://annocpan.org/dist/RDF-LinkedData
+
+    CPAN Ratings
+        http://cpanratings.perl.org/d/RDF-LinkedData
+
+    Search CPAN
+        http://search.cpan.org/dist/RDF-LinkedData
+
+
