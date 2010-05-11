@@ -14,13 +14,13 @@
 
 my:project	 
     a           :Project ;
-    :name       "RDF-RDFa-Template" ;
+    :name       "RDF-LinkedData" ;
     :shortdesc  "Base class and scripts for servers that serve RDF as Linked Data."@en ;
     :created    "2009-04-23"^^xsd:date ;
     :programming-language "Perl" ;
     :maintainer <http://www.kjetil.kjernsmo.net/foaf#me> ;
     :maintainer <http://kasei.us/about/foaf.xrdf#greg> ;
-    :bug-database <http://rt.cpan.org/NoAuth/ReportBug.html?Queue=RDF-RDFa-Template> ;
+    :bug-database <http://rt.cpan.org/NoAuth/ReportBug.html?Queue=RDF-LinkedData> ;
     :release    my:v_0_03 ;
     :release    my:v_0_02 ;
     :release    my:v_0_01 ;
