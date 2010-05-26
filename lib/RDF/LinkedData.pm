@@ -41,14 +41,8 @@ From the L<Mojolicious::Lite> example:
 
 =head1 METHODS
 
-=over
+This module simply uses the default implementation in L<RDF::LinkedData::ProviderRole>, and does nothing on its own.
 
-
-=cut
-
-
-
-=back
 
 
 =head1 AUTHOR
