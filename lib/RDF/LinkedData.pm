@@ -3,6 +3,8 @@ package RDF::LinkedData;
 
 use Moose;
 
+with 'RDF::LinkedData::ProviderRole';
+
 
 =head1 NAME
 
@@ -43,8 +45,6 @@ From the L<Mojolicious::Lite> example:
 
 
 =cut
-
-with 'RDF::LinkedData::ProviderRole';
 
 
 

@@ -10,7 +10,6 @@ use RDF::Trine::Serializer::NTriples;
 use RDF::Trine::Serializer::RDFXML;
 use Log::Log4perl;
 
-use Error qw(:try);
 
 =head1 NAME
 
