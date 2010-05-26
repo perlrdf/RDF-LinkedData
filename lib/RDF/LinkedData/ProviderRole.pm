@@ -5,7 +5,6 @@ use Moose::Role;
 use namespace::autoclean;
 
 use RDF::Trine;
-use RDF::Trine qw(iri variable statement);
 use RDF::Trine::Serializer::NTriples;
 use RDF::Trine::Serializer::RDFXML;
 use Log::Log4perl;

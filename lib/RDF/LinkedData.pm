@@ -12,11 +12,11 @@ RDF::LinkedData - Base class for Linked Data implementations
 
 =head1 VERSION
 
-Version 0.04
+Version 0.04_01
 
 =cut
 
-our $VERSION = '0.04';
+our $VERSION = '0.04_01';
 
 
 =head1 SYNOPSIS

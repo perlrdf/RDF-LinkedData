@@ -102,7 +102,6 @@ get '(*uri)/:type' => [type => qr(data|page)] => sub {
 
     my $uri = $self->param('uri');
     my $type =  $self->param('type');
-    $DB::single = 1;
     my $node = $ld->my_node($uri);
 
     my $preds = RDF::LinkedData::Predicates->new($ld->model);
