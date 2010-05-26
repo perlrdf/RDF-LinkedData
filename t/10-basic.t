@@ -4,8 +4,9 @@ use FindBin qw($Bin);
 use HTTP::Headers;
 
 use strict;
-use Test::More;# tests => 17;
+use Test::More tests => 23;
 use Test::Exception;
+use Test::NoWarnings;
 
 my $file = $Bin . '/data/basic.ttl';
 
@@ -84,5 +85,3 @@ is($preds->page($node), 'http://en.wikipedia.org/wiki/Foo', "/foo has a foaf:pag
 
 is($preds->page($barnode), 'http://localhost:3000/bar/baz/bing/page', "/bar/baz/bing has default page");
 
-
-done_testing();

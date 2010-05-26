@@ -10,6 +10,8 @@ test_requires 'HTTP::Headers';
 test_requires 'Test::WWW::Mechanize::Mojo';
 test_requires 'Test::More';
 test_requires 'Test::Exception';
+test_requires 'Test::NoWarnings';
+
 
 requires 'Error'			=> 0;
 requires 'Log::Log4perl'		=> 0;
