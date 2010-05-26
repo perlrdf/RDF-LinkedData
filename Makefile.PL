@@ -13,7 +13,7 @@ test_requires 'Test::Exception';
 test_requires 'Test::NoWarnings';
 
 
-requires 'Error'			=> 0;
+requires 'Moose'			=> 0;
 requires 'Log::Log4perl'		=> 0;
 requires 'RDF::Trine'			=> 0.122;
 requires 'Scalar::Util'			=> 0;
