@@ -48,7 +48,7 @@ From the L<Mojolicious::Lite> example:
 
 =over
 
-=item C<< new ( config => $config, model => $model, base => $base, request => $request, headers => $headers ) >>
+=item C<< new ( config => $config, model => $model, base => $base, request => $request, headers_in => $headers_in ) >>
 
 Creates a new handler object based on named parameters, given a config
 string or model and a base URI. Optionally, you may pass a Apache
@@ -73,13 +73,13 @@ sub BUILD {
 has config => (is => 'rw', isa => 'Str' );
 
 
-=item C<< headers ( [ $headers ] ) >>
+=item C<< headers_in ( [ $headers ] ) >>
 
 Returns the L<HTTP::Headers> object if it exists or sets it if a L<HTTP::Headers> object is given as parameter.
 
 =cut
 
-has headers => ( is => 'rw', isa => 'HTTP::Headers');
+has headers_in => ( is => 'rw', isa => 'HTTP::Headers');
 
 
 =item C<< type >>
@@ -92,7 +92,7 @@ Returns the chosen variant based on acceptable formats.
 
 sub type {
     my $self = shift;
-    my ($ct, $s) = RDF::Trine::Serializer->negotiate('request_headers' => $self->headers);
+    my ($ct, $s) = RDF::Trine::Serializer->negotiate('request_headers' => $self->headers_in);
     return ($ct =~ /rdf|turtle/) ? "data" : "page";
 }
 
@@ -150,7 +150,7 @@ sub content {
     my %output;
     if ($type eq 'data') {
         $self->{_type} = 'data';
-        my ($type, $s) = RDF::Trine::Serializer->negotiate('request_headers' => $self->headers);
+        my ($type, $s) = RDF::Trine::Serializer->negotiate('request_headers' => $self->headers_in);
         my $iter = $model->bounded_description($node);
         $output{content_type} = $type;
         $output{body} = $s->serialize_iterator_to_string ( $iter );

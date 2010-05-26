@@ -118,7 +118,7 @@ get '(*uri)/:type' => [type => qr(data|page)] => sub {
     if ($ld->count($node) > 0) {
         $log->debug("Will render $type page for Accept header: " . $self->req->headers->header('Accept'));
         my $h = HTTP::Headers->new(%{$self->req->headers->to_hash});
-        $ld->headers($h);
+        $ld->headers_in($h);
         my $content = $ld->content($node, $type);
         $self->res->headers->header('Vary' => join(", ", qw(Accept)));
         $self->res->headers->content_type($content->{content_type});
@@ -137,7 +137,7 @@ get '/(*relative)' => sub {
     if ($ld->count($node) > 0) {
         $self->res->code(303);
         my $h = HTTP::Headers->new(%{$self->req->headers->to_hash});
-        $ld->headers($h);
+        $ld->headers_in($h);
         my $newurl = $self->req->url->to_abs . '/' . $ld->type;
         if ($ld->type eq 'page') {
             my $preds = RDF::LinkedData::Predicates->new($ld->model);

@@ -45,7 +45,7 @@ is($preds->title($node), 'This is a test', "Correct title");
 {
     my $h = HTTP::Headers->new(Accept	=> 'application/rdf+xml');
     my $ldh = $ld;
-    $ldh->headers($h);
+    $ldh->headers_in($h);
     my $content = $ldh->content($node, 'data');
 
     is($content->{content_type}, 'application/rdf+xml', "RDF/XML content type");
@@ -54,7 +54,7 @@ is($preds->title($node), 'This is a test', "Correct title");
 {
     my $h = HTTP::Headers->new(Accept	=> 'application/turtle');
     my $ldh = $ld;
-    $ldh->headers($h); 
+    $ldh->headers_in($h); 
     my $content = $ldh->content($node, 'data');
     is($content->{content_type}, 'application/turtle', "Turtle content type");
     is($content->{body}, '<http://localhost:3000/foo> <http://xmlns.com/foaf/0.1/page> <http://en.wikipedia.org/wiki/Foo> ;' . "\n\t" . '<http://www.w3.org/2000/01/rdf-schema#label> "This is a test"@en .' . "\n", 'Ntriples serialized correctly');
@@ -68,7 +68,7 @@ is($barnode->uri_value, 'http://localhost:3000/bar/baz/bing', "'Bar' URI is stil
 {
     my $h = HTTP::Headers->new(Accept	=> 'text/html');
     my $ldh = $ld;
-    $ldh->headers($h); 
+    $ldh->headers_in($h); 
     TODO: {
           local $TODO = "What should really be done with a text/html request for data?";
           my $content;
