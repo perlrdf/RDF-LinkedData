@@ -11,6 +11,7 @@ my $file = $Bin . '/data/basic.ttl';
 
 BEGIN {
     use_ok('RDF::LinkedData');
+    use_ok('RDF::LinkedData::Predicates');
     use_ok('RDF::Trine::Parser');
     use_ok('RDF::Trine::Model');
 }
@@ -36,7 +37,9 @@ isa_ok($node, 'RDF::Trine::Node::Resource');
 
 is($node->uri_value, 'http://localhost:3000/foo', "URI is still there");
 
-is($ld->title($node), 'This is a test', "Correct title");
+my $preds = RDF::LinkedData::Predicates->new($model);
+
+is($preds->title($node), 'This is a test', "Correct title");
 
 {
     my $h = HTTP::Headers->new(Accept	=> 'application/rdf+xml');
@@ -77,9 +80,9 @@ is($barnode->uri_value, 'http://localhost:3000/bar/baz/bing', "'Bar' URI is stil
     }
 }
 
-is($ld->page($node), 'http://en.wikipedia.org/wiki/Foo', "/foo has a foaf:page at Wikipedia");
+is($preds->page($node), 'http://en.wikipedia.org/wiki/Foo', "/foo has a foaf:page at Wikipedia");
 
-is($ld->page($barnode), 'http://localhost:3000/bar/baz/bing/page', "/bar/baz/bing has default page");
+is($preds->page($barnode), 'http://localhost:3000/bar/baz/bing/page', "/bar/baz/bing has default page");
 
 
 done_testing();

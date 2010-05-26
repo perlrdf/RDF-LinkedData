@@ -9,8 +9,6 @@ use RDF::Trine::Serializer::NTriples;
 use RDF::Trine::Serializer::RDFXML;
 use Log::Log4perl;
 
-use Scalar::Util qw(blessed);
-
 use Error qw(:try);
 
 =head1 NAME
@@ -78,22 +76,7 @@ sub new {
 		_model	=> $model,
 		_base	=> $base,
                 _headers => $headers,
-		_cache	=> {
-			title	=> {
-				'<http://www.w3.org/2000/01/rdf-schema#label>'	=> 'label',
-				'<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>'	=> 'type',
-			},
-			pred	=> {
-				'<http://www.w3.org/2000/01/rdf-schema#label>'	=> 'label',
-				'<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>'	=> 'type',
-				'<http://purl.org/dc/elements/1.1/type>' => 'Type',
-			},
-		},
 	}, $class );
-	
-	foreach (1 .. 50) {
-		$self->{_cache}{pred}{"<http://www.w3.org/1999/02/22-rdf-syntax-ns#_$_>"}	= "#$_";
-	}
 	
 	return $self;
 } # END sub new
@@ -174,7 +157,7 @@ Returns the number of statements that has the $node as subject
 sub count {
     my $self = shift;
     my $node = shift;
-    return $self->{_model}->count_statements( $node, undef, undef );
+    return $self->model->count_statements( $node, undef, undef );
 }
 
 =item C<< content ( $node, $type) >>
@@ -202,8 +185,9 @@ sub content {
         $output{body} = $s->serialize_iterator_to_string ( $iter );
     } else {
         $self->{_type} = 'page';
-        my $title		= $self->title( $node );
-        my $desc		= $self->description( $node );
+        my $preds = RDF::LinkedData::Predicates->new($model);
+        my $title		= $preds->title( $node );
+        my $desc		= $preds->description( $node );
         my $description	= sprintf( "<table>%s</table>\n", join("\n\t\t", map { sprintf( '<tr><td>%s</td><td>%s</td></tr>', @$_ ) } @$desc) );
         $output{content_type} = 'text/html';
         $output{body} =<<"END";
@@ -254,194 +238,6 @@ Returns the base URI for this handler.
 sub base {
 	my $self	= shift;
 	return $self->{_base};
-}
-
-=item C<< page ( $node ) >>
-
-A suitable page to redirect to, based on foaf:page or foaf:homepage
-
-=cut
-
-sub page {
-    my $self	= shift;
-    my $node	= shift;
-    throw Error -text => "Node argument needs to be a RDF::Trine::Node::Resource." unless ($node && $node->isa('RDF::Trine::Node::Resource'));
-
-    my $model	= $self->model;
-
-    my @props	= (
-                   iri( 'http://xmlns.com/foaf/0.1/homepage' ),
-                   iri( 'http://xmlns.com/foaf/0.1/page' ),
-                  );
-
-    # optimistically assume that we'll get back a valid page on the first try
-    my $objects	= $model->objects_for_predicate_list( $node, @props );
-    if (blessed($objects) && $objects->is_resource) {
-        return $objects->uri_value;
-    }
-
-    # Return the common link to ourselves
-    return $node->uri_value . '/page';
-}
-
-
-=item C<< title ( $node ) >>
-
-A suitable title for the document will be returned, based on document contents
-
-=cut
-
-sub title {
-	my $self	= shift;
-	my $node	= shift;
-	my $nodestr	= $node->as_string;
-	if (my $title = $self->{_cache}{title}{$nodestr}) {
-		return $title;
-	} else {
-		my $model	= $self->model;
-
-		my @label	= (
-			iri( 'http://xmlns.com/foaf/0.1/name' ),
-			iri( 'http://purl.org/dc/terms/title' ),
-			iri( 'http://purl.org/dc/elements/1.1/title' ),
-			iri( 'http://www.w3.org/2000/01/rdf-schema#label' ),
-		);
-		
-		{
-			# optimistically assume that we'll get back a valid name on the first try
-			my $name	= $model->objects_for_predicate_list( $node, @label );
-			if (blessed($name) and $name->is_literal) {
-				my $str	= $name->literal_value;
-				$self->{_cache}{title}{$nodestr}	= $str;
-				return $str;
-			}
-		}
-		
-		# if that didn't work, continue to try to find a valid literal title node
-		my @names	= $model->objects_for_predicate_list( $node, @label );
-		foreach my $name (@names) {
-			if ($name->is_literal) {
-				my $str	= $name->literal_value;
-				$self->{_cache}{title}{$nodestr}	= $str;
-				return $str;
-			}
-		}
-		
-		# and finally fall back on just returning a string version of the node
-		if ($node->is_resource) {
-			my $uri	= $node->uri_value;
-			$self->{_cache}{title}{$nodestr}	= $uri;
-			return $uri;
-		} else {
-			my $str	= $node->as_string;
-			$self->{_cache}{title}{$nodestr}	= $str;
-			return $str;
-		}
-	}
-}
-
-=item C<< description ( $node ) >>
-
-A suitable description for the document will be returned, based on document contents
-
-=cut
-
-
-sub description {
-	my $self	= shift;
-	my $node	= shift;
-	my $model	= $self->model;
-	
-	my $iter	= $model->get_statements( $node );
-	my @label	= (
-					iri( 'http://www.w3.org/2000/01/rdf-schema#label' ),
-#					iri( 'http://purl.org/dc/elements/1.1/description' ),
-				);
-	my @desc;
-	while (my $st = $iter->next) {
-		my $p	= $st->predicate;
-		
-		my $ps;
-		if (my $pname = $self->{_cache}{pred}{$p->as_string}) {
-			$ps	= $pname;
-		} elsif (my $pn = $model->objects_for_predicate_list( $p, @label )) {
-			$ps	= $self->html_node_value( $pn );
-		} elsif ($p->is_resource and $p->uri_value =~ m<^http://www.w3.org/1999/02/22-rdf-syntax-ns#_(\d+)$>) {
-			$ps	= '#' . $1;
-		} else {
-			# try to turn the predicate into a qname and use the local part as the printable name
-			my $name;
-			try {
-				(my $ns, $name)	= $p->qname;
-			} catch RDF::Trine::Error with {};
-			if ($name) {
-				my $title	= _escape( $name );
-				$ps	= $title;
-			} else {
-				$ps	= _escape( $p->uri_value );
-			}
-		}
-		
-		$self->{_cache}{pred}{$p->as_string}	= $ps;
-		my $obj	= $st->object;
-		my $os	= $self->html_node_value( $obj, $p );
-		
-		push(@desc, [$ps, $os]);
-	}
-	return \@desc;
-}
-
-
-=item C<< html_node_value >>
-
-Formats the nodes for HTML output.
-
-=cut
-
-
-sub html_node_value {
-	my $self		= shift;
-	my $n			= shift;
-	my $rdfapred	= shift;
-	my $qname		= '';
-	my $xmlns		= '';
-	if ($rdfapred) {
-		try {
-			my ($ns, $ln)	= $rdfapred->qname;
-			$xmlns	= qq[xmlns:ns="${ns}"];
-			$qname	= qq[ns:$ln];
-		} catch RDF::Trine::Error with {};
-	}
-	return '' unless (blessed($n));
-	if ($n->is_literal) {
-		my $l	= _escape( $n->literal_value );
-		if ($qname) {
-			return qq[<span $xmlns property="${qname}">$l</span>];
-		} else {
-			return $l;
-		}
-	} elsif ($n->is_resource) {
-		my $uri		= _escape( $n->uri_value );
-		my $title	= _escape( $self->title( $n ) );
-		
-		if ($qname) {
-			return qq[<a $xmlns rel="${qname}" href="${uri}">$title</a>];
-		} else {
-			return qq[<a href="${uri}">$title</a>];
-		}
-	} else {
-		return $n->as_string;
-	}
-}
-
-sub _escape {
-	my $l	= shift;
-	for ($l) {
-		s/&/&amp;/g;
-		s/</&lt;/g;
-		s/"/&quot;/g;
-	}
-	return $l;
 }
 
 
