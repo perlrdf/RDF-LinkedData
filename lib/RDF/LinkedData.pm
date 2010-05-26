@@ -61,6 +61,11 @@ Please report any bugs or feature requests to C<bug-rdf-linkeddata at rt.cpan.or
 the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=RDF-LinkedData>.  I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
 
+=head1 WARNING
+
+Do not rely in the current API unless you are planning to keep track
+of the development of this module. It is still very much in flux, and
+may change without warning!
 
 
 
@@ -70,6 +75,9 @@ You can find documentation for this module with the perldoc command.
 
     perldoc RDF::LinkedData
 
+The perlrdf mailing list is the right place to seek help and discuss this module:
+
+L<http://lists.perlrdf.org/listinfo/dev>
 
 You can also look for information at:
 
