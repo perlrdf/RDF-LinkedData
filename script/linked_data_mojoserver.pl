@@ -88,6 +88,7 @@ predicate URI.
 use Mojolicious::Lite;
 
 use RDF::LinkedData;
+use RDF::LinkedData::Predicates;
 use HTTP::Headers;
 use Mojo::Log;
 
@@ -104,7 +105,9 @@ get '(*uri)/:type' => [type => qr(data|page)] => sub {
     $DB::single = 1;
     my $node = $ld->my_node($uri);
 
-    my $page = $ld->page($node);
+    my $preds = RDF::LinkedData::Predicates->new($ld->model);
+
+    my $page = $preds->page($node);
     if (($type eq 'page') && ($page ne $node->uri_value . '/page')) {
         # Then, we have a foaf:page set that we should redirect to
         $self->res->code(301);
@@ -137,7 +140,8 @@ get '/(*relative)' => sub {
         $ld->headers($h);
         my $newurl = $self->req->url->to_abs . '/' . $ld->type;
         if ($ld->type eq 'page') {
-            $newurl = $ld->page($node);
+            my $preds = RDF::LinkedData::Predicates->new($ld->model);
+            $newurl = $preds->page($node);
         }
         $log->debug('Will do a 303 redirect to ' . $newurl);
         $self->res->headers->location($newurl);
