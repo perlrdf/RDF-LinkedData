@@ -16,11 +16,11 @@ RDF::LinkedData::ProviderRole - Role providing important functionality for Linke
 
 =head1 VERSION
 
-Version 0.04
+Version 0.05
 
 =cut
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 
 =head1 SYNOPSIS
@@ -47,7 +47,7 @@ From the L<Mojolicious::Lite> example:
 
 =over
 
-=item C<< new ( config => $config, model => $model, base => $base, request => $request, headers_in => $headers_in ) >>
+=item C<< new ( config => $config, model => $model, base => $base, headers_in => $headers_in ) >>
 
 Creates a new handler object based on named parameters, given a config
 string or model and a base URI. Optionally, you may pass a Apache
