@@ -8,6 +8,8 @@ use Test::More;# tests => 22;
 use Test::Exception;
 #use Test::NoWarnings;
 
+
+
 my $file = $Bin . '/data/basic.ttl';
 
 BEGIN {
@@ -16,6 +18,8 @@ BEGIN {
     use_ok('RDF::Trine::Parser');
     use_ok('RDF::Trine::Model');
 }
+
+
 
 my $parser     = RDF::Trine::Parser->new( 'turtle' );
 my $model = RDF::Trine::Model->temporary_model;

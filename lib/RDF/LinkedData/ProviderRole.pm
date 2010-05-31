@@ -7,7 +7,15 @@ use namespace::autoclean;
 use RDF::Trine;
 use RDF::Trine::Serializer::NTriples;
 use RDF::Trine::Serializer::RDFXML;
-use Log::Log4perl;
+use Log::Log4perl qw(:easy);
+
+with 'MooseX::Log::Log4perl::Easy';
+
+BEGIN {
+    Log::Log4perl->easy_init();
+}
+
+
 
 
 =head1 NAME
@@ -125,8 +133,7 @@ sub my_node {
     
     # not happy with this, but it helps for clients that do content sniffing based on filename
     $iri	=~ s/.(nt|rdf|ttl)$//;
-    my $l		= Log::Log4perl->get_logger("rdf.linkeddata");    
-    $l->trace("Subject URI to be used: $iri");
+    $self->logger->info("Subject URI to be used: $iri");
     return RDF::Trine::Node::Resource->new( $iri );
 }
 
@@ -226,20 +233,40 @@ Will look up what to with the given URI and populate the response object.
 sub process {
     my ($self, $uri) = @_;
     my $node = $self->my_node($uri);
-
+    $self->logger->info('Try rendering ' . $self->type . ' page for subject node: ' . $node->as_string);
     if ($self->type) {
-            #die "FOOO: " . $node->to_string;
+        my $preds = RDF::LinkedData::Predicates->new($self->model);
+
+        my $page = $preds->page($node);
+        if (($self->type eq 'page') && ($page ne $node->uri_value . '/page')) {
+            # Then, we have a foaf:page set that we should redirect to
+            $self->response->code(301);
+            $self->response->headers->header('Location' => $page);
+        }
+
 
         if ($self->count($node) > 0) {
+#            $log->debug("Will render $self->type page for Accept header: " . $self->req->headers->header('Accept'));
+            my $content = $self->content($node, $self->type);
+            $self->response->headers->header('Vary' => join(", ", qw(Accept)));
+            $self->response->headers->content_type($content->{content_type});
+            $self->response->content($content->{body});
+        } else {
+            $self->response->code(404);
+            $self->response->headers->content_type('text/plain');
+            $self->response->message('HTTP 404: Unknown resource');
+        }
+        return 1;
+    } else {
+            #die "FOOO: " . $node->to_string;
+        if ($self->count($node) > 0) {
             $self->response->code(303);
-         #   my $h = HTTP::Headers->new(%{$self->req->headers->to_hash});
-         #   $self->headers_in($h);
             my $newurl = $uri . '/' . $self->type;
             if ($self->type eq 'page') {
                 my $preds = RDF::LinkedData::Predicates->new($self->model);
                 $newurl = $preds->page($node);
             }
-            #        $log->debug('Will do a 303 redirect to ' . $newurl);
+            $self->logger->debug('Will do a 303 redirect to ' . $newurl);
             $self->response->headers->header('Location' => $newurl);
             $self->response->headers->header('Vary' => join(", ", qw(Accept)));
         } else {
@@ -249,6 +276,7 @@ sub process {
         }
         return 1;
     }
+
     return 0;
 }
 
