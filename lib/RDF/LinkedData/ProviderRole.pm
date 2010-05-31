@@ -81,6 +81,19 @@ Returns the L<HTTP::Headers> object if it exists or sets it if a L<HTTP::Headers
 has headers_in => ( is => 'rw', isa => 'HTTP::Headers');
 
 
+=item C<< response >>
+
+Returns the L<HTTP::Response> object if it exists or sets it if a L<HTTP::Response> object is given as parameter.
+
+=cut
+
+has response => ( is => 'rw', isa => 'HTTP::Response', builder => '_build_response');
+
+sub _build_response {
+    return HTTP::Response->new;
+}
+
+
 =item C<< type >>
 
 Returns the chosen variant based on acceptable formats.
@@ -119,7 +132,7 @@ sub my_node {
 
 =item C<< count ( $node) >>
 
-Returns the number of statements that has the $node as subject
+Returns the number of statements that has the $node as subject, or all if $node is undef.
 
 =cut
 
@@ -202,6 +215,43 @@ Returns or sets the base URI for this handler.
 =cut
 
 has base => (is => 'rw', isa => 'Str', default => "http://localhost:3000" );
+
+
+=item C<< process ( $uri ) >>
+
+Will look up what to with the given URI and populate the response object.
+
+=cut
+
+sub process {
+    my ($self, $uri) = @_;
+    my $node = $self->my_node($uri);
+
+    if ($self->type) {
+            #die "FOOO: " . $node->to_string;
+
+        if ($self->count($node) > 0) {
+            $self->response->code(303);
+         #   my $h = HTTP::Headers->new(%{$self->req->headers->to_hash});
+         #   $self->headers_in($h);
+            my $newurl = $uri . '/' . $self->type;
+            if ($self->type eq 'page') {
+                my $preds = RDF::LinkedData::Predicates->new($self->model);
+                $newurl = $preds->page($node);
+            }
+            #        $log->debug('Will do a 303 redirect to ' . $newurl);
+            $self->response->headers->header('Location' => $newurl);
+            $self->response->headers->header('Vary' => join(", ", qw(Accept)));
+        } else {
+            $self->response->code(404);
+            $self->response->headers->content_type('text/plain');
+            $self->response->message('HTTP 404: Unknown resource');
+        }
+        return 1;
+    }
+    return 0;
+}
+
 
 
 =back
