@@ -229,18 +229,17 @@ sub process {
     my ($self, $uri) = @_;
     my $node = $self->my_node($uri);
     $self->logger->info("Try rendering '" . $self->type . "' page for subject node: " . $node->as_string);
-    if ($self->type) {
-        my $preds = RDF::LinkedData::Predicates->new($self->model);
+    if ($self->count($node) > 0) {
+        if ($self->type) {
+            my $preds = RDF::LinkedData::Predicates->new($self->model);
+            
+            my $page = $preds->page($node);
+            if (($self->type eq 'page') && ($page ne $node->uri_value . '/page')) {
+                # Then, we have a foaf:page set that we should redirect to
+                $self->response->code(301);
+                $self->response->headers->header('Location' => $page);
+            }
 
-        my $page = $preds->page($node);
-        if (($self->type eq 'page') && ($page ne $node->uri_value . '/page')) {
-            # Then, we have a foaf:page set that we should redirect to
-            $self->response->code(301);
-            $self->response->headers->header('Location' => $page);
-        }
-
-
-        if ($self->count($node) > 0) {
             $self->logger->debug("Will render '" . $self->type ."' page ");
             if (defined($self->headers_in)) {
                 $self->logger->debug('Found Accept header: ' . $self->headers_in->header('Accept'));
@@ -249,15 +248,8 @@ sub process {
             $self->response->headers->header('Vary' => join(", ", qw(Accept)));
             $self->response->headers->content_type($content->{content_type});
             $self->response->content($content->{body});
+            return 1;
         } else {
-            $self->response->code(404);
-            $self->response->headers->content_type('text/plain');
-            $self->response->message('HTTP 404: Unknown resource');
-        }
-        return 1;
-    } else {
-            #die "FOOO: " . $node->to_string;
-        if ($self->count($node) > 0) {
             $self->response->code(303);
             my ($ct) = RDF::Trine::Serializer->negotiate('request_headers' => $self->headers_in);
             my $newurl = $self->base . $uri . '/data';
@@ -268,14 +260,14 @@ sub process {
             $self->logger->debug('Will do a 303 redirect to ' . $newurl);
             $self->response->headers->header('Location' => $newurl);
             $self->response->headers->header('Vary' => join(", ", qw(Accept)));
-        } else {
-            $self->response->code(404);
-            $self->response->headers->content_type('text/plain');
-            $self->response->message('HTTP 404: Unknown resource');
         }
+        return 2;
+    } else {
+        $self->response->code(404);
+        $self->response->headers->content_type('text/plain');
+        $self->response->message('HTTP 404: Unknown resource');
         return 1;
     }
-
     return 0;
 }
 
