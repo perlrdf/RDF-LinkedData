@@ -86,7 +86,11 @@ Returns the L<HTTP::Headers> object if it exists or sets it if a L<HTTP::Headers
 
 =cut
 
-has headers_in => ( is => 'rw', isa => 'HTTP::Headers');
+has headers_in => ( is => 'rw', isa => 'HTTP::Headers', builder => '_build_headers_in');
+
+sub _build_headers_in {
+    return HTTP::Headers->new() ;
+}
 
 
 =item C<< response >>
@@ -227,6 +231,8 @@ Will look up what to with the given URI and populate the response object.
 
 sub process {
     my ($self, $uri) = @_;
+    $self->response->clear;
+    $self->response->code(500); # Report error if no code is set in the code
     my $node = $self->my_node($uri);
     $self->logger->info("Try rendering '" . $self->type . "' page for subject node: " . $node->as_string);
     if ($self->count($node) > 0) {
@@ -241,8 +247,11 @@ sub process {
             }
 
             $self->logger->debug("Will render '" . $self->type ."' page ");
-            if (defined($self->headers_in)) {
+            if ($self->headers_in->can('header') && $self->headers_in->header('Accept')) {
                 $self->logger->debug('Found Accept header: ' . $self->headers_in->header('Accept'));
+            } else {
+                $self->headers_in(HTTP::Headers->new('Accept' => 'application/rdf+xml'));
+                $self->logger->warn('Setting Accept header: ' . $self->headers_in->header('Accept'));
             }
             my $content = $self->content($node, $self->type);
             $self->response->headers->header('Vary' => join(", ", qw(Accept)));
