@@ -110,12 +110,7 @@ Returns the chosen variant based on acceptable formats.
 
 #requires 'type';
 
-sub type {
-    my $self = shift;
-    my ($ct, $s) = RDF::Trine::Serializer->negotiate('request_headers' => $self->headers_in);
-    return ($ct =~ /rdf|turtle/) ? "data" : "page";
-}
-
+has 'type' => (is => 'rw', isa => 'Str', default => ''); 
 
 
 =item C<< my_node >>
@@ -233,7 +228,7 @@ Will look up what to with the given URI and populate the response object.
 sub process {
     my ($self, $uri) = @_;
     my $node = $self->my_node($uri);
-    $self->logger->info('Try rendering ' . $self->type . ' page for subject node: ' . $node->as_string);
+    $self->logger->info("Try rendering '" . $self->type . "' page for subject node: " . $node->as_string);
     if ($self->type) {
         my $preds = RDF::LinkedData::Predicates->new($self->model);
 
@@ -246,7 +241,10 @@ sub process {
 
 
         if ($self->count($node) > 0) {
-#            $log->debug("Will render $self->type page for Accept header: " . $self->req->headers->header('Accept'));
+            $self->logger->debug("Will render '" . $self->type ."' page ");
+            if (defined($self->headers_in)) {
+                $self->logger->debug('Found Accept header: ' . $self->headers_in->header('Accept'));
+            }
             my $content = $self->content($node, $self->type);
             $self->response->headers->header('Vary' => join(", ", qw(Accept)));
             $self->response->headers->content_type($content->{content_type});
@@ -261,8 +259,9 @@ sub process {
             #die "FOOO: " . $node->to_string;
         if ($self->count($node) > 0) {
             $self->response->code(303);
-            my $newurl = $uri . '/' . $self->type;
-            if ($self->type eq 'page') {
+            my ($ct) = RDF::Trine::Serializer->negotiate('request_headers' => $self->headers_in);
+            my $newurl = $self->base . $uri . '/data';
+            unless ($ct =~ /rdf|turtle/) {
                 my $preds = RDF::LinkedData::Predicates->new($self->model);
                 $newurl = $preds->page($node);
             }
