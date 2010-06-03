@@ -244,6 +244,7 @@ sub process {
                 # Then, we have a foaf:page set that we should redirect to
                 $self->response->code(301);
                 $self->response->headers->header('Location' => $page);
+                return 3;
             }
 
             $self->logger->debug("Will render '" . $self->type ."' page ");
@@ -253,6 +254,7 @@ sub process {
                 $self->headers_in(HTTP::Headers->new('Accept' => 'application/rdf+xml'));
                 $self->logger->warn('Setting Accept header: ' . $self->headers_in->header('Accept'));
             }
+            $self->response->code(200);
             my $content = $self->content($node, $self->type);
             $self->response->headers->header('Vary' => join(", ", qw(Accept)));
             $self->response->headers->content_type($content->{content_type});

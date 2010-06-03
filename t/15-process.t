@@ -51,7 +51,7 @@ diag "Get /foo/data";
 $ld->type('data');
 ok($ld->process('/foo'), 'Processed URI');
 isa_ok($ld->response, 'HTTP::Response');
-is($ld->response->code, 303, "Returns 303");
+is($ld->response->code, 303, "Returns 200");
 like($ld->response->header('Location'), qr|/foo/data$|, "Location is OK");
 
 
