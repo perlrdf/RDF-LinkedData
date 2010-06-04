@@ -86,6 +86,16 @@ ok($ld->count > 0, "There are triples in the model");
     like($response->header('Location'), qr|/bar/baz/bing/page$|, "Location is OK");
 }
 
+{
+    diag "Get /bar/baz/bing/page";
+    $ld->type('page');
+    my $response = $ld->response ("/bar/baz/bing");
+    isa_ok($response, 'Plack::Response');
+    is($response->status, 200, "Returns 200");
+    is($response->content_type, 'text/html', 'Returns HTML');
+    like($response->body, qr|Testing with longer URI\.|, "Test phrase in content");
+}
+
 
 {
     diag "Get /bar/baz/bing, ask for RDF/XML";
@@ -103,7 +113,8 @@ ok($ld->count > 0, "There are triples in the model");
     $ld->type('data');
     my $response = $ld->response('/foo');
     isa_ok($response, 'Plack::Response');
-    is($response->status, 303, "Returns 200");
-    like($response->header('Location'), qr|/foo/data$|, "Location is OK");
+    is($response->status, 200, "Returns 200");
+    like($response->body, qr|This is a test|, "Test phrase in content");
+
 }
 
