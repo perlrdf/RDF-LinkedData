@@ -264,13 +264,13 @@ sub response {
     } else {
         $response->status(404);
         $response->headers->content_type('text/plain');
-        $response->message('HTTP 404: Unknown resource');
+        $response->body('HTTP 404: Unknown resource');
         return $response;
     }
     # We should never get here.
     $response->status(500);
     $response->headers->content_type('text/plain');
-    $response->message('HTTP 500: No such functionality.');
+    $response->body('HTTP 500: No such functionality.');
     return $response;
 }
 
