@@ -33,25 +33,30 @@ my $ld = RDF::LinkedData->new(model => $model, base=>$base_uri);
 isa_ok($ld, 'RDF::LinkedData');
 ok($ld->count > 0, "There are triples in the model");
 
-diag "Get /foo";
 
-ok($ld->process('/foo'), 'Processed URI');
-isa_ok($ld->response, 'HTTP::Response');
-is($ld->response->code, 303, "Returns 303");
-is($ld->response->header('Location'), 'http://en.wikipedia.org/wiki/Foo', "Location is Wikipedia page");
+{
+    diag "Get /foo";
+    my $response = $ld->response('/foo');
+    isa_ok($response, 'Plack::Response');
+    is($response->status, 303, "Returns 303");
+    is($response->header('Location'), 'http://en.wikipedia.org/wiki/Foo', "Location is Wikipedia page");
+}
 
-diag "Get /foo/page";
-$ld->type('page');
-ok($ld->process('/foo'), 'Processed URI');
-isa_ok($ld->response, 'HTTP::Response');
-is($ld->response->code, 301, "Returns 301");
-is($ld->response->header('Location'), 'http://en.wikipedia.org/wiki/Foo', "Location is Wikipedia page");
+{
+    diag "Get /foo/page";
+    $ld->type('page');
+    my $response = $ld->response('/foo');
+    isa_ok($response, 'Plack::Response');
+    is($response->status, 301, "Returns 301");
+    is($response->header('Location'), 'http://en.wikipedia.org/wiki/Foo', "Location is Wikipedia page");
+}
 
-diag "Get /foo/data";
-$ld->type('data');
-ok($ld->process('/foo'), 'Processed URI');
-isa_ok($ld->response, 'HTTP::Response');
-is($ld->response->code, 303, "Returns 200");
-like($ld->response->header('Location'), qr|/foo/data$|, "Location is OK");
-
+{
+    diag "Get /foo/data";
+    $ld->type('data');
+    my $response = $ld->response('/foo');
+    isa_ok($response, 'Plack::Response');
+    is($response->status, 303, "Returns 200");
+    like($response->header('Location'), qr|/foo/data$|, "Location is OK");
+}
 

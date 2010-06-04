@@ -17,6 +17,8 @@ requires 'Moose'			=> 0;
 requires 'Log::Log4perl'		=> 0;
 requires 'RDF::Trine'			=> 0.122;
 requires 'Scalar::Util'			=> 0;
+requires 'Plack::Response'              => 0;
+requires 'namespace::autoclean'         => 0;
 
 recommends 'Mojolicious::Lite'          => 0; # The built-in server uses this
 recommends 'HTTP::Headers'              => 0; # To run the built-in server

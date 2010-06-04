@@ -8,6 +8,7 @@ use RDF::Trine;
 use RDF::Trine::Serializer::NTriples;
 use RDF::Trine::Serializer::RDFXML;
 use Log::Log4perl qw(:easy);
+use Plack::Response;
 
 with 'MooseX::Log::Log4perl::Easy';
 
@@ -92,18 +93,6 @@ sub _build_headers_in {
     return HTTP::Headers->new() ;
 }
 
-
-=item C<< response >>
-
-Returns the L<HTTP::Response> object if it exists or sets it if a L<HTTP::Response> object is given as parameter.
-
-=cut
-
-has response => ( is => 'rw', isa => 'HTTP::Response', builder => '_build_response');
-
-sub _build_response {
-    return HTTP::Response->new;
-}
 
 
 =item C<< type >>
@@ -223,16 +212,16 @@ Returns or sets the base URI for this handler.
 has base => (is => 'rw', isa => 'Str', default => "http://localhost:3000" );
 
 
-=item C<< process ( $uri ) >>
+=item C<< response ( $uri ) >>
 
 Will look up what to with the given URI and populate the response object.
 
 =cut
 
-sub process {
+sub response {
     my ($self, $uri) = @_;
-    $self->response->clear;
-    $self->response->code(500); # Report error if no code is set in the code
+    my $response = Plack::Response->new;
+
     my $node = $self->my_node($uri);
     $self->logger->info("Try rendering '" . $self->type . "' page for subject node: " . $node->as_string);
     if ($self->count($node) > 0) {
@@ -242,9 +231,9 @@ sub process {
             my $page = $preds->page($node);
             if (($self->type eq 'page') && ($page ne $node->uri_value . '/page')) {
                 # Then, we have a foaf:page set that we should redirect to
-                $self->response->code(301);
-                $self->response->headers->header('Location' => $page);
-                return 3;
+                $response->status(301);
+                $response->headers->header('Location' => $page);
+                return $response;
             }
 
             $self->logger->debug("Will render '" . $self->type ."' page ");
@@ -254,14 +243,13 @@ sub process {
                 $self->headers_in(HTTP::Headers->new('Accept' => 'application/rdf+xml'));
                 $self->logger->warn('Setting Accept header: ' . $self->headers_in->header('Accept'));
             }
-            $self->response->code(200);
+            $response->status(200);
             my $content = $self->content($node, $self->type);
-            $self->response->headers->header('Vary' => join(", ", qw(Accept)));
-            $self->response->headers->content_type($content->{content_type});
-            $self->response->content($content->{body});
-            return 1;
+            $response->headers->header('Vary' => join(", ", qw(Accept)));
+            $response->headers->content_type($content->{content_type});
+            $response->content($content->{body});
         } else {
-            $self->response->code(303);
+            $response->status(303);
             my ($ct) = RDF::Trine::Serializer->negotiate('request_headers' => $self->headers_in);
             my $newurl = $self->base . $uri . '/data';
             unless ($ct =~ /rdf|turtle/) {
@@ -269,17 +257,21 @@ sub process {
                 $newurl = $preds->page($node);
             }
             $self->logger->debug('Will do a 303 redirect to ' . $newurl);
-            $self->response->headers->header('Location' => $newurl);
-            $self->response->headers->header('Vary' => join(", ", qw(Accept)));
+            $response->headers->header('Location' => $newurl);
+            $response->headers->header('Vary' => join(", ", qw(Accept)));
         }
-        return 2;
+        return $response;
     } else {
-        $self->response->code(404);
-        $self->response->headers->content_type('text/plain');
-        $self->response->message('HTTP 404: Unknown resource');
-        return 1;
+        $response->status(404);
+        $response->headers->content_type('text/plain');
+        $response->message('HTTP 404: Unknown resource');
+        return $response;
     }
-    return 0;
+    # We should never get here.
+    $response->status(500);
+    $response->headers->content_type('text/plain');
+    $response->message('HTTP 500: No such functionality.');
+    return $response;
 }
 
 
