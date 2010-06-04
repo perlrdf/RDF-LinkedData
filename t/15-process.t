@@ -43,6 +43,33 @@ ok($ld->count > 0, "There are triples in the model");
 }
 
 {
+    diag "Get /foo, ask for RDF/XML";
+    $ld->headers_in(HTTP::Headers->new('Accept' => 'application/rdf+xml'));
+    my $response = $ld->response('/foo');
+    isa_ok($response, 'Plack::Response');
+    is($response->status, 303, "Returns 303");
+    like($response->header('Location'), qr|/foo/data$|, "Location is OK");
+}
+
+
+{
+    diag "Get /foo, ask for Turtle";
+    $ld->headers_in(HTTP::Headers->new('Accept' => 'application/turtle'));
+    my $response = $ld->response("/foo");
+    like($response->header('Location'), qr|/foo/data$|, "Location is OK");
+}
+
+
+{
+    diag "Get /dahut, ask for RDF/XML";
+    $ld->headers_in(HTTP::Headers->new('Accept' => 'application/rdf+xml'));
+    my $response = $ld->response('/dahut');
+    isa_ok($response, 'Plack::Response');
+    is($response->status, 404, "Returns 404");
+}
+
+
+{
     diag "Get /foo/page";
     $ld->type('page');
     my $response = $ld->response('/foo');
@@ -50,6 +77,26 @@ ok($ld->count > 0, "There are triples in the model");
     is($response->status, 301, "Returns 301");
     is($response->header('Location'), 'http://en.wikipedia.org/wiki/Foo', "Location is Wikipedia page");
 }
+
+{
+    diag "Get /bar/baz/bing";
+    my $response = $ld->response ("/bar/baz/bing");
+    isa_ok($response, 'Plack::Response');
+    is($response->status, 303, "Returns 303");
+    like($response->header('Location'), qr|/bar/baz/bing/page$|, "Location is OK");
+}
+
+
+{
+    diag "Get /bar/baz/bing, ask for RDF/XML";
+    $ld->headers_in(HTTP::Headers->new('Accept' => 'application/rdf+xml'));
+    my $response = $ld->response("/bar/baz/bing");
+    is($response->status, 303, "Returns 303");
+    like($response->header('Location'), qr|/bar/baz/bing/data$|, "Location is OK");
+}
+
+
+
 
 {
     diag "Get /foo/data";
