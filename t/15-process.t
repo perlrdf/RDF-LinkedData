@@ -4,7 +4,7 @@ use FindBin qw($Bin);
 use HTTP::Headers;
 
 use strict;
-use Test::More;# tests => 22;
+use Test::More tests => 31;
 use Test::Exception;
 #use Test::NoWarnings;
 
@@ -80,6 +80,7 @@ ok($ld->count > 0, "There are triples in the model");
 
 {
     diag "Get /bar/baz/bing";
+    $ld->headers_in(HTTP::Headers->new('Accept' => 'text/html'));
     my $response = $ld->response ("/bar/baz/bing");
     isa_ok($response, 'Plack::Response');
     is($response->status, 303, "Returns 303");

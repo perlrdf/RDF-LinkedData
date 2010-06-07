@@ -222,21 +222,23 @@ sub response {
     my ($self, $uri) = @_;
     my $response = Plack::Response->new;
 
+    my $type = $self->type;
+    $self->type('');
     my $node = $self->my_node($uri);
-    $self->logger->info("Try rendering '" . $self->type . "' page for subject node: " . $node->as_string);
+    $self->logger->info("Try rendering '$type' page for subject node: " . $node->as_string);
     if ($self->count($node) > 0) {
-        if ($self->type) {
+        if ($type) {
             my $preds = RDF::LinkedData::Predicates->new($self->model);
             
             my $page = $preds->page($node);
-            if (($self->type eq 'page') && ($page ne $node->uri_value . '/page')) {
+            if (($type eq 'page') && ($page ne $node->uri_value . '/page')) {
                 # Then, we have a foaf:page set that we should redirect to
                 $response->status(301);
                 $response->headers->header('Location' => $page);
                 return $response;
             }
 
-            $self->logger->debug("Will render '" . $self->type ."' page ");
+            $self->logger->debug("Will render '$type' page ");
             if ($self->headers_in->can('header') && $self->headers_in->header('Accept')) {
                 $self->logger->debug('Found Accept header: ' . $self->headers_in->header('Accept'));
             } else {
@@ -244,13 +246,19 @@ sub response {
                 $self->logger->warn('Setting Accept header: ' . $self->headers_in->header('Accept'));
             }
             $response->status(200);
-            my $content = $self->content($node, $self->type);
+            my $content = $self->content($node, $type);
             $response->headers->header('Vary' => join(", ", qw(Accept)));
             $response->headers->content_type($content->{content_type});
             $response->content($content->{body});
         } else {
             $response->status(303);
-            my ($ct) = RDF::Trine::Serializer->negotiate('request_headers' => $self->headers_in);
+            my $ct;
+            eval {
+                ($ct) = RDF::Trine::Serializer->negotiate('request_headers' => $self->headers_in);
+            };
+            if ($@) {
+                $ct = 'text/html'; # Set it to HTML for now
+            }
             my $newurl = $self->base . $uri . '/data';
             unless ($ct =~ /rdf|turtle/) {
                 my $preds = RDF::LinkedData::Predicates->new($self->model);
