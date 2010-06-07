@@ -7,6 +7,11 @@ use RDF::Trine;
 my $linked_data = sub {
     my $env = shift;
     my $req = Plack::Request->new($env);
+
+    unless ($req->method eq 'GET') {
+        return [ 405, [ 'Content-type', 'text/plain' ], [ 'Method not allowed' ] ];
+    }
+
     my $parser = RDF::Trine::Parser->new( 'turtle' );
     my $model = RDF::Trine::Model->temporary_model;
     my $base_uri = 'http://localhost:5000';
