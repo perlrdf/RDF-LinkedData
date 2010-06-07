@@ -9,6 +9,7 @@ use RDF::Trine::Serializer::NTriples;
 use RDF::Trine::Serializer::RDFXML;
 use Log::Log4perl qw(:easy);
 use Plack::Response;
+use RDF::LinkedData::Predicates;
 
 with 'MooseX::Log::Log4perl::Easy';
 
