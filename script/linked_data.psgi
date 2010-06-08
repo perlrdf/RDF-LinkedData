@@ -4,7 +4,7 @@ use RDF::LinkedData;
 use Plack::Request;
 use RDF::Trine;
 
-my $linked_data = sub {
+$main::linked_data = sub {
     my $env = shift;
     my $req = Plack::Request->new($env);
 

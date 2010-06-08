@@ -4,18 +4,19 @@ use strict;
 use warnings;
 
 use Test::More;# tests => 28 ;
-use Test::WWW::Mechanize::Mojo;
+use Test::WWW::Mechanize::PSGI;
 
-use Mojo::Log;
+#use Plack::Request;
+#use RDF::Trine::Parser;
+#use RDF::LinkedData;
+BEGIN { require 'script/linked_data.psgi'; }
 
-require 'script/linked_data_mojoserver.pl';
+my $tester = $main::linked_data;
 
-
-my $tester = Test::Mojo->new();
 
 {
     diag "Get /foo, no redirects";
-    my $mech = Test::WWW::Mechanize::Mojo->new(tester => $tester, requests_redirectable => []);
+    my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester, requests_redirectable => []);
     my $res = $mech->get("/foo");
     is($mech->status, 303, "Returns 303");
     is($res->header('Location'), 'http://en.wikipedia.org/wiki/Foo', "Location is Wikipedia page");
@@ -23,7 +24,7 @@ my $tester = Test::Mojo->new();
 
 {
     diag "Get /foo/page, no redirects";
-    my $mech = Test::WWW::Mechanize::Mojo->new(tester => $tester, requests_redirectable => []);
+    my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester, requests_redirectable => []);
     my $res = $mech->get("/foo/page");
     is($mech->status, 301, "Returns 301");
     is($res->header('Location'), 'http://en.wikipedia.org/wiki/Foo', "Location is Wikipedia page");
@@ -31,7 +32,7 @@ my $tester = Test::Mojo->new();
 
 {
     diag "Get /foo, no redirects, ask for RDF/XML";
-    my $mech = Test::WWW::Mechanize::Mojo->new(tester => $tester, requests_redirectable => []);
+    my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester, requests_redirectable => []);
     $mech->default_header('Accept' => 'application/rdf+xml');
     my $res = $mech->get("/foo");
     is($mech->status, 303, "Returns 303");
@@ -40,7 +41,7 @@ my $tester = Test::Mojo->new();
 
 {
     diag "Get /dahut, no redirects, ask for RDF/XML";
-    my $mech = Test::WWW::Mechanize::Mojo->new(tester => $tester, requests_redirectable => []);
+    my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester, requests_redirectable => []);
     $mech->default_header('Accept' => 'application/rdf+xml');
     my $res = $mech->get("/dahut");
     is($mech->status, 404, "Returns 404");
@@ -48,7 +49,7 @@ my $tester = Test::Mojo->new();
 
 {
     diag "Get /foo, ask for RDF/XML";
-    my $mech = Test::WWW::Mechanize::Mojo->new(tester => $tester);
+    my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester);
     $mech->default_header('Accept' => 'application/rdf+xml');
     $mech->get_ok("/foo");
     is($mech->ct, 'application/rdf+xml', "Correct content-type");
@@ -58,7 +59,7 @@ my $tester = Test::Mojo->new();
 
 {
     diag "Get /foo, ask for Turtle";
-    my $mech = Test::WWW::Mechanize::Mojo->new(tester => $tester);
+    my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester);
     $mech->default_header('Accept' => 'application/turtle');
     $mech->get_ok("/foo");
     is($mech->ct, 'application/turtle', "Correct content-type");
@@ -68,7 +69,7 @@ my $tester = Test::Mojo->new();
 
 {
     diag "Get /bar/baz/bing, no redirects, ask for RDF/XML";
-    my $mech = Test::WWW::Mechanize::Mojo->new(tester => $tester, requests_redirectable => []);
+    my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester, requests_redirectable => []);
     $mech->default_header('Accept' => 'application/rdf+xml');
     my $res = $mech->get("/bar/baz/bing");
     is($mech->status, 303, "Returns 303");
@@ -78,7 +79,7 @@ my $tester = Test::Mojo->new();
 
 {
     diag "Get /bar/baz/bing";
-    my $mech = Test::WWW::Mechanize::Mojo->new(tester => $tester);
+    my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester);
     $mech->get_ok("/bar/baz/bing");
     is($mech->ct, 'text/html', "Correct content-type");
     like($mech->uri, qr|/bar/baz/bing/page$|, "Location is OK");
@@ -88,7 +89,7 @@ my $tester = Test::Mojo->new();
 
 {
     diag "Get /bar/baz/bing, ask for RDF/XML";
-    my $mech = Test::WWW::Mechanize::Mojo->new(tester => $tester);
+    my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester);
     $mech->default_header('Accept' => 'application/rdf+xml');
     $mech->get_ok("/bar/baz/bing");
     is($mech->ct, 'application/rdf+xml', "Correct content-type");
@@ -100,7 +101,7 @@ my $tester = Test::Mojo->new();
 
 TODO: {
     local $TODO = "We really should return 406 if no acceptable version is there, shouldn't we?";
-    my $mech = Test::WWW::Mechanize::Mojo->new(tester => $tester);
+    my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester);
     $mech->default_header('Accept' => 'application/foobar');
     my $res = $mech->get("/foo/data");
     is($mech->status, 406, "Returns 406");

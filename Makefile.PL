@@ -7,7 +7,7 @@ license  'perl';
 
 test_requires 'FindBin';
 test_requires 'HTTP::Headers';
-test_requires 'Test::WWW::Mechanize::Mojo';
+test_requires 'Test::WWW::Mechanize::PSGI';
 test_requires 'Test::More';
 test_requires 'Test::Exception';
 test_requires 'Test::NoWarnings';
