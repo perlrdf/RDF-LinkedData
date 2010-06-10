@@ -8,7 +8,7 @@ with 'RDF::LinkedData::ProviderRole';
 
 =head1 NAME
 
-RDF::LinkedData - Base class for Linked Data implementations
+RDF::LinkedData - Linked Data implementation default class
 
 =head1 VERSION
 
@@ -21,39 +21,51 @@ our $VERSION = '0.04_02';
 
 =head1 SYNOPSIS
 
-From the L<Mojolicious::Lite> example:
+A simple L<Plack> server illustrates the usage nicely:
 
-    my $ld = RDF::LinkedData->new($config->{store}, $config->{base});
+  use RDF::LinkedData;
+  use Plack::Request;
+  use RDF::Trine;
 
-    my $uri = $self->param('uri');
-    my $type =  $self->param('type');
-    my $node = $ld->my_node($uri);
-
-    if ($ld->count($node) > 0) {
-        my $content = $ld->content($node, $type);
-        $self->res->headers->header('Vary' => join(", ", qw(Accept)));
-        $self->res->headers->content_type($content->{content_type});
-        $self->render_text($content->{body});
-    } else {
-        $self->render_not_found;
+  $linked_data = sub {
+    my $env = shift;
+    my $req = Plack::Request->new($env);
+    my $parser = RDF::Trine::Parser->new( 'turtle' );
+    my $model = RDF::Trine::Model->temporary_model;
+    my $base_uri = 'http://localhost:5000';
+    $parser->parse_file_into_model( $base_uri, 't/data/basic.ttl', $model );
+    my $ld = RDF::LinkedData->new(model => $model, base=>$base_uri);
+    my $uri = $req->path_info;
+    if ($req->path_info =~ m!^(.+?)/?(page|data)$!) {
+        $uri = $1;
+        $ld->type($2);
     }
+    $ld->headers_in($req->headers);
+    return $ld->response($uri)->finalize;
+  }
+
 
 
 =head1 METHODS
 
-This module simply uses the default implementation in L<RDF::LinkedData::ProviderRole>, and does nothing on its own.
+This module simply uses the default implementation in
+L<RDF::LinkedData::ProviderRole>, and does nothing on its own.
 
 
 
 =head1 AUTHOR
 
-Most of the code was written by Gregory Todd Williams C<< <gwilliams@cpan.org> >> for L<RDF::LinkedData::Apache>, but refactored into this class for use by other modules by Kjetil Kjernsmo, C<< <kjetilk at cpan.org> >>
+This module was started by by Gregory Todd Williams C<<
+<gwilliams@cpan.org> >> for L<RDF::LinkedData::Apache>, but heavily
+refactored and rewritten by by Kjetil Kjernsmo, C<< <kjetilk@cpan.org> >>
 
 =head1 BUGS
 
-Please report any bugs or feature requests to C<bug-rdf-linkeddata at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=RDF-LinkedData>.  I will be notified, and then you'll
-automatically be notified of progress on your bug as I make changes.
+Please report any bugs or feature requests to C<bug-rdf-linkeddata at
+rt.cpan.org>, or through the web interface at
+L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=RDF-LinkedData>.  I
+will be notified, and then you'll automatically be notified of
+progress on your bug as I make changes.
 
 =head1 WARNING
 
