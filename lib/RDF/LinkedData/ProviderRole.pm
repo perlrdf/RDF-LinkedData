@@ -35,23 +35,7 @@ our $VERSION = '0.05';
 
 =head1 SYNOPSIS
 
-From the L<Mojolicious::Lite> example:
-
-    my $ld = RDF::LinkedData->new($store->{store}, $config->{base});
-
-    my $uri = $self->param('uri');
-    my $type =  $self->param('type');
-    my $node = $ld->my_node($uri);
-
-    if ($ld->count($node) > 0) {
-        my $content = $ld->content($node, $type);
-        $self->res->headers->header('Vary' => join(", ", qw(Accept)));
-        $self->res->headers->content_type($content->{content_type});
-        $self->render_text($content->{body});
-    } else {
-        $self->render_not_found;
-    }
-
+See L<RDF::LinkedData> for default usage.
 
 =head1 METHODS
 
@@ -98,7 +82,7 @@ sub _build_headers_in {
 
 =item C<< type >>
 
-Returns the chosen variant based on acceptable formats.
+Returns or sets the type of result to return, i.e. C<page>, in the case of a human-intended page or C<data> for machine consumption, or an empty string if it is an actual resource URI that should be redirected.
 
 =cut
 
@@ -148,6 +132,12 @@ by content negotiation. In the latter, a simple HTML document will be
 returned. The returned hashref has two keys: C<content_type> and
 C<body>. The former is self-explanatory, the latter contains the
 actual content.
+
+One may argue that a hashref with magic keys should be a class of its
+own, and for that reason, this method should be considered "at
+risk". Currently, it is only used in one place, and it may be turned
+into a private method, removed altogether or turned into a role of its
+own, depending on the actual use cases that surfaces in the future.
 
 =cut
 
@@ -215,7 +205,7 @@ has base => (is => 'rw', isa => 'Str', default => "http://localhost:3000" );
 
 =item C<< response ( $uri ) >>
 
-Will look up what to with the given URI and populate the response object.
+Will look up what to do with the given URI and populate the response object.
 
 =cut
 
@@ -290,7 +280,9 @@ sub response {
 
 =head1 AUTHOR
 
-Most of the code was written by Gregory Todd Williams C<< <gwilliams@cpan.org> >> for L<RDF::LinkedData::Apache>, but refactored into this class for use by other modules by Kjetil Kjernsmo, C<< <kjetilk at cpan.org> >>
+This module was started by by Gregory Todd Williams C<<
+<gwilliams@cpan.org> >> for L<RDF::LinkedData::Apache>, but heavily
+refactored and rewritten by by Kjetil Kjernsmo, C<< <kjetilk@cpan.org> >>
 
 =head1 BUGS
 
@@ -298,37 +290,21 @@ Please report any bugs or feature requests to C<bug-rdf-linkeddata at rt.cpan.or
 the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=RDF-LinkedData>.  I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
 
+=head1 WARNING
 
-
+Do not rely in the current API unless you are planning to keep track
+of the development of this module. It is still very much in flux, and
+may change without warning!
 
 =head1 SUPPORT
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc RDF::LinkedData
+    perldoc RDF::LinkedData::ProviderRole
 
+The perlrdf mailing list is the right place to seek help and discuss this module:
 
-You can also look for information at:
-
-=over 4
-
-=item * RT: CPAN's request tracker
-
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=RDF-LinkedData>
-
-=item * AnnoCPAN: Annotated CPAN documentation
-
-L<http://annocpan.org/dist/RDF-LinkedData>
-
-=item * CPAN Ratings
-
-L<http://cpanratings.perl.org/d/RDF-LinkedData>
-
-=item * Search CPAN
-
-L<http://search.cpan.org/dist/RDF-LinkedData>
-
-=back
+L<http://lists.perlrdf.org/listinfo/dev>
 
 
 =head1 ACKNOWLEDGEMENTS
@@ -344,4 +320,4 @@ under the same terms as Perl itself.
 
 =cut
 
-1; # End of RDF::LinkedData
+1;
