@@ -10,7 +10,7 @@ test_requires 'Test::WWW::Mechanize::PSGI';
 test_requires 'Test::More';
 test_requires 'Test::Exception';
 test_requires 'Test::NoWarnings';
-test_requires 'Config::Any';
+test_requires 'Config::JFDI';
 test_requires 'JSON';
 
 requires 'Moose'			=> 0;
@@ -22,7 +22,7 @@ requires 'Plack'                        => 0;
 requires 'namespace::autoclean'         => 0;
 requires 'HTTP::Headers'                => 0;
 
-recommends 'Config::Any'                => 0; # If you plan to use the Plack script
+recommends 'Config::JFDI'               => 0; # If you plan to use the Plack script
 recommends 'JSON'                       => 0; # If you plan to use the Plack script
 
 auto_set_repository;
