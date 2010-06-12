@@ -168,8 +168,9 @@ actual content.
 One may argue that a hashref with magic keys should be a class of its
 own, and for that reason, this method should be considered "at
 risk". Currently, it is only used in one place, and it may be turned
-into a private method, removed altogether or turned into a role of its
-own, depending on the actual use cases that surfaces in the future.
+into a private method, get passed the L<Plack::Response> object,
+removed altogether or turned into a role of its own, depending on the
+actual use cases that surfaces in the future.
 
 =cut
 
