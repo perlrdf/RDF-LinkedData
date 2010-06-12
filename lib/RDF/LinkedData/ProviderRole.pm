@@ -37,7 +37,7 @@ our $VERSION = '0.05';
 
 From the L<Mojolicious::Lite> example:
 
-    my $ld = RDF::LinkedData->new($config->{store}, $config->{base});
+    my $ld = RDF::LinkedData->new($store->{store}, $config->{base});
 
     my $uri = $self->param('uri');
     my $type =  $self->param('type');
@@ -57,12 +57,12 @@ From the L<Mojolicious::Lite> example:
 
 =over
 
-=item C<< new ( config => $config, model => $model, base => $base, headers_in => $headers_in ) >>
+=item C<< new ( store => $store, model => $model, base => $base, headers_in => $headers_in ) >>
 
-Creates a new handler object based on named parameters, given a config
-string or model and a base URI. Optionally, you may pass a Apache
-request object, and you will need to pass a L<HTTP::Headers> object if
-you plan to call C<content>.
+Creates a new handler object based on named parameters, given a store
+config string or model and a base URI. Optionally, you may pass a
+Apache request object, and you will need to pass a L<HTTP::Headers>
+object if you plan to call C<content>.
 
 =cut
 
@@ -70,16 +70,16 @@ sub BUILD {
 	my $self = shift;
 
         unless($self->model) {
-            my $store	= RDF::Trine::Store->new_with_string( $self->config );
+            my $store	= RDF::Trine::Store->new_with_string( $self->store );
             $self->model(RDF::Trine::Model->new( $store ));
 	}
 
-        throw Error -text => "No valid RDF::Trine::Model, need either a config string or a model." unless ($self->model);
+        throw Error -text => "No valid RDF::Trine::Model, need either a store config string or a model." unless ($self->model);
 
 }
 
 
-has config => (is => 'rw', isa => 'Str' );
+has store => (is => 'rw', isa => 'Str' );
 
 
 =item C<< headers_in ( [ $headers ] ) >>

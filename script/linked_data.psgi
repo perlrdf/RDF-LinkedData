@@ -3,7 +3,9 @@
 use RDF::LinkedData;
 use Plack::Request;
 use RDF::Trine;
-use Config::Any;
+use Config::JFDI;
+use Carp qw(confess);
+
 
 $main::linked_data = sub {
     my $env = shift;
@@ -13,9 +15,9 @@ $main::linked_data = sub {
         return [ 405, [ 'Content-type', 'text/plain' ], [ 'Method not allowed' ] ];
     }
 
-    my $config = Config::Any->load_files({files => \@filepaths, ... });
+    my $config = Config::JFDI->open( name => "RDF::LinkedData") or confess "Couldn't find config";
 
-    my $ld = RDF::LinkedData->new($config->{store}, $config->{base});
+    my $ld = RDF::LinkedData->new(store => $config->{store}, base => $config->{base});
     my $uri = $req->path_info;
     warn $uri;
     if ($req->path_info =~ m!^(.+?)/?(page|data)$!) {
