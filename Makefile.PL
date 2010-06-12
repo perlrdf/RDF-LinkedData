@@ -25,6 +25,10 @@ requires 'HTTP::Headers'                => 0;
 recommends 'Config::JFDI'               => 0; # If you plan to use the Plack script
 recommends 'JSON'                       => 0; # If you plan to use the Plack script
 
+install_share 'script/rdf_linkeddata.json';
+install_script 'script/write_sqlite-db.pl';
+install_script 'script/linked_data.psgi';
+
 auto_set_repository;
 auto_set_bugtracker;
 
