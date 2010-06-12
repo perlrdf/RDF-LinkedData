@@ -37,6 +37,38 @@ our $VERSION = '0.05';
 
 See L<RDF::LinkedData> for default usage.
 
+
+=head1 DISCUSSION
+
+This module is now a L<Moose::Role>. The intention with this role is threefold:
+
+=over
+
+=item *This module may run standalone, in which case the default
+implementation in this role should be sufficient for a working Linked
+Data server. The empty L<RDF::LinkedData> class should provide such a
+default implementation.
+
+=item * This role may be implemented in classes that need to change
+some parts of its functionality, such as a L<mod_perl>-based server.
+
+=item * It may be a part of a larger server framework, for example a
+server that supports the SPARQL protocol and the SPARQL RESTful
+protocol.
+
+=back
+
+It is not completely clear at this point what the requirements are for
+these three scenarios, but it currently satisfies the first
+scenario. Thus, the role may need to be changed substantially and
+possibly split into different roles based on the usage that evolves
+over time.
+
+Consequently, one should not rely in the current API unless you are
+planning to keep track of the development of this module. It is still
+very much in flux, and may change without warning.
+
+
 =head1 METHODS
 
 =over
@@ -93,7 +125,7 @@ has 'type' => (is => 'rw', isa => 'Str', default => '');
 
 =item C<< my_node >>
 
-A node for the requested relative URI. This node is typically used as
+A node for the requested B<relative> URI. This node is typically used as
 the subject to find which statements to return as data. Note that the
 base URI, set in the constructor or using the C<base> method, is
 prepended to the argument.
@@ -290,11 +322,6 @@ Please report any bugs or feature requests to C<bug-rdf-linkeddata at rt.cpan.or
 the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=RDF-LinkedData>.  I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
 
-=head1 WARNING
-
-Do not rely in the current API unless you are planning to keep track
-of the development of this module. It is still very much in flux, and
-may change without warning!
 
 =head1 SUPPORT
 
