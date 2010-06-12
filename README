@@ -24,10 +24,12 @@ change.
 
 SUPPORT AND DOCUMENTATION
 
-After installing, you can find documentation for this module with the
-perldoc command.
+The best source of documentation is CPAN, e.g.
+    http://search.cpan.org/dist/RDF-LinkedData
 
-    perldoc RDF::LinkedData
+The perlrdf mailing list is the right place to seek help and discuss this module:
+
+L<http://lists.perlrdf.org/listinfo/dev>
 
 You can also look for information at:
 
@@ -39,8 +41,4 @@ You can also look for information at:
 
     CPAN Ratings
         http://cpanratings.perl.org/d/RDF-LinkedData
-
-    Search CPAN
-        http://search.cpan.org/dist/RDF-LinkedData
-
 
