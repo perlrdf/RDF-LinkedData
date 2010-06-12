@@ -25,7 +25,6 @@ requires 'HTTP::Headers'                => 0;
 recommends 'Config::JFDI'               => 0; # If you plan to use the Plack script
 recommends 'JSON'                       => 0; # If you plan to use the Plack script
 
-install_share 'rdf_linkeddata.json';
 install_script glob('script/*');
 
 auto_set_repository;
