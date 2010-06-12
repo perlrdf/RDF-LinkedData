@@ -1,4 +1,0 @@
-{
-        "base"  : "http://localhost:3000",
-        "store" : "DBI;basic;DBI:SQLite:t/data/basic.db;user;pass"
-}

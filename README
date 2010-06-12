@@ -9,11 +9,11 @@ with content negotation, not all content types are supported and it
 may not quite do the right thing if the desired the content type is
 not found.
 
-The distribution contains a script called
-linked_data_mojoserver.pl. This sets up a basic Web server based on
-Mojolicious::Lite, which is a simple and high-performance
-framework. Running this script will give you a web server with all the
-features of this module.
+The distribution contains a script called linked_data.psgi. This sets
+up a basic Web server based on Plack, which is a modern
+high-performance framework. Running this script with the plackup
+utility will give you a web server with all the features of this
+module.
 
 Currently, RDF::LinkedData contains several methods that superclass
 may inherit to provide their own functionality. It is not quite clear
