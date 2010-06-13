@@ -13,7 +13,7 @@ linked_data.psgi - A simple Plack server for RDF as linked data
 
 =head1 SYNOPSIS
 
-plackup ./script/linked_data.psgi --host localhost --port 3000
+  plackup ./script/linked_data.psgi --host localhost --port 3000
 
 =head1 DESCRIPTION
 
@@ -43,9 +43,9 @@ use this config system.
 The following documentation is adapted from the L<RDF::LinkedData::Apache>,
 which preceeded this script.
 
-=over 4
+=over 4 
 
-* C<http://host.name/rdf/example>
+=item * C<http://host.name/rdf/example>
 
 Will return an HTTP 303 redirect based on the value of the request's
 Accept header. If the Accept header contains a recognized RDF media
@@ -54,13 +54,13 @@ otherwise to C<http://host.name/rdf/example/page>. If the URI has a
 foaf:homepage or foaf:page predicate, the redirect will in the latter
 case instead use the first encountered object URI.
 
-* C<http://host.name/rdf/example/data>
+=item * C<http://host.name/rdf/example/data>
 
 Will return a bounded description of the C<http://host.name/rdf/example>
 resource in an RDF serialization based on the Accept header. If the Accept
 header does not contain a recognized media type, RDF/XML will be returned.
 
-* C<http://host.name/rdf/example/page>
+=item * C<http://host.name/rdf/example/page>
 
 Will return an HTML description of the C<http://host.name/rdf/example>
 resource including RDFa markup, or, if the URI has a foaf:homepage or
