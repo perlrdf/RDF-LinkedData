@@ -21,6 +21,7 @@ my:project
     :maintainer <http://www.kjetil.kjernsmo.net/foaf#me> ;
     :maintainer <http://kasei.us/about/foaf.xrdf#greg> ;
     :bug-database <http://rt.cpan.org/NoAuth/ReportBug.html?Queue=RDF-LinkedData> ;
+    :release    my:v_0_06 ;
     :release    my:v_0_05 ;
     :release    my:v_0_03 ;
     :release    my:v_0_02 ;
@@ -38,6 +39,18 @@ my:project
     owl:sameAs  <http://purl.org/NET/cpan-uri/person/gwilliams> ;
     foaf:name   "Gregory Todd Williams" ;
     foaf:mbox   <mailto:gwilliams@cpan.org> .
+
+my:v_0_06
+    a           :Version ;
+    dc:issued   "2010-06-13"^^xsd:date ;
+    rdfs:label "Minor POD syntax documentation bug fix release."@en ;
+    :revision   "0.06"^^xsd:string ;
+    dcs:changeset [
+      dcs:item
+        [ rdfs:label "Fix minor POD bugs."@en ; a dcs:Bugfix ] ,
+        [ rdfs:label "Add number of PSGI tests."@en ; a dcs:Addition ] 
+    ] .
+
 
 my:v_0_05
     a           :Version ;
