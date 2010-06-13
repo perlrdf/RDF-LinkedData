@@ -109,7 +109,7 @@ $main::linked_data = sub {
 
     my $ld = RDF::LinkedData->new(store => $config->{store}, base => $config->{base});
     my $uri = $req->path_info;
-    warn $uri;
+
     if ($req->path_info =~ m!^(.+?)/?(page|data)$!) {
         $uri = $1;
         $ld->type($2);
@@ -119,8 +119,6 @@ $main::linked_data = sub {
 }
 
 __END__
-
-=back
 
 =head1 FEEDBACK WANTED
 
