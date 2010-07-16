@@ -1,4 +1,10 @@
 {
         "base"  : "http://localhost:3000",
-        "store" : "DBI;basic;DBI:SQLite:t/data/basic.db;user;pass"
+        "store" : {
+	           "storetype"	: "DBI",
+		   "name"  	: "basic",
+		   "dsn"   	: "DBI:SQLite:t/data/basic.db",
+		   "username" 	: "user",
+		   "password"   : "pass"
+		  }		   		
 }

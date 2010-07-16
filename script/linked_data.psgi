@@ -29,9 +29,10 @@ above mentioned script.
 
 Then, you need a config file. There's a companion
 C<rdf_linkeddata.json> that contains a JSON file that configures this
-script to use a minimal example database with just three triples. In
-this file, there is a L<store> parameter, which must contain the
-L<RDF::Trine::Store> config string and a C<base> URI. This defaults to
+script to use a minimal example database with just three triples. This
+is also useful as an example for your own config. In this file, there
+is a L<store> parameter, which must contain the L<RDF::Trine::Store>
+config string and a C<base> URI. This defaults to
 L<http://localhost:3000>, which is what this script also defaults to.
 
 The configuration is done using L<Config::JFDI> and all its features
