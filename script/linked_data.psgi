@@ -49,10 +49,11 @@ which preceeded this script.
 
 Will return an HTTP 303 redirect based on the value of the request's
 Accept header. If the Accept header contains a recognized RDF media
-type, the redirect will be to C<http://host.name/rdf/example/data>,
-otherwise to C<http://host.name/rdf/example/page>. If the URI has a
-foaf:homepage or foaf:page predicate, the redirect will in the latter
-case instead use the first encountered object URI.
+type or there is no Accept header, the redirect will be to
+C<http://host.name/rdf/example/data>, otherwise to
+C<http://host.name/rdf/example/page>. If the URI has a foaf:homepage
+or foaf:page predicate, the redirect will in the latter case instead
+use the first encountered object URI.
 
 =item * C<http://host.name/rdf/example/data>
 
