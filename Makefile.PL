@@ -16,7 +16,7 @@ test_requires 'JSON';
 requires 'Moose'			=> 0;
 requires 'MooseX::Log::Log4perl::Easy'  => 0;
 requires 'Log::Log4perl'		=> 0;
-requires 'RDF::Trine'			=> 0.122;
+requires 'RDF::Trine'			=> 0.124;
 requires 'Scalar::Util'			=> 0;
 requires 'Plack'                        => 0;
 requires 'namespace::autoclean'         => 0;
