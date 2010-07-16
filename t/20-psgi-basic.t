@@ -80,6 +80,7 @@ my $tester = $main::linked_data;
 {
     diag "Get /bar/baz/bing";
     my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester);
+    $mech->default_header('Accept' => 'text/html');
     $mech->get_ok("/bar/baz/bing");
     is($mech->ct, 'text/html', "Correct content-type");
     like($mech->uri, qr|/bar/baz/bing/page$|, "Location is OK");
