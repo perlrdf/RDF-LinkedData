@@ -4,7 +4,7 @@ use FindBin qw($Bin);
 use HTTP::Headers;
 
 use strict;
-use Test::More tests => 31;
+use Test::More tests => 34;
 use Test::Exception;
 #use Test::NoWarnings;
 
@@ -36,6 +36,15 @@ ok($ld->count > 0, "There are triples in the model");
 
 {
     diag "Get /foo";
+    my $response = $ld->response('/foo');
+    isa_ok($response, 'Plack::Response');
+    is($response->status, 303, "Returns 303");
+    like($response->header('Location'), qr|/foo/data$|, "Location is OK");
+}
+
+{
+    diag "Get /foo, ask for text/html";
+    $ld->headers_in(HTTP::Headers->new('Accept' => 'text/html'));
     my $response = $ld->response('/foo');
     isa_ok($response, 'Plack::Response');
     is($response->status, 303, "Returns 303");

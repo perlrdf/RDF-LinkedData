@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 26 ;
+use Test::More tests => 28 ;
 use Test::WWW::Mechanize::PSGI;
 
 #use Plack::Request;
@@ -19,8 +19,18 @@ my $tester = $main::linked_data;
     my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester, requests_redirectable => []);
     my $res = $mech->get("/foo");
     is($mech->status, 303, "Returns 303");
+    like($res->header('Location'), qr|/foo/data$|, "Location is OK");
+}
+
+{
+    diag "Get /foo, no redirects, ask for text/html";
+    my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester, requests_redirectable => []);
+    $mech->default_header('Accept' => 'text/html');
+    my $res = $mech->get("/foo");
+    is($mech->status, 303, "Returns 303");
     is($res->header('Location'), 'http://en.wikipedia.org/wiki/Foo', "Location is Wikipedia page");
 }
+
 
 {
     diag "Get /foo/page, no redirects";
