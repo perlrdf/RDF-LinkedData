@@ -57,7 +57,7 @@ L<RDF::LinkedData::ProviderRole>, and does nothing on its own.
 
 This module was started by by Gregory Todd Williams C<<
 <gwilliams@cpan.org> >> for L<RDF::LinkedData::Apache>, but heavily
-refactored and rewritten by by Kjetil Kjernsmo, C<< <kjetilk@cpan.org> >>
+refactored and rewritten by Kjetil Kjernsmo, C<< <kjetilk@cpan.org> >>
 
 =head1 BUGS
 
