@@ -26,11 +26,11 @@ RDF::LinkedData::ProviderRole - Role providing important functionality for Linke
 
 =head1 VERSION
 
-Version 0.07
+Version 0.08
 
 =cut
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 
 =head1 SYNOPSIS
@@ -44,7 +44,7 @@ This module is now a L<Moose::Role>. The intention with this role is threefold:
 
 =over
 
-=item *This module may run standalone, in which case the default
+=item * This module may run standalone, in which case the default
 implementation in this role should be sufficient for a working Linked
 Data server. The empty L<RDF::LinkedData> class should provide such a
 default implementation.
