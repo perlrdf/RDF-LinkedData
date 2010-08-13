@@ -26,11 +26,11 @@ RDF::LinkedData::ProviderRole - Role providing important functionality for Linke
 
 =head1 VERSION
 
-Version 0.08
+Version 0.09_1
 
 =cut
 
-our $VERSION = '0.08';
+our $VERSION = '0.09_1';
 
 
 =head1 SYNOPSIS
@@ -111,6 +111,20 @@ sub _build_headers_in {
     return HTTP::Headers->new() ;
 }
 
+=item C<< helper_properties (  ) >>
+
+Returns the L<RDF::LinkedData::Predicates> object if it exists or sets
+it if a L<RDF::LinkedData::Predicates> object is given as parameter.
+
+=cut
+
+has helper_properties => ( is => 'rw', isa => 'RDF::LinkedData::Predicates', lazy => 1, builder => '_build_helper_properties');
+
+sub _build_helper_properties {
+    my $self = shift;
+    return RDF::LinkedData::Predicates->new($self->model);
+}
+
 
 
 =item C<< type >>
@@ -188,7 +202,7 @@ sub content {
         $output{body} = $s->serialize_iterator_to_string ( $iter );
     } else {
         $self->{_type} = 'page';
-        my $preds = RDF::LinkedData::Predicates->new($model);
+        my $preds = $self->helper_properties;
         my $title		= $preds->title( $node );
         my $desc		= $preds->description( $node );
         my $description	= sprintf( "<table>%s</table>\n", join("\n\t\t", map { sprintf( '<tr><td>%s</td><td>%s</td></tr>', @$_ ) } @$desc) );
@@ -253,8 +267,7 @@ sub response {
     $self->logger->info("Try rendering '$type' page for subject node: " . $node->as_string);
     if ($self->count($node) > 0) {
         if ($type) {
-            my $preds = RDF::LinkedData::Predicates->new($self->model);
-            
+            my $preds = $self->helper_properties;
             my $page = $preds->page($node);
             if (($type eq 'page') && ($page ne $node->uri_value . '/page')) {
                 # Then, we have a foaf:page set that we should redirect to
@@ -286,7 +299,7 @@ sub response {
             }
             my $newurl = $self->base . $uri . '/data';
             unless ($ct =~ /rdf|turtle/) {
-                my $preds = RDF::LinkedData::Predicates->new($self->model);
+                my $preds = $self->helper_properties;
                 $newurl = $preds->page($node);
             }
             $self->logger->debug('Will do a 303 redirect to ' . $newurl);
