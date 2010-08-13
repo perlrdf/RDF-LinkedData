@@ -122,7 +122,7 @@ has helper_properties => ( is => 'rw', isa => 'RDF::LinkedData::Predicates', laz
 
 sub _build_helper_properties {
     my $self = shift;
-    return RDF::LinkedData::Predicates->new($self->model);
+    return RDF::LinkedData::Predicates->new(model => $self->model);
 }
 
 

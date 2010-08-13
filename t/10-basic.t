@@ -38,7 +38,7 @@ isa_ok($node, 'RDF::Trine::Node::Resource');
 
 is($node->uri_value, 'http://localhost:3000/foo', "URI is still there");
 
-my $preds = RDF::LinkedData::Predicates->new($model);
+my $preds = RDF::LinkedData::Predicates->new(model => $model);
 
 is($preds->title($node), 'This is a test', "Correct title");
 

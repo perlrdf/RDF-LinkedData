@@ -8,7 +8,10 @@ use RDF::Trine qw(iri variable statement);
 
 use Scalar::Util qw(blessed);
 
+use Moose; # Uhm, well, this should probably also be a role at some point...
+
 use Error qw(:try);
+
 
 =head1 NAME
 
@@ -16,11 +19,11 @@ RDF::LinkedData::Predicates - Module that provides shortcuts to retrieve certain
 
 =head1 VERSION
 
-Version 0.05
+Version 0.06
 
 =cut
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 
 =head1 SYNOPSIS
@@ -33,18 +36,22 @@ our $VERSION = '0.05';
 
 =over
 
-=item C<< new ( $model ) >>
+=item C<< new ( model => $model ) >>
 
 Constructor for getting predicates from a model, which is passed to the constructor.
 
+
+=item C<< model >>
+
+Will return the current model.
+
 =cut
 
-sub new {
-	my $class = shift;
 
-	my $self = bless( {
-                _model  => shift,
-		_cache	=> {
+has model => (is => 'ro', required => 1, isa => 'RDF::Trine::Model');
+
+
+has _cache => (is => 'rw', default => sub { {
 			title	=> {
 				'<http://www.w3.org/2000/01/rdf-schema#label>'	=> 'label',
 				'<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>'	=> 'type',
@@ -54,15 +61,12 @@ sub new {
 				'<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>'	=> 'type',
 				'<http://purl.org/dc/elements/1.1/type>' => 'Type',
 			},
-		},
-	}, $class );
+		} }
+);
 	
-	foreach (1 .. 50) {
-		$self->{_cache}{pred}{"<http://www.w3.org/1999/02/22-rdf-syntax-ns#_$_>"}	= "#$_";
-	}
-	
-	return $self;
-} # END sub new
+#	foreach (1 .. 50) {
+#		$self->{_cache}{pred}{"<http://www.w3.org/1999/02/22-rdf-syntax-ns#_$_>"}	= "#$_";
+#	}
 
 
 =item C<< page ( $node ) >>
@@ -76,7 +80,7 @@ sub page {
     my $node	= shift;
     throw Error -text => "Node argument needs to be a RDF::Trine::Node::Resource." unless ($node && $node->isa('RDF::Trine::Node::Resource'));
 
-    my $model	= $self->{_model};
+    my $model	= $self->model;
 
     my @props	= (
                    iri( 'http://xmlns.com/foaf/0.1/homepage' ),
@@ -104,10 +108,11 @@ sub title {
 	my $self	= shift;
 	my $node	= shift;
 	my $nodestr	= $node->as_string;
-	if (my $title = $self->{_cache}{title}{$nodestr}) {
+
+	if (my $title = $self->_cache->{title}{$nodestr}) {
 		return $title;
 	} else {
-		my $model	= $self->{_model};
+		my $model	= $self->model;
 
 		my @label	= (
 			iri( 'http://xmlns.com/foaf/0.1/name' ),
@@ -121,7 +126,7 @@ sub title {
 			my $name	= $model->objects_for_predicate_list( $node, @label );
 			if (blessed($name) and $name->is_literal) {
 				my $str	= $name->literal_value;
-				$self->{_cache}{title}{$nodestr}	= $str;
+				$self->_cache->{title}{$nodestr}	= $str;
 				return $str;
 			}
 		}
@@ -131,7 +136,7 @@ sub title {
 		foreach my $name (@names) {
 			if ($name->is_literal) {
 				my $str	= $name->literal_value;
-				$self->{_cache}{title}{$nodestr}	= $str;
+				$self->_cache->{title}{$nodestr}	= $str;
 				return $str;
 			}
 		}
@@ -139,11 +144,11 @@ sub title {
 		# and finally fall back on just returning a string version of the node
 		if ($node->is_resource) {
 			my $uri	= $node->uri_value;
-			$self->{_cache}{title}{$nodestr}	= $uri;
+			$self->_cache->{title}{$nodestr}	= $uri;
 			return $uri;
 		} else {
 			my $str	= $node->as_string;
-			$self->{_cache}{title}{$nodestr}	= $str;
+			$self->_cache->{title}{$nodestr}	= $str;
 			return $str;
 		}
 	}
@@ -159,7 +164,7 @@ A suitable description for the document will be returned, based on document cont
 sub description {
 	my $self	= shift;
 	my $node	= shift;
-	my $model	= $self->{_model};
+	my $model	= $self->model;
 	
 	my $iter	= $model->get_statements( $node );
 	my @label	= (
@@ -171,7 +176,7 @@ sub description {
 		my $p	= $st->predicate;
 		
 		my $ps;
-		if (my $pname = $self->{_cache}{pred}{$p->as_string}) {
+		if (my $pname = $self->_cache->{pred}{$p->as_string}) {
 			$ps	= $pname;
 		} elsif (my $pn = $model->objects_for_predicate_list( $p, @label )) {
 			$ps	= $self->html_node_value( $pn );
@@ -191,7 +196,7 @@ sub description {
 			}
 		}
 		
-		$self->{_cache}{pred}{$p->as_string}	= $ps;
+		$self->_cache->{pred}{$p->as_string}	= $ps;
 		my $obj	= $st->object;
 		my $os	= $self->html_node_value( $obj, $p );
 		
