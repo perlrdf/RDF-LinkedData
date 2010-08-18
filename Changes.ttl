@@ -21,6 +21,7 @@ my:project
     :maintainer <http://www.kjetil.kjernsmo.net/foaf#me> ;
     :developer <http://kasei.us/about/foaf.xrdf#greg> ;
     :bug-database <http://rt.cpan.org/NoAuth/ReportBug.html?Queue=RDF-LinkedData> ;
+    :release    my:v_0_09_1 ;
     :release    my:v_0_08 ;
     :release    my:v_0_06 ;
     :release    my:v_0_05 ;
@@ -40,6 +41,21 @@ my:project
     owl:sameAs  <http://purl.org/NET/cpan-uri/person/gwilliams> ;
     foaf:name   "Gregory Todd Williams" ;
     foaf:mbox   <mailto:gwilliams@cpan.org> .
+
+my:v_0_09_1
+    a           :Version ;
+    dc:issued   "2010-08-18"^^xsd:date ;
+    rdfs:label "Refactor helper modules; ."@en ;
+    :revision   "0.09_1"^^xsd:string ;
+    dcs:changeset [
+      dcs:item
+        [ rdfs:label "Split off RDF::LinkedData::Predicates into distribution of its own."@en ; a dcs:Update ] ,
+        [ rdfs:label "Add namespaces method to set a hashref with RDF namespaces."@en ; a dcs:Change ] ,
+        [ rdfs:label "Move POD-tests to xt."@en ; a dcs:Change ] ,
+        [ rdfs:label "Remove -T switch from load.t, since it borks on some systems."@en ; a dcs:Bugfix ] ,
+        [ rdfs:label "create a helper_properties method to pass the properties."@en ; a dcs:Change ] 
+    ] .
+
 
 my:v_0_08
     a           :Version ;
