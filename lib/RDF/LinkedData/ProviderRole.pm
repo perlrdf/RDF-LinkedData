@@ -9,7 +9,7 @@ use RDF::Trine::Serializer::NTriples;
 use RDF::Trine::Serializer::RDFXML;
 use Log::Log4perl qw(:easy);
 use Plack::Response;
-use RDF::LinkedData::Predicates;
+use RDF::Helper::Properties;
 
 with 'MooseX::Log::Log4perl::Easy';
 
@@ -113,16 +113,16 @@ sub _build_headers_in {
 
 =item C<< helper_properties (  ) >>
 
-Returns the L<RDF::LinkedData::Predicates> object if it exists or sets
-it if a L<RDF::LinkedData::Predicates> object is given as parameter.
+Returns the L<RDF::Helper::Properties> object if it exists or sets
+it if a L<RDF::Helper::Properties> object is given as parameter.
 
 =cut
 
-has helper_properties => ( is => 'rw', isa => 'RDF::LinkedData::Predicates', lazy => 1, builder => '_build_helper_properties');
+has helper_properties => ( is => 'rw', isa => 'RDF::Helper::Properties', lazy => 1, builder => '_build_helper_properties');
 
 sub _build_helper_properties {
     my $self = shift;
-    return RDF::LinkedData::Predicates->new(model => $self->model);
+    return RDF::Helper::Properties->new(model => $self->model);
 }
 
 

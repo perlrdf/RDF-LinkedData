@@ -21,6 +21,7 @@ requires 'Scalar::Util'			=> 0;
 requires 'Plack'                        => 0;
 requires 'namespace::autoclean'         => 0;
 requires 'HTTP::Headers'                => 0;
+requires 'RDF::Helper::Properties'      => 0.08;
 
 recommends 'Config::JFDI'               => 0; # If you plan to use the Plack script
 recommends 'JSON'                       => 0; # If you plan to use the Plack script

@@ -14,7 +14,7 @@ my $file = $Bin . '/data/basic.ttl';
 
 BEGIN {
     use_ok('RDF::LinkedData');
-    use_ok('RDF::LinkedData::Predicates');
+    use_ok('RDF::Helper::Properties');
     use_ok('RDF::Trine::Parser');
     use_ok('RDF::Trine::Model');
 }

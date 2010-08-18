@@ -12,7 +12,7 @@ my $file = $Bin . '/data/basic.ttl';
 
 BEGIN {
     use_ok('RDF::LinkedData');
-    use_ok('RDF::LinkedData::Predicates');
+    use_ok('RDF::Helper::Properties');
     use_ok('RDF::Trine::Parser');
     use_ok('RDF::Trine::Model');
 }
@@ -38,7 +38,7 @@ isa_ok($node, 'RDF::Trine::Node::Resource');
 
 is($node->uri_value, 'http://localhost:3000/foo', "URI is still there");
 
-my $preds = RDF::LinkedData::Predicates->new(model => $model);
+my $preds = RDF::Helper::Properties->new(model => $model);
 
 is($preds->title($node), 'This is a test', "Correct title");
 
