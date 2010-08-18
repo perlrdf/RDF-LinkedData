@@ -50,10 +50,10 @@ my:v_0_09_1
     dcs:changeset [
       dcs:item
         [ rdfs:label "Split off RDF::LinkedData::Predicates into distribution of its own."@en ; a dcs:Update ] ,
-        [ rdfs:label "Add namespaces method to set a hashref with RDF namespaces."@en ; a dcs:Change ] ,
+        [ rdfs:label "Add namespaces method to set a hashref with RDF namespaces."@en ; a dcs:Addition ] ,
         [ rdfs:label "Move POD-tests to xt."@en ; a dcs:Change ] ,
         [ rdfs:label "Remove -T switch from load.t, since it borks on some systems."@en ; a dcs:Bugfix ] ,
-        [ rdfs:label "create a helper_properties method to pass the properties."@en ; a dcs:Change ] 
+        [ rdfs:label "create a helper_properties method to pass the properties."@en ; a dcs:Addition ] 
     ] .
 
 
