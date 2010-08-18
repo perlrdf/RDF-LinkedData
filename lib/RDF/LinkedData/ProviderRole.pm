@@ -196,7 +196,8 @@ sub content {
     my %output;
     if ($type eq 'data') {
         $self->{_type} = 'data';
-        my ($type, $s) = RDF::Trine::Serializer->negotiate('request_headers' => $self->headers_in);
+        my ($type, $s) = RDF::Trine::Serializer->negotiate('request_headers' => $self->headers_in, 
+                                                           namespaces => $self->namespaces);
         my $iter = $model->bounded_description($node);
         $output{content_type} = $type;
         $output{body} = $s->serialize_iterator_to_string ( $iter );
@@ -320,6 +321,16 @@ sub response {
     return $response;
 }
 
+
+=item namespaces ( { skos => 'http://www.w3.org/2004/02/skos/core#', dct => 'http://purl.org/dc/terms/' } )
+
+Gets or sets the namespaces that some serializers use for pretty-printing.
+
+=cut
+
+
+
+has 'namespaces' => (is => 'rw', isa => 'HashRef', default => sub { { rdf => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' } } );
 
 
 =back
