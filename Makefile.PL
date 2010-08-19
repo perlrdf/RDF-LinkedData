@@ -28,6 +28,8 @@ recommends 'JSON'                       => 0; # If you plan to use the Plack scr
 
 install_script glob('script/*');
 
+author_tests('xt');
+
 auto_set_repository;
 auto_set_bugtracker;
 
