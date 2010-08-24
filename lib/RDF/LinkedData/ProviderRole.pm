@@ -5,8 +5,7 @@ use Moose::Role;
 use namespace::autoclean;
 
 use RDF::Trine;
-use RDF::Trine::Serializer::NTriples;
-use RDF::Trine::Serializer::RDFXML;
+use RDF::Trine::Serializer;
 use Log::Log4perl qw(:easy);
 use Plack::Response;
 use RDF::Helper::Properties;
@@ -26,11 +25,11 @@ RDF::LinkedData::ProviderRole - Role providing important functionality for Linke
 
 =head1 VERSION
 
-Version 0.10
+Version 0.12
 
 =cut
 
-our $VERSION = '0.10';
+our $VERSION = '0.12';
 
 
 =head1 SYNOPSIS
@@ -196,7 +195,8 @@ sub content {
     my %output;
     if ($type eq 'data') {
         $self->{_type} = 'data';
-        my ($type, $s) = RDF::Trine::Serializer->negotiate('request_headers' => $self->headers_in, 
+        my ($type, $s) = RDF::Trine::Serializer->negotiate('request_headers' => $self->headers_in,
+                                                           base => $self->base,
                                                            namespaces => $self->namespaces);
         my $iter = $model->bounded_description($node);
         $output{content_type} = $type;
@@ -293,7 +293,9 @@ sub response {
             $response->status(303);
             my $ct;
             eval {
-                ($ct) = RDF::Trine::Serializer->negotiate('request_headers' => $self->headers_in);
+                ($ct) = RDF::Trine::Serializer->negotiate('request_headers' => $self->headers_in,
+                                                          base => $self->base,
+                                                          namespaces => $self->namespaces);
             };
             if ($@) {
                 $ct = 'text/html'; # Set it to HTML for now

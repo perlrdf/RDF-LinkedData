@@ -4,7 +4,7 @@ use FindBin qw($Bin);
 use HTTP::Headers;
 
 use strict;
-use Test::More tests => 22;
+use Test::More tests => 24;
 use Test::Exception;
 #use Test::NoWarnings;
 
@@ -57,7 +57,13 @@ is($preds->title($node), 'This is a test', "Correct title");
     $ldh->headers_in($h); 
     my $content = $ldh->content($node, 'data');
     is($content->{content_type}, 'application/turtle', "Turtle content type");
-    is($content->{body}, '<http://localhost:3000/foo> <http://xmlns.com/foaf/0.1/page> <http://en.wikipedia.org/wiki/Foo> ;' . "\n\t" . '<http://www.w3.org/2000/01/rdf-schema#label> "This is a test"@en .' . "\n", 'Ntriples serialized correctly');
+    like($content->{body}, qr|<http://localhost:3000/foo> <http://xmlns.com/foaf/0.1/page> <http://en.wikipedia.org/wiki/Foo> ;|, "First Turtle triple serialized OK");
+      like($content->{body}, qr|<http://www.w3.org/2000/01/rdf-schema#label> "This is a test"\@en .|, 'Second predicate-object serialized OK');
+  SKIP: {
+        skip 'Need RDF::Trine 0.127_02 for @base test, you have '. $RDF::Trine::Serializer::VERSION,
+          1 unless $RDF::Trine::Serializer::VERSION >= 0.127;
+        like($content->{body}, qr/\@base <$base_uri> ./, 'Base URI is present in serialization');
+    }
 }
 
 my $barnode = $ld->my_node('/bar/baz/bing');
