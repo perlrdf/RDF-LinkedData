@@ -49,9 +49,19 @@ A simple L<Plack> server illustrates the usage nicely:
 =head1 METHODS
 
 This module simply uses the default implementation in
-L<RDF::LinkedData::ProviderRole>, and does nothing on its own.
+L<RDF::LinkedData::ProviderRole>, and does nothing on its
+own. However, there is a quirk which is only relevant to a developer
+of this package.
 
+=over
 
+=item with_role
+
+I had to redefine L<Moose::Role>'s with due to a conflict with
+L<Error> described in the documentation of the latter. Users will
+never see this.
+
+=back
 
 =head1 AUTHOR
 
