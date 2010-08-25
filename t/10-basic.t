@@ -19,7 +19,7 @@ BEGIN {
 
 my $parser     = RDF::Trine::Parser->new( 'turtle' );
 my $model = RDF::Trine::Model->temporary_model;
-my $base_uri = 'http://localhost:3000';
+my $base_uri = 'http://localhost';
 $parser->parse_file_into_model( $base_uri, $file, $model );
 
 ok($model, "We have a model");
@@ -36,7 +36,7 @@ my $node = $ld->my_node(URI->new($base_uri . '/foo'));
 
 isa_ok($node, 'RDF::Trine::Node::Resource');
 
-is($node->uri_value, 'http://localhost:3000/foo', "URI is still there");
+is($node->uri_value, 'http://localhost/foo', "URI is still there");
 
 my $preds = RDF::Helper::Properties->new(model => $model);
 
@@ -57,7 +57,7 @@ is($preds->title($node), 'This is a test', "Correct title");
     $ldh->headers_in($h); 
     my $content = $ldh->content($node, 'data');
     is($content->{content_type}, 'application/turtle', "Turtle content type");
-    like($content->{body}, qr|<http://localhost:3000/foo> <http://xmlns.com/foaf/0.1/page> <http://en.wikipedia.org/wiki/Foo> ;|, "First Turtle triple serialized OK");
+    like($content->{body}, qr|<http://localhost/foo> <http://xmlns.com/foaf/0.1/page> <http://en.wikipedia.org/wiki/Foo> ;|, "First Turtle triple serialized OK");
       like($content->{body}, qr|<http://www.w3.org/2000/01/rdf-schema#label> "This is a test"\@en .|, 'Second predicate-object serialized OK');
   SKIP: {
         skip 'Need RDF::Trine 0.127_02 for @base test, you have '. $RDF::Trine::Serializer::VERSION,
@@ -69,7 +69,7 @@ is($preds->title($node), 'This is a test', "Correct title");
 my $barnode = $ld->my_node(URI->new($base_uri . '/bar/baz/bing'));
 isa_ok($node, 'RDF::Trine::Node::Resource');
 
-is($barnode->uri_value, 'http://localhost:3000/bar/baz/bing', "'Bar' URI is still there");
+is($barnode->uri_value, 'http://localhost/bar/baz/bing', "'Bar' URI is still there");
 
 {
     my $h = HTTP::Headers->new(Accept	=> 'text/html');
@@ -89,5 +89,5 @@ is($barnode->uri_value, 'http://localhost:3000/bar/baz/bing', "'Bar' URI is stil
 
 is($preds->page($node), 'http://en.wikipedia.org/wiki/Foo', "/foo has a foaf:page at Wikipedia");
 
-is($preds->page($barnode), 'http://localhost:3000/bar/baz/bing/page', "/bar/baz/bing has default page");
+is($preds->page($barnode), 'http://localhost/bar/baz/bing/page', "/bar/baz/bing has default page");
 

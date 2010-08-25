@@ -24,17 +24,12 @@ C<write_sqlite-db.pl> in the distribution that converts a Turtle file
 to a suitable SQLite database, other databases can be handled in a
 similar manner.
 
-Next, you need to construct a L<RDF::Trine::Store> config string, see
-the documentation in that module for further information, and also the
-above mentioned script.
-
 Then, you need a config file. There's a companion
 C<rdf_linkeddata.json> that contains a JSON file that configures this
 script to use a minimal example database with just three triples. This
 is also useful as an example for your own config. In this file, there
 is a L<store> parameter, which must contain the L<RDF::Trine::Store>
-config string and a C<base> URI. This defaults to
-L<http://localhost:3000>, which is what this script also defaults to.
+config hash. It may also have a C<base> URI.
 
 The configuration is done using L<Config::JFDI> and all its features
 can be used. Importantly, you can set the C<RDF_LINKEDDATA_CONFIG>
@@ -113,7 +108,7 @@ $main::linked_data = sub {
     my $ld = RDF::LinkedData->new(store => $config->{store}, base => $config->{base});
     my $uri = $req->uri;
 
-    if ($req->uri->as_iri =~ m!^(.+?)/?(page|data)$!) {
+    if ($uri->as_iri =~ m!^(.+?)/?(page|data)$!) {
         $uri = URI->new($1);
         $ld->type($2);
     }

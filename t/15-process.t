@@ -23,7 +23,7 @@ BEGIN {
 
 my $parser     = RDF::Trine::Parser->new( 'turtle' );
 my $model = RDF::Trine::Model->temporary_model;
-my $base_uri = 'http://localhost:3000';
+my $base_uri = 'http://localhost';
 $parser->parse_file_into_model( $base_uri, $file, $model );
 
 ok($model, "We have a model");

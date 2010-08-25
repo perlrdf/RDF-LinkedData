@@ -91,7 +91,7 @@ sub BUILD {
             $self->model(RDF::Trine::Model->new( $store ));
 	}
 
-        throw Error -text => "No valid RDF::Trine::Model, need either a store config string or a model." unless ($self->model);
+        throw Error -text => "No valid RDF::Trine::Model, need either a store config hashref or a model." unless ($self->model);
 
 }
 
@@ -248,7 +248,7 @@ Returns or sets the base URI for this handler.
 
 =cut
 
-has base => (is => 'rw', isa => 'Str', default => "http://localhost:3000" );
+has base => (is => 'rw', isa => 'Str' );
 
 
 =item C<< response ( $uri ) >>
@@ -300,7 +300,7 @@ sub response {
             if ($@) {
                 $ct = 'text/html'; # Set it to HTML for now
             }
-            my $newurl = $self->base . $uri . '/data';
+            my $newurl = $uri . '/data';
             unless ($ct =~ /rdf|turtle/) {
                 my $preds = $self->helper_properties;
                 $newurl = $preds->page($node);
