@@ -9,6 +9,7 @@ use RDF::Trine::Serializer;
 use Log::Log4perl qw(:easy);
 use Plack::Response;
 use RDF::Helper::Properties;
+use URI;
 
 with 'MooseX::Log::Log4perl::Easy';
 
@@ -139,16 +140,14 @@ has 'type' => (is => 'rw', isa => 'Str', default => '');
 
 =item C<< my_node >>
 
-A node for the requested B<relative> URI. This node is typically used as
-the subject to find which statements to return as data. Note that the
-base URI, set in the constructor or using the C<base> method, is
-prepended to the argument.
+A node for the requested URI. This node is typically used as the
+subject to find which statements to return as data. This expects to
+get a URI object containing the full URI of the node.
 
 =cut
 
 sub my_node {
-    my ($self, $first) = @_;
-    my $iri	= sprintf( '%s%s', $self->base, $first );
+    my ($self, $iri) = @_;
     
     # not happy with this, but it helps for clients that do content sniffing based on filename
     $iri	=~ s/.(nt|rdf|ttl)$//;
@@ -254,7 +253,8 @@ has base => (is => 'rw', isa => 'Str', default => "http://localhost:3000" );
 
 =item C<< response ( $uri ) >>
 
-Will look up what to do with the given URI and populate the response object.
+Will look up what to do with the given URI object and populate the
+response object.
 
 =cut
 

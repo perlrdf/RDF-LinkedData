@@ -36,7 +36,7 @@ cmp_ok($ld->count, '>', 0, "There are triples in the model");
 
 {
     diag "Get /foo";
-    my $response = $ld->response('/foo');
+    my $response = $ld->response($base_uri . '/foo');
     isa_ok($response, 'Plack::Response');
     is($response->status, 303, "Returns 303");
     like($response->header('Location'), qr|/foo/data$|, "Location is OK");
@@ -45,7 +45,7 @@ cmp_ok($ld->count, '>', 0, "There are triples in the model");
 {
     diag "Get /foo, ask for text/html";
     $ld->headers_in(HTTP::Headers->new('Accept' => 'text/html'));
-    my $response = $ld->response('/foo');
+    my $response = $ld->response($base_uri . '/foo');
     isa_ok($response, 'Plack::Response');
     is($response->status, 303, "Returns 303");
     is($response->header('Location'), 'http://en.wikipedia.org/wiki/Foo', "Location is Wikipedia page");
@@ -55,7 +55,7 @@ TODO: {
     local $TODO = 'Should Firefox default Accept header give page?';
     diag "Get /foo, use Firefox' default Accept header";
     $ld->headers_in(HTTP::Headers->new('Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'));
-    my $response = $ld->response('/foo');
+    my $response = $ld->response($base_uri . '/foo');
     isa_ok($response, 'Plack::Response');
     is($response->status, 303, "Returns 303");
     is($response->header('Location'), 'http://en.wikipedia.org/wiki/Foo', "Location is Wikipedia page");
@@ -64,7 +64,7 @@ TODO: {
 {
     diag "Get /foo, ask for RDF/XML";
     $ld->headers_in(HTTP::Headers->new('Accept' => 'application/rdf+xml'));
-    my $response = $ld->response('/foo');
+    my $response = $ld->response($base_uri . '/foo');
     isa_ok($response, 'Plack::Response');
     is($response->status, 303, "Returns 303");
     like($response->header('Location'), qr|/foo/data$|, "Location is OK");
@@ -74,7 +74,7 @@ TODO: {
 {
     diag "Get /foo, ask for Turtle";
     $ld->headers_in(HTTP::Headers->new('Accept' => 'application/turtle'));
-    my $response = $ld->response("/foo");
+    my $response = $ld->response($base_uri . "/foo");
     like($response->header('Location'), qr|/foo/data$|, "Location is OK");
 }
 
@@ -82,7 +82,7 @@ TODO: {
 {
     diag "Get /dahut, ask for RDF/XML";
     $ld->headers_in(HTTP::Headers->new('Accept' => 'application/rdf+xml'));
-    my $response = $ld->response('/dahut');
+    my $response = $ld->response($base_uri . '/dahut');
     isa_ok($response, 'Plack::Response');
     is($response->status, 404, "Returns 404");
 }
@@ -91,7 +91,7 @@ TODO: {
 {
     diag "Get /foo/page";
     $ld->type('page');
-    my $response = $ld->response('/foo');
+    my $response = $ld->response($base_uri . '/foo');
     isa_ok($response, 'Plack::Response');
     is($response->status, 301, "Returns 301");
     is($response->header('Location'), 'http://en.wikipedia.org/wiki/Foo', "Location is Wikipedia page");
@@ -100,7 +100,7 @@ TODO: {
 {
     diag "Get /bar/baz/bing";
     $ld->headers_in(HTTP::Headers->new('Accept' => 'text/html'));
-    my $response = $ld->response ("/bar/baz/bing");
+    my $response = $ld->response($base_uri . "/bar/baz/bing");
     isa_ok($response, 'Plack::Response');
     is($response->status, 303, "Returns 303");
     like($response->header('Location'), qr|/bar/baz/bing/page$|, "Location is OK");
@@ -109,7 +109,7 @@ TODO: {
 {
     diag "Get /bar/baz/bing/page";
     $ld->type('page');
-    my $response = $ld->response ("/bar/baz/bing");
+    my $response = $ld->response($base_uri . "/bar/baz/bing");
     isa_ok($response, 'Plack::Response');
     is($response->status, 200, "Returns 200");
     is($response->content_type, 'text/html', 'Returns HTML');
@@ -120,7 +120,7 @@ TODO: {
 {
     diag "Get /bar/baz/bing, ask for RDF/XML";
     $ld->headers_in(HTTP::Headers->new('Accept' => 'application/rdf+xml'));
-    my $response = $ld->response("/bar/baz/bing");
+    my $response = $ld->response($base_uri . "/bar/baz/bing");
     is($response->status, 303, "Returns 303");
     like($response->header('Location'), qr|/bar/baz/bing/data$|, "Location is OK");
 }
@@ -131,7 +131,7 @@ TODO: {
 {
     diag "Get /foo/data";
     $ld->type('data');
-    my $response = $ld->response('/foo');
+    my $response = $ld->response($base_uri . '/foo');
     isa_ok($response, 'Plack::Response');
     is($response->status, 200, "Returns 200");
     like($response->body, qr|This is a test|, "Test phrase in content");

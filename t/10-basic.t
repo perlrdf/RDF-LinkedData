@@ -32,7 +32,7 @@ is_deeply($ld->model, $model, "The model is still the model");
 
 is($ld->base, $base_uri, "The base is still the base");
 
-my $node = $ld->my_node('/foo');
+my $node = $ld->my_node(URI->new($base_uri . '/foo'));
 
 isa_ok($node, 'RDF::Trine::Node::Resource');
 
@@ -66,7 +66,7 @@ is($preds->title($node), 'This is a test', "Correct title");
     }
 }
 
-my $barnode = $ld->my_node('/bar/baz/bing');
+my $barnode = $ld->my_node(URI->new($base_uri . '/bar/baz/bing'));
 isa_ok($node, 'RDF::Trine::Node::Resource');
 
 is($barnode->uri_value, 'http://localhost:3000/bar/baz/bing', "'Bar' URI is still there");

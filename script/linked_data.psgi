@@ -5,6 +5,7 @@ use Plack::Request;
 use RDF::Trine;
 use Config::JFDI;
 use Carp qw(confess);
+use URI 1.52;
 
 =head1 NAME
 
@@ -110,10 +111,10 @@ $main::linked_data = sub {
     my $config = Config::JFDI->open( name => "RDF::LinkedData") or confess "Couldn't find config";
 
     my $ld = RDF::LinkedData->new(store => $config->{store}, base => $config->{base});
-    my $uri = $req->path_info;
+    my $uri = $req->uri;
 
-    if ($req->path_info =~ m!^(.+?)/?(page|data)$!) {
-        $uri = $1;
+    if ($req->uri->as_iri =~ m!^(.+?)/?(page|data)$!) {
+        $uri = URI->new($1);
         $ld->type($2);
     }
     $ld->headers_in($req->headers);
