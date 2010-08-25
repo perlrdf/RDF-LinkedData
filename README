@@ -13,7 +13,8 @@ The distribution contains a script called linked_data.psgi. This sets
 up a basic Web server based on Plack, which is a modern
 high-performance framework. Running this script with the plackup
 utility will give you a web server with all the features of this
-module.
+module. See the inline documentation of that script for more
+information.
 
 Currently, RDF::LinkedData contains several methods that superclass
 may inherit to provide their own functionality. It is not quite clear
