@@ -1,8 +1,7 @@
 package RDF::LinkedData;
 
+# Next line is a workaround to problem documented in Error.pm#COMPATIBILITY
 BEGIN { require Moose; Moose->import; *with_role = *with; undef *with };
-
-#use Moose with => { -as => 'with_role' };
 
 with_role 'RDF::LinkedData::ProviderRole';
 
