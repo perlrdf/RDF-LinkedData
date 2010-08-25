@@ -29,7 +29,7 @@ C<rdf_linkeddata.json> that contains a JSON file that configures this
 script to use a minimal example database with just three triples. This
 is also useful as an example for your own config. In this file, there
 is a L<store> parameter, which must contain the L<RDF::Trine::Store>
-config hash. It may also have a C<base> URI.
+config hashref. It may also have a C<base> URI.
 
 The configuration is done using L<Config::JFDI> and all its features
 can be used. Importantly, you can set the C<RDF_LINKEDDATA_CONFIG>
