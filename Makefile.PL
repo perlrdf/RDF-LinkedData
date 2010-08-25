@@ -18,10 +18,10 @@ requires 'MooseX::Log::Log4perl::Easy'  => 0;
 requires 'Log::Log4perl'		=> 0;
 requires 'RDF::Trine'			=> 0.125;
 requires 'Scalar::Util'			=> 0;
-requires 'Plack'                        => 0;
+requires 'Plack'                        => 0.9939;
 requires 'namespace::autoclean'         => 0;
 requires 'HTTP::Headers'                => 0;
-requires 'RDF::Helper::Properties'      => 0.08;
+requires 'RDF::Helper::Properties'      => 0.10;
 requires 'URI'                          => 1.52;
 
 recommends 'Config::JFDI'               => 0; # If you plan to use the Plack script
