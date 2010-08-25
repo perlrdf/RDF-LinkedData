@@ -12,7 +12,7 @@ use RDF::Trine::Parser;
 use RDF::Trine::Model;
 my $model = RDF::Trine::Model->new($store);
 my $parser     = RDF::Trine::Parser->new( 'turtle' );
-$parser->parse_file_into_model( 'http://localhost:3000', $ARGV[0], $model );
+$parser->parse_file_into_model( 'http://localhost', $ARGV[0], $model );
 
 print "Got " . $model->count_statements . " statements.\n";
 
