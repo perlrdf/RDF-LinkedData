@@ -1,6 +1,7 @@
 package RDF::LinkedData::ProviderRole;
 
-use Moose::Role;
+# Next line is a workaround to problem documented in Error.pm#COMPATIBILITY
+BEGIN { require Moose::Role; Moose::Role->import; *with_role = *with; undef *with };
 
 use namespace::autoclean;
 
@@ -11,7 +12,7 @@ use Plack::Response;
 use RDF::Helper::Properties;
 use URI;
 
-with 'MooseX::Log::Log4perl::Easy';
+with_role 'MooseX::Log::Log4perl::Easy';
 
 BEGIN {
     Log::Log4perl->easy_init();
@@ -26,11 +27,11 @@ RDF::LinkedData::ProviderRole - Role providing important functionality for Linke
 
 =head1 VERSION
 
-Version 0.12
+Version 0.14
 
 =cut
 
-our $VERSION = '0.12';
+our $VERSION = '0.14';
 
 
 =head1 SYNOPSIS

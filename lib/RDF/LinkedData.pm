@@ -1,9 +1,10 @@
 package RDF::LinkedData;
 
+BEGIN { require Moose; Moose->import; *with_role = *with; undef *with };
 
-use Moose;
+#use Moose with => { -as => 'with_role' };
 
-with 'RDF::LinkedData::ProviderRole';
+with_role 'RDF::LinkedData::ProviderRole';
 
 
 =head1 NAME
@@ -12,11 +13,11 @@ RDF::LinkedData - Linked Data implementation default class
 
 =head1 VERSION
 
-Version 0.12
+Version 0.14
 
 =cut
 
-our $VERSION = '0.12';
+our $VERSION = '0.14';
 
 
 =head1 SYNOPSIS
