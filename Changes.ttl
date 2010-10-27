@@ -53,7 +53,7 @@ my:v_0_14
     dcs:changeset [
       dcs:item
         [ rdfs:label "Minor documentation fixes."@en ; a dcs:Change ] , 
-        [ rdfs:label "Using URI objects throughout makes more intensive use of absolute URIs."@en ; a dcs:Update ] 
+        [ rdfs:label "Using URI objects throughout makes more intensive use of absolute URIs."@en ; a dcs:Update ] ,
         [ rdfs:label "Fix the warning described in http://search.cpan.org/~shlomif/Error-0.17016/lib/Error.pm#COMPATIBILITY"@en ; a dcs:Update ] 
     ] .
 
