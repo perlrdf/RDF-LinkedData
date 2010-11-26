@@ -49,14 +49,14 @@ my $tester = $main::linked_data;
     like($res->header('Location'), qr|/foo/data$|, "Location is OK");
 }
 
-{
-  # TODO, is this really what we want?
+TODO:{
+  local $TODO = "Users should see a page, with normal FF";
     diag "Get /foo, no redirects, use FFs Accept header";
     my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester, requests_redirectable => []);
     $mech->default_header('Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8');
     my $res = $mech->get("/foo");
     is($mech->status, 303, "Returns 303");
-    like($res->header('Location'), qr|/foo/data$|, "Location is OK");
+    is($res->header('Location'), 'http://en.wikipedia.org/wiki/Foo', "Location is Wikipedia page");
 }
 
 {
