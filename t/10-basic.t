@@ -10,12 +10,18 @@ use Test::Exception;
 
 my $file = $Bin . '/data/basic.ttl';
 
+use Log::Log4perl qw(:easy);
+
+Log::Log4perl->easy_init( { level   => $FATAL } ) unless $ENV{TEST_VERBOSE};
+
 BEGIN {
     use_ok('RDF::LinkedData');
     use_ok('RDF::Helper::Properties');
     use_ok('RDF::Trine::Parser');
     use_ok('RDF::Trine::Model');
 }
+
+
 
 my $parser     = RDF::Trine::Parser->new( 'turtle' );
 my $model = RDF::Trine::Model->temporary_model;

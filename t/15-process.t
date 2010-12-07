@@ -8,7 +8,9 @@ use Test::More tests => 37;
 use Test::Exception;
 #use Test::NoWarnings;
 
+use Log::Log4perl qw(:easy);
 
+Log::Log4perl->easy_init( { level   => $FATAL } ) unless $ENV{TEST_VERBOSE};
 
 my $file = $Bin . '/data/basic.ttl';
 
@@ -35,7 +37,7 @@ cmp_ok($ld->count, '>', 0, "There are triples in the model");
 
 
 {
-    diag "Get /foo";
+    note "Get /foo";
     my $response = $ld->response($base_uri . '/foo');
     isa_ok($response, 'Plack::Response');
     is($response->status, 303, "Returns 303");
@@ -43,7 +45,7 @@ cmp_ok($ld->count, '>', 0, "There are triples in the model");
 }
 
 {
-    diag "Get /foo, ask for text/html";
+    note "Get /foo, ask for text/html";
     $ld->headers_in(HTTP::Headers->new('Accept' => 'text/html'));
     my $response = $ld->response($base_uri . '/foo');
     isa_ok($response, 'Plack::Response');
@@ -53,7 +55,7 @@ cmp_ok($ld->count, '>', 0, "There are triples in the model");
 
 TODO: {
     local $TODO = 'Should Firefox default Accept header give page?';
-    diag "Get /foo, use Firefox' default Accept header";
+    note "Get /foo, use Firefox' default Accept header";
     $ld->headers_in(HTTP::Headers->new('Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'));
     my $response = $ld->response($base_uri . '/foo');
     isa_ok($response, 'Plack::Response');
@@ -62,7 +64,7 @@ TODO: {
 }
 
 {
-    diag "Get /foo, ask for RDF/XML";
+    note "Get /foo, ask for RDF/XML";
     $ld->headers_in(HTTP::Headers->new('Accept' => 'application/rdf+xml'));
     my $response = $ld->response($base_uri . '/foo');
     isa_ok($response, 'Plack::Response');
@@ -72,7 +74,7 @@ TODO: {
 
 
 {
-    diag "Get /foo, ask for Turtle";
+    note "Get /foo, ask for Turtle";
     $ld->headers_in(HTTP::Headers->new('Accept' => 'application/turtle'));
     my $response = $ld->response($base_uri . "/foo");
     like($response->header('Location'), qr|/foo/data$|, "Location is OK");
@@ -80,7 +82,7 @@ TODO: {
 
 
 {
-    diag "Get /dahut, ask for RDF/XML";
+    note "Get /dahut, ask for RDF/XML";
     $ld->headers_in(HTTP::Headers->new('Accept' => 'application/rdf+xml'));
     my $response = $ld->response($base_uri . '/dahut');
     isa_ok($response, 'Plack::Response');
@@ -89,7 +91,7 @@ TODO: {
 
 
 {
-    diag "Get /foo/page";
+    note "Get /foo/page";
     $ld->type('page');
     my $response = $ld->response($base_uri . '/foo');
     isa_ok($response, 'Plack::Response');
@@ -98,7 +100,7 @@ TODO: {
 }
 
 {
-    diag "Get /bar/baz/bing";
+    note "Get /bar/baz/bing";
     $ld->headers_in(HTTP::Headers->new('Accept' => 'text/html'));
     my $response = $ld->response($base_uri . "/bar/baz/bing");
     isa_ok($response, 'Plack::Response');
@@ -107,7 +109,7 @@ TODO: {
 }
 
 {
-    diag "Get /bar/baz/bing/page";
+    note "Get /bar/baz/bing/page";
     $ld->type('page');
     my $response = $ld->response($base_uri . "/bar/baz/bing");
     isa_ok($response, 'Plack::Response');
@@ -118,7 +120,7 @@ TODO: {
 
 
 {
-    diag "Get /bar/baz/bing, ask for RDF/XML";
+    note "Get /bar/baz/bing, ask for RDF/XML";
     $ld->headers_in(HTTP::Headers->new('Accept' => 'application/rdf+xml'));
     my $response = $ld->response($base_uri . "/bar/baz/bing");
     is($response->status, 303, "Returns 303");
@@ -129,7 +131,7 @@ TODO: {
 
 
 {
-    diag "Get /foo/data";
+    note "Get /foo/data";
     $ld->type('data');
     my $response = $ld->response($base_uri . '/foo');
     isa_ok($response, 'Plack::Response');
