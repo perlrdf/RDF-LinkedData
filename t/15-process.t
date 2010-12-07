@@ -4,9 +4,9 @@ use FindBin qw($Bin);
 use HTTP::Headers;
 
 use strict;
-use Test::More tests => 37;
+use Test::More tests => 38;
 use Test::Exception;
-#use Test::NoWarnings;
+use Test::NoWarnings;
 
 use Log::Log4perl qw(:easy);
 
