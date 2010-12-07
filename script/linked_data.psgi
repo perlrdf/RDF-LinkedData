@@ -94,6 +94,9 @@ which is simply based on attempting to extract a useful suffix from the
 predicate URI.
 
 =cut
+my $config = Config::JFDI->open( name => "RDF::LinkedData") or confess "Couldn't find config";
+
+my $ld = RDF::LinkedData->new(store => $config->{store}, base => $config->{base});
 
 $main::linked_data = sub {
     my $env = shift;
@@ -103,9 +106,6 @@ $main::linked_data = sub {
         return [ 405, [ 'Content-type', 'text/plain' ], [ 'Method not allowed' ] ];
     }
 
-    my $config = Config::JFDI->open( name => "RDF::LinkedData") or confess "Couldn't find config";
-
-    my $ld = RDF::LinkedData->new(store => $config->{store}, base => $config->{base});
     my $uri = $req->uri;
 
     if ($uri->as_iri =~ m!^(.+?)/?(page|data)$!) {
