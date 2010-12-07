@@ -129,7 +129,6 @@ TODO:{
 
 TODO: {
     local $TODO = "We really should return 406 if no acceptable version is there, shouldn't we?";
-    local no warnings;
     my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester);
     $mech->default_header('Accept' => 'application/foobar');
     my $res = $mech->get("/foo/data");
