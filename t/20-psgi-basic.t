@@ -6,12 +6,7 @@ use warnings;
 use Test::More tests => 32 ;
 use Test::WWW::Mechanize::PSGI;
 
-#use Plack::Request;
-#use RDF::Trine::Parser;
-#use RDF::LinkedData;
-BEGIN { require 'script/linked_data.psgi'; }
-
-my $tester = $main::linked_data;
+my $tester = do "script/linked_data.psgi";
 
 
 {

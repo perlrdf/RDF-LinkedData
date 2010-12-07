@@ -98,7 +98,7 @@ my $config = Config::JFDI->open( name => "RDF::LinkedData") or confess "Couldn't
 
 my $ld = RDF::LinkedData->new(store => $config->{store}, base => $config->{base});
 
-$main::linked_data = sub {
+my $linked_data = sub {
     my $env = shift;
     my $req = Plack::Request->new($env);
 
