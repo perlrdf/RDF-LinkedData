@@ -3,7 +3,7 @@
         "store" : {
 	           "storetype"	: "Memory",
 		   "sources" : [ { 
-		                "file" : "t/data/base.ttl",
+		                "file" : "t/data/basic.ttl",
 			        "syntax" : "turtle" 
 			       } ], 
 
