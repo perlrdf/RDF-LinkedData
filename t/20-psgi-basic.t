@@ -8,6 +8,8 @@ use Test::WWW::Mechanize::PSGI;
 
 my $tester = do "script/linked_data.psgi";
 
+BAIL_OUT("The application is not running") unless ($tester);
+
 use Log::Log4perl qw(:easy);
 
 Log::Log4perl->easy_init( { level   => $FATAL } ) unless $ENV{TEST_VERBOSE};
