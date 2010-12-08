@@ -27,11 +27,11 @@ RDF::LinkedData::ProviderRole - Role providing important functionality for Linke
 
 =head1 VERSION
 
-Version 0.14
+Version 0.15_2
 
 =cut
 
-our $VERSION = '0.14';
+our $VERSION = '0.15_2';
 
 
 =head1 SYNOPSIS
@@ -88,8 +88,16 @@ sub BUILD {
 	my $self = shift;
 
         unless($self->model) {
-            my $store	= RDF::Trine::Store->new_with_config( $self->store );
-            $self->model(RDF::Trine::Model->new( $store ));
+	  # First, set the base if none is configured
+	  my $i = 0;
+	  foreach my $source (@{$self->store->{sources}}) {
+	    unless ($source->{base_uri}) {
+	      ${$self->store->{sources}}[$i]->{base_uri} = $self->base;
+	    }
+	    $i++;
+	  }
+	  my $store	= RDF::Trine::Store->new_with_config( $self->store );
+	  $self->model(RDF::Trine::Model->new( $store ));
 	}
 
         throw Error -text => "No valid RDF::Trine::Model, need either a store config hashref or a model." unless ($self->model);
