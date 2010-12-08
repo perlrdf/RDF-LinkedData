@@ -1,10 +1,11 @@
 {
-        "base"  : "http://localhost:3000",
+        "base"  : "http://localhost/",
         "store" : {
-	           "storetype"	: "DBI",
-		   "name"  	: "basic",
-		   "dsn"   	: "DBI:SQLite:t/data/basic.db",
-		   "username" 	: "user",
-		   "password"   : "pass"
+	           "storetype"	: "Memory",
+		   "sources" : [ { 
+		                "file" : "t/data/base.ttl",
+			        "syntax" : "turtle" 
+			       } ], 
+
 		  }		   		
 }
