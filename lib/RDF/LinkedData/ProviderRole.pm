@@ -378,7 +378,7 @@ L<http://lists.perlrdf.org/listinfo/dev>
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2010 Gregory Todd Williams and ABC Startsiden AS.
+Copyright 2010 Kjetil Kjernsmo, Gregory Todd Williams and ABC Startsiden AS.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
