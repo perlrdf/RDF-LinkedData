@@ -54,7 +54,7 @@ my:v_0_18
     :revision   "0.18"^^xsd:string ;
     dcs:changeset [
       dcs:item
-        [ rdfs:label "Found out the hard way that JSON doesn't allow single quotes."@en ; a dcs:Bugfix ] ,
+        [ rdfs:label "Found out the hard way that JSON doesn't allow single quotes."@en ; a dcs:Bugfix ] 
     ] .
 
 
