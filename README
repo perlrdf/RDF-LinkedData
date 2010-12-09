@@ -1,13 +1,22 @@
 RDF-LinkedData
 --------------
 
-This is an alpha release of a server framework for serving RDF Linked Data.
+This is a simple server framework for serving RDF Linked Data.
 It follows the basic best practice recommendations with 303 redirects
 from the URIs that point to the physical or abstract things to
-documents that describe them. There are some open issues, especially
-with content negotation, not all content types are supported and it
-may not quite do the right thing if the desired the content type is
-not found.
+documents that describe them. It is pretty stable in that it is being
+used in production systems, but unstable in the sense that it is not
+yet very clear if the API it provides is sensible.
+
+There are other open issues too, especially with content negotation,
+such as that it gives RDF for the default Firefox accept header, and
+it should probably redirect to an HTML page. Also, not all content
+types are supported and it may not quite do the right thing if the
+desired the content type is not found.
+
+It should be faster too. In particular, it should cache the query
+result between the first URI request and the second request, since it
+is the same data that is queried and returned.
 
 The distribution contains a script called linked_data.psgi. This sets
 up a basic Web server based on Plack, which is a modern
