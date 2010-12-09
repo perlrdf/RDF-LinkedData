@@ -27,11 +27,11 @@ RDF::LinkedData::ProviderRole - Role providing important functionality for Linke
 
 =head1 VERSION
 
-Version 0.15_2
+Version 0.16
 
 =cut
 
-our $VERSION = '0.15_2';
+our $VERSION = '0.16';
 
 
 =head1 SYNOPSIS
