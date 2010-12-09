@@ -12,11 +12,11 @@ RDF::LinkedData - Linked Data implementation default class
 
 =head1 VERSION
 
-Version 0.16
+Version 0.18
 
 =cut
 
-our $VERSION = '0.16';
+our $VERSION = '0.18';
 
 
 =head1 SYNOPSIS
