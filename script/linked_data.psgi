@@ -14,22 +14,51 @@ linked_data.psgi - A simple Plack server for RDF as linked data
 
 =head1 SYNOPSIS
 
-  plackup ./script/linked_data.psgi --host localhost --port 3000
+Create a configuration file C<rdf_linkeddata.json> that looks something like:
+
+  {
+        "base"  : "http://localhost:3000/",
+        "store" : {
+                   "storetype"  : "Memory",
+                   "sources" : [ {
+                                "file" : "/path/to/your/data.ttl",
+                                "syntax" : "turtle"
+                               } ]
+
+                   }
+  }
+
+In your shell set
+
+  export RDF_LINKEDDATA_CONFIG=/to/where/you/put/rdf_linkeddata.json
+
+Then, figure out where your install method installed the
+<linked_data.psgi>, script, e.g. by using locate. If it was installed
+in C</usr/local/bin>, go:
+
+  plackup /usr/local/bin/linked_data.psgi --host localhost --port 3000
 
 =head1 DESCRIPTION
 
-To run this server you need a config file. There's a companion
-C<rdf_linkeddata.json> that contains a JSON file that configures this
-script to use a minimal example database with just three triples. This
-is also useful as an example for your own config. In this file, there
-is a C<store> parameter, which must contain the L<RDF::Trine::Store>
-config hashref. It may also have a C<base> URI.
+This server is a minimal Plack-script that should be sufficient for
+most linked data usages, and serve as a an example for most others.
+
+A minimal example of the required config file is provided above. There
+is a long example in the distribtion, which is used to run tests. In
+the config file, there is a C<store> parameter, which must contain the
+L<RDF::Trine::Store> config hashref. It may also have a C<base> URI
+and a C<namespace> hashref which may contain prefix - URI mappings to
+be used in serializations.
+
+Note that this is a server that can only serve URIs of hosts you
+control, it is not a general purpose Linked Data manipulation tool.
 
 The configuration is done using L<Config::JFDI> and all its features
 can be used. Importantly, you can set the C<RDF_LINKEDDATA_CONFIG>
 environment variable to point to the config file you want to use. See
 also L<Catalyst::Plugin::ConfigLoader> for more information on how to
 use this config system.
+
 
 The following documentation is adapted from the L<RDF::LinkedData::Apache>,
 which preceeded this script.
