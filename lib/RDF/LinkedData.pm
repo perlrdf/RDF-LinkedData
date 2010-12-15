@@ -33,7 +33,7 @@ A simple L<Plack> server illustrates the usage nicely:
   $parser->parse_file_into_model( $base_uri, 't/data/basic.ttl', $model );
   my $ld = RDF::LinkedData->new(model => $model, base=>$base_uri);
 
-  $linked_data = sub {
+  my $linked_data = sub {
     my $env = shift;
     my $req = Plack::Request->new($env);
     my $uri = $req->path_info;
@@ -45,6 +45,32 @@ A simple L<Plack> server illustrates the usage nicely:
     return $ld->response($uri)->finalize;
   }
 
+
+=head1 DESCRIPTION
+
+This class provides a server implementation for serving Linked Data
+from the host it is configured for. Its main feature is that it can
+take an RDF model optionally read from file(s) or from a SPARQL
+endpoint and serve the URIs of those resources according to Linked
+Data best practices. It will do content negotation, supports many
+seralizations, and it will do 303 redirects as needed.
+
+For example, say you control a host C<lod.example.org> and wish to use
+it to serve Linked Data. On file, you have a bit of RDF that you want
+to serve, like:
+
+  @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+  <http://lod.example.org/foo> rdfs:label "DAHUT" ;
+                               rdfs:seeAlso <http://lod.example.org/bar> .
+  <http://lod.example.org/bar> rdfs:label "More here" .
+
+Then configuring this server to use the above file will make
+C<http://lod.example.org/foo> and C<http://lod.example.org/bar>
+dereferenceable with no further effort. The server will also return an
+appropriate 303 redirect to either a C<data> or C<page> suffix
+depending on the client's C<Accept> header and return a representation
+of the data.
 
 
 =head1 METHODS
