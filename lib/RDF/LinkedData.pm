@@ -8,7 +8,7 @@ with_role 'RDF::LinkedData::ProviderRole';
 
 =head1 NAME
 
-RDF::LinkedData - Linked Data implementation default class
+RDF::LinkedData - A Linked Data server implementation
 
 =head1 VERSION
 
