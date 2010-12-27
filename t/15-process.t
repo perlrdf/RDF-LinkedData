@@ -7,7 +7,7 @@ use strict;
 use Test::More tests => 38;
 use Test::Exception;
 use Test::NoWarnings;
-
+use Test::RDF;
 use Log::Log4perl qw(:easy);
 
 Log::Log4perl->easy_init( { level   => $FATAL } ) unless $ENV{TEST_VERBOSE};
@@ -136,7 +136,9 @@ TODO: {
     my $response = $ld->response($base_uri . '/foo');
     isa_ok($response, 'Plack::Response');
     is($response->status, 200, "Returns 200");
-    like($response->body, qr|This is a test|, "Test phrase in content");
-
+    my $model = RDF::Trine::Model->temporary_model;
+    my $parser = RDF::Trine::Parser->new( 'rdfxml' );
+    $parser->parse_into_model( $base_uri, $response->body, $model );
+    has_literal('This is a test', 'en', undef, $model, "Test phrase in content");
 }
 
