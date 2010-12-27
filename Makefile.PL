@@ -8,6 +8,7 @@ license  'perl';
 test_requires 'FindBin';
 test_requires 'Test::WWW::Mechanize::PSGI';
 test_requires 'Test::More' => 0.88;
+test_requires 'Test::RDF' => 0.20;
 test_requires 'Test::Exception';
 test_requires 'Test::NoWarnings';
 test_requires 'Config::JFDI';
