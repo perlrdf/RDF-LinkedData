@@ -3,7 +3,8 @@
 use strict;
 use warnings;
 
-use Test::More tests => 32 ;
+use Test::More tests => 38 ;
+use Test::RDF;
 use Test::WWW::Mechanize::PSGI;
 
 my $tester = do "script/linked_data.psgi";
@@ -76,6 +77,10 @@ TODO:{
     is($mech->status, 404, "Returns 404");
 }
 
+
+my $rxparser = RDF::Trine::Parser->new( 'rdfxml' );
+my $base_uri = 'http://localhost/';
+
 {
     note "Get /foo, ask for RDF/XML";
     my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester);
@@ -83,7 +88,11 @@ TODO:{
     $mech->get_ok("/foo");
     is($mech->ct, 'application/rdf+xml', "Correct content-type");
     like($mech->uri, qr|/foo/data$|, "Location is OK");
-    $mech->content_contains('This is a test', "Test phrase in content");
+    my $model = RDF::Trine::Model->temporary_model;
+    is_valid_rdf($mech->content, 'rdfxml', 'Returns valid RDF/XML');
+    $rxparser->parse_into_model( $base_uri, $mech->content, $model );
+    has_subject($base_uri . 'foo', $model, "Subject URI in content");
+    has_literal('This is a test', 'en', undef, $model, "Test phrase in content");
 }
 
 {
@@ -93,7 +102,12 @@ TODO:{
     $mech->get_ok("/foo");
     is($mech->ct, 'application/turtle', "Correct content-type");
     like($mech->uri, qr|/foo/data$|, "Location is OK");
-    $mech->content_contains('This is a test', "Test phrase in content");
+    my $model = RDF::Trine::Model->temporary_model;
+    is_valid_rdf($mech->content, 'turtle', 'Returns valid Turtle');
+    my $parser = RDF::Trine::Parser->new( 'turtle' );
+    $parser->parse_into_model( $base_uri, $mech->content, $model );
+    has_subject($base_uri . 'foo', $model, "Subject URI in content");
+    has_literal('This is a test', 'en', undef, $model, "Test phrase in content");
 }
 
 {
@@ -124,7 +138,11 @@ TODO:{
     $mech->get_ok("/bar/baz/bing");
     is($mech->ct, 'application/rdf+xml', "Correct content-type");
     like($mech->uri, qr|/bar/baz/bing/data$|, "Location is OK");
-    $mech->content_contains('Testing with longer URI.', "Test phrase in content");
+    my $model = RDF::Trine::Model->temporary_model;
+    is_valid_rdf($mech->content, 'rdfxml', 'Returns valid RDF/XML');
+    $rxparser->parse_into_model( $base_uri, $mech->content, $model );
+    has_subject($base_uri . 'bar/baz/bing', $model, "Subject URI in content");
+    has_literal('Testing with longer URI.', 'en', undef, $model, "Test phrase in content");
 }
 
 
