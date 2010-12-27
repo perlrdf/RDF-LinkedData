@@ -1,5 +1,7 @@
 #!/usr/bin/perl
 
+use strict;
+use warnings;
 use RDF::LinkedData;
 use Plack::Request;
 use RDF::Trine;
