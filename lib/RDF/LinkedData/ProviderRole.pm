@@ -301,17 +301,28 @@ sub response {
             $response->content($content->{body});
         } else {
             $response->status(303);
-            my $ct;
+            my ($ct, $s);
             eval {
-                ($ct) = RDF::Trine::Serializer->negotiate('request_headers' => $self->headers_in,
+                ($ct, $s) = RDF::Trine::Serializer->negotiate('request_headers' => $self->headers_in,
                                                           base => $self->base,
-                                                          namespaces => $self->namespaces);
-            };
+                                                          namespaces => $self->namespaces,
+							  extend => {
+								     'text/html'	=> 'html',
+								     'application/xhtml+xml' => 'html'
+								    }
+							  ) 
+	    };
             if ($@) {
-                $ct = 'text/html'; # Set it to HTML for now
+	      $response->status(406);
+	      $response->headers->content_type('text/plain');
+	      $response->body('HTTP 406: No serialization available any specified content type');
+	      return $response;
             }
+	    if ($s eq 'html') {
+	      $ct = 'text/html';
+	    }
             my $newurl = $uri . '/data';
-            unless ($ct =~ /rdf|turtle/) {
+            unless ($s->isa('RDF::Trine::Serializer')) {
                 my $preds = $self->helper_properties;
                 $newurl = $preds->page($node);
             }
@@ -326,7 +337,7 @@ sub response {
         $response->headers->content_type('text/plain');
         $response->body('HTTP 404: Unknown resource');
         return $response;
-    }
+      }
     # We should never get here.
     $response->status(500);
     $response->headers->content_type('text/plain');

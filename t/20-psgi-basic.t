@@ -50,8 +50,7 @@ Log::Log4perl->easy_init( { level   => $FATAL } ) unless $ENV{TEST_VERBOSE};
     like($res->header('Location'), qr|/foo/data$|, "Location is OK");
 }
 
-TODO:{
-  local $TODO = "Users should see a page, with normal FF";
+{
     note "Get /foo, no redirects, use FFs Accept header";
     my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester, requests_redirectable => []);
     $mech->default_header('Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8');

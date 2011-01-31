@@ -53,8 +53,7 @@ cmp_ok($ld->count, '>', 0, "There are triples in the model");
     is($response->header('Location'), 'http://en.wikipedia.org/wiki/Foo', "Location is Wikipedia page");
 }
 
-TODO: {
-    local $TODO = 'Should Firefox default Accept header give page?';
+{
     note "Get /foo, use Firefox' default Accept header";
     $ld->headers_in(HTTP::Headers->new('Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'));
     my $response = $ld->response($base_uri . '/foo');
