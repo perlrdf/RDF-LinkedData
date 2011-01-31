@@ -74,7 +74,7 @@ very much in flux, and may change without warning.
 
 =over
 
-=item C<< new ( store => $store, model => $model, base => $base, headers_in => $headers_in ) >>
+=item C<< new ( store => $store, model => $model, base_uri => $base_uri, headers_in => $headers_in ) >>
 
 Creates a new handler object based on named parameters, given a store
 config (which is a hashref that can be passed to
@@ -92,7 +92,7 @@ sub BUILD {
 	  my $i = 0;
 	  foreach my $source (@{$self->store->{sources}}) {
 	    unless ($source->{base_uri}) {
-	      ${$self->store->{sources}}[$i]->{base_uri} = $self->base;
+	      ${$self->store->{sources}}[$i]->{base_uri} = $self->base_uri;
 	    }
 	    $i++;
 	  }
@@ -204,7 +204,7 @@ sub content {
     if ($type eq 'data') {
         $self->{_type} = 'data';
         my ($type, $s) = RDF::Trine::Serializer->negotiate('request_headers' => $self->headers_in,
-                                                           base => $self->base,
+                                                           base => $self->base_uri,
                                                            namespaces => $self->namespaces);
         my $iter = $model->bounded_description($node);
         $output{content_type} = $type;
@@ -251,13 +251,13 @@ Returns or sets the RDF::Trine::Model object.
 
 has model => (is => 'rw', isa => 'RDF::Trine::Model');
 
-=item C<< base >>
+=item C<< base_uri >>
 
 Returns or sets the base URI for this handler.
 
 =cut
 
-has base => (is => 'rw', isa => 'Str' );
+has base_uri => (is => 'rw', isa => 'Str' );
 
 
 =item C<< response ( $uri ) >>
@@ -304,7 +304,7 @@ sub response {
             my ($ct, $s);
             eval {
                 ($ct, $s) = RDF::Trine::Serializer->negotiate('request_headers' => $self->headers_in,
-                                                          base => $self->base,
+                                                          base => $self->base_uri,
                                                           namespaces => $self->namespaces,
 							  extend => {
 								     'text/html'	=> 'html',

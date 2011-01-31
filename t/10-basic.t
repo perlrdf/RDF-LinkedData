@@ -31,13 +31,13 @@ $parser->parse_file_into_model( $base_uri, $file, $model );
 
 ok($model, "We have a model");
 
-my $ld = RDF::LinkedData->new(model => $model, base=>$base_uri);
+my $ld = RDF::LinkedData->new(model => $model, base_uri=>$base_uri);
 
 isa_ok($ld, 'RDF::LinkedData');
 is($ld->count, 3, "There are 3 triples in model");
 is_deeply($ld->model, $model, "The model is still the model");
 
-is($ld->base, $base_uri, "The base is still the base");
+is($ld->base_uri, $base_uri, "The base is still the base");
 
 my $node = $ld->my_node(URI->new($base_uri . '/foo'));
 

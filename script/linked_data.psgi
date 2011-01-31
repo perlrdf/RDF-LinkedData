@@ -19,7 +19,7 @@ linked_data.psgi - A simple Plack server for RDF as linked data
 Create a configuration file C<rdf_linkeddata.json> that looks something like:
 
   {
-        "base"  : "http://localhost:3000/",
+        "base_uri"  : "http://localhost:3000/",
         "store" : {
                    "storetype"  : "Memory",
                    "sources" : [ {
@@ -48,7 +48,7 @@ most linked data usages, and serve as a an example for most others.
 A minimal example of the required config file is provided above. There
 is a long example in the distribtion, which is used to run tests. In
 the config file, there is a C<store> parameter, which must contain the
-L<RDF::Trine::Store> config hashref. It may also have a C<base> URI
+L<RDF::Trine::Store> config hashref. It may also have a C<base_uri> URI
 and a C<namespace> hashref which may contain prefix - URI mappings to
 be used in serializations.
 
@@ -122,7 +122,7 @@ predicate URI.
 my $config = Config::JFDI->open( name => "RDF::LinkedData") or confess "Couldn't find config";
 
 my $ld = RDF::LinkedData->new(store => $config->{store}, 
-			      base => $config->{base},
+			      base_uri => $config->{base_uri},
 			      namespaces => $config->{namespaces});
 
 my $linked_data = sub {

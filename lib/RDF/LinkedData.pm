@@ -31,7 +31,7 @@ A simple L<Plack> server illustrates the usage nicely:
   my $model = RDF::Trine::Model->temporary_model;
   my $base_uri = 'http://localhost:5000';
   $parser->parse_file_into_model( $base_uri, 't/data/basic.ttl', $model );
-  my $ld = RDF::LinkedData->new(model => $model, base=>$base_uri);
+  my $ld = RDF::LinkedData->new(model => $model, base_uri=>$base_uri);
 
   my $linked_data = sub {
     my $env = shift;
