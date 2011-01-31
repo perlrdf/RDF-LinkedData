@@ -310,17 +310,15 @@ sub response {
 								     'text/html'	=> 'html',
 								     'application/xhtml+xml' => 'html'
 								    }
-							  ) 
-	    };
+							  )
+	      };
+            $self->logger->debug("Got $ct content type");
             if ($@) {
 	      $response->status(406);
 	      $response->headers->content_type('text/plain');
 	      $response->body('HTTP 406: No serialization available any specified content type');
 	      return $response;
             }
-	    if ($s eq 'html') {
-	      $ct = 'text/html';
-	    }
             my $newurl = $uri . '/data';
             unless ($s->isa('RDF::Trine::Serializer')) {
                 my $preds = $self->helper_properties;
