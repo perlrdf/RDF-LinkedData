@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 38 ;
+use Test::More tests => 44 ;
 use Test::RDF;
 use Test::WWW::Mechanize::PSGI;
 
@@ -23,10 +23,15 @@ Log::Log4perl->easy_init( { level   => $FATAL } ) unless $ENV{TEST_VERBOSE};
     like($res->header('Location'), qr|/foo/data$|, "Location is OK");
 }
 
-{
-    note "Get /foo, no redirects, ask for text/html";
+
+foreach my $accept_header (('text/html',
+			    'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+			    'text/html, application/xml;q=0.9, application/xhtml+xml, image/png, image/jpeg, image/gif, image/x-xbitmap, */*;q=0.1',
+			    'application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5',
+			    'image/jpeg, application/x-ms-application, image/gif, application/xaml+xml, image/pjpeg, application/x-ms-xbap, application/x-shockwave-flash, application/msword, */*')) {
+    note "Get /foo, no redirects, ask for $accept_header";
     my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester, requests_redirectable => []);
-    $mech->default_header('Accept' => 'text/html');
+    $mech->default_header('Accept' => $accept_header);
     my $res = $mech->get("/foo");
     is($mech->status, 303, "Returns 303");
     is($res->header('Location'), 'http://en.wikipedia.org/wiki/Foo', "Location is Wikipedia page");
@@ -48,15 +53,6 @@ Log::Log4perl->easy_init( { level   => $FATAL } ) unless $ENV{TEST_VERBOSE};
     my $res = $mech->get("/foo");
     is($mech->status, 303, "Returns 303");
     like($res->header('Location'), qr|/foo/data$|, "Location is OK");
-}
-
-{
-    note "Get /foo, no redirects, use FFs Accept header";
-    my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester, requests_redirectable => []);
-    $mech->default_header('Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8');
-    my $res = $mech->get("/foo");
-    is($mech->status, 303, "Returns 303");
-    is($res->header('Location'), 'http://en.wikipedia.org/wiki/Foo', "Location is Wikipedia page");
 }
 
 {
