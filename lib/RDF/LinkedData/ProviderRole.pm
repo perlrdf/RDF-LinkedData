@@ -77,10 +77,11 @@ very much in flux, and may change without warning.
 =item C<< new ( store => $store, model => $model, base_uri => $base_uri, headers_in => $headers_in ) >>
 
 Creates a new handler object based on named parameters, given a store
-config (which is a hashref that can be passed to
-L<RDF::Trine::Store>->new_with_config) or model and a base
-URI. Optionally, you may pass a Apache request object, and you will
-need to pass a L<HTTP::Headers> object if you plan to call C<content>.
+config (recommended usage is to pass a hashref of the type that can be
+passed to L<RDF::Trine::Store>->new_with_config, but a simple string
+can also be used) or model and a base URI. Optionally, you may pass a
+Apache request object, and you will need to pass a L<HTTP::Headers>
+object if you plan to call C<content>.
 
 =cut
 
@@ -96,7 +97,7 @@ sub BUILD {
 	    }
 	    $i++;
 	  }
-	  my $store	= RDF::Trine::Store->new_with_config( $self->store );
+	  my $store	= RDF::Trine::Store->new( $self->store );
 	  $self->model(RDF::Trine::Model->new( $store ));
 	}
 
