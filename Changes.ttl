@@ -21,6 +21,7 @@ my:project
     :maintainer <http://www.kjetil.kjernsmo.net/foaf#me> ;
     :developer <http://kasei.us/about/foaf.xrdf#greg> ;
     :bug-database <http://rt.cpan.org/NoAuth/ReportBug.html?Queue=RDF-LinkedData> ;
+    :release    my:v_0_20 ;
     :release    my:v_0_18 ;
     :release    my:v_0_16 ;
     :release    my:v_0_14 ;
@@ -46,6 +47,26 @@ my:project
     owl:sameAs  <http://purl.org/NET/cpan-uri/person/gwilliams> ;
     foaf:name   "Gregory Todd Williams" ;
     foaf:mbox   <mailto:gwilliams@cpan.org> .
+
+my:v_0_20
+    a           :Version ;
+    dc:issued   "2011-02-08"^^xsd:date ;
+    rdfs:label  "Improved conneg; use Test::RDF; Many small fixes."@en ;
+    :revision   "0.20"^^xsd:string ;
+    dcs:changeset [
+      dcs:item
+        [ rdfs:label "Many minor documentation fixes."@en ; a dcs:Change ] , 
+        [ rdfs:label "Many minor test and code fixes."@en ; a dcs:Change ] , 
+        [ rdfs:label "Use the new Test::RDF module for testing."@en ; a dcs:Change ] , 
+        [ rdfs:label "Now requires RDF::Trine 0.133."@en ; a dcs:Update ] , 
+	[ rdfs:label "Consistently name the base URI base_uri."@en ; a dcs:Change ] , 
+       	[ rdfs:label "Content negotation much improved."@en ; a dcs:Change ] , 
+        [ rdfs:label "Gives HTML page for default Firefox Accept header."@en ; a dcs:Bugfix ] ,
+        [ rdfs:label "Add tests for more browser Accept headers."@en ; a dcs:Addition ] ,
+        [ rdfs:label "Improve documentation of configuration (thanks to Thomas Kappler for input)."@en ; a dcs:Addition ] ,
+        [ rdfs:label "Now use the RDF::Trine::Store->new method, since it now supports checking the type itself."@en ; a dcs:Change ] 
+    ] .
+
 
 my:v_0_18
     a           :Version ;
