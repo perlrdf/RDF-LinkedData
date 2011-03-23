@@ -122,8 +122,10 @@ predicate URI.
 my $config = Config::JFDI->open( name => "RDF::LinkedData") or confess "Couldn't find config";
 
 my $ld = RDF::LinkedData->new(store => $config->{store}, 
-			      base_uri => $config->{base_uri},
-			      namespaces => $config->{namespaces});
+			      base_uri => $config->{base_uri}
+			     );
+
+$ld->namespaces($config->{namespaces}) if ($config->{namespaces});
 
 my $linked_data = sub {
     my $env = shift;
