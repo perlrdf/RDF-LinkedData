@@ -143,8 +143,6 @@ Returns or sets the type of result to return, i.e. C<page>, in the case of a hum
 
 =cut
 
-#requires 'type';
-
 has 'type' => (is => 'rw', isa => 'Str', default => ''); 
 
 

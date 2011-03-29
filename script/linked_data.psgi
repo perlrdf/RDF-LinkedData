@@ -5,7 +5,7 @@ use warnings;
 use RDF::LinkedData;
 use Plack::Request;
 use RDF::Trine;
-use Config::JFDI;
+use Config::Merge;
 use Carp qw(confess);
 use URI 1.52;
 
@@ -119,7 +119,7 @@ which is simply based on attempting to extract a useful suffix from the
 predicate URI.
 
 =cut
-my $config = Config::JFDI->open( name => "RDF::LinkedData") or confess "Couldn't find config";
+my $config = Config::Merge->new() or confess "Couldn't find config";
 
 my $ld = RDF::LinkedData->new(store => $config->{store}, 
 			      base_uri => $config->{base_uri}
