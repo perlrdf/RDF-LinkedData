@@ -4,10 +4,9 @@ use FindBin qw($Bin);
 use HTTP::Headers;
 
 use strict;
-use Test::More tests => 25;
+use Test::More tests => 24;
 use Test::RDF;
 use Test::Exception;
-use Test::NoWarnings;
 
 my $file = $Bin . '/data/basic.ttl';
 
