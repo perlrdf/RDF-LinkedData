@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 42 ;
+use Test::More tests => 44 ;
 use Test::RDF;
 use Test::WWW::Mechanize::PSGI;
 
@@ -148,6 +148,15 @@ TODO: {
     my $res = $mech->get("/foo/data");
     is($mech->status, 406, "Returns 406");
 }
+
+TODO: {
+    local $TODO = "Check for SPARQL endpoint";
+    note "Check for SPARQL endpoint";
+    my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester);
+    $mech->get_ok("/sparql", "Returns 200");
+    $mech->title_like(qr/SPARQL/, "Title contains the word SPARQL");
+}
+
 
 
 done_testing();

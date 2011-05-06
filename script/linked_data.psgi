@@ -121,21 +121,32 @@ predicate URI.
 =cut
 my $config = Config::JFDI->open( name => "RDF::LinkedData") or confess "Couldn't find config";
 
-my $ld = RDF::LinkedData->new(store => $config->{store}, 
+my $model = RDF::Trine::Model->new(RDF::Trine::Store->new($config->{store}));
+
+my $ld = RDF::LinkedData->new(model => $model,
 			      base_uri => $config->{base_uri}
 			     );
+
+my $end;
+unless($config->{disable_endpoint}) {
+  use RDF::Endpoint;
+  $end = RDF::Endpoint->new($model, $config->{endpoint});
+}
 
 $ld->namespaces($config->{namespaces}) if ($config->{namespaces});
 
 my $linked_data = sub {
     my $env = shift;
     my $req = Plack::Request->new($env);
+    my $uri = $req->uri;
+    if(defined($end) && ($uri->path eq '/sparql')) {
+      my $resp = $end->run( $req );
+      return $resp->finalize;
+    }
 
     unless ($req->method eq 'GET') {
         return [ 405, [ 'Content-type', 'text/plain' ], [ 'Method not allowed' ] ];
     }
-
-    my $uri = $req->uri;
 
     if ($uri->as_iri =~ m!^(.+?)/?(page|data)$!) {
         $uri = URI->new($1);

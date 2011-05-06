@@ -26,6 +26,7 @@ requires 'URI'                          => 1.52;
 
 recommends 'Config::JFDI'               => 0; # If you plan to use the Plack script
 recommends 'JSON'                       => 0; # If you plan to use the Plack script
+recommends 'RDF::Endpoint'              => 0; # If you plan to use the Plack script with a SPARQL Endpoint
 
 install_script glob('script/*');
 
