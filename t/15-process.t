@@ -4,7 +4,7 @@ use FindBin qw($Bin);
 use HTTP::Headers;
 
 use strict;
-use Test::More tests => 37;
+use Test::More tests => 38;
 use Test::Exception;
 use Test::RDF;
 use Log::Log4perl qw(:easy);
@@ -114,6 +114,8 @@ cmp_ok($ld->count, '>', 0, "There are triples in the model");
     is($response->status, 200, "Returns 200");
     is($response->content_type, 'text/html', 'Returns HTML');
     like($response->body, qr|Testing with longer URI\.|, "Test phrase in content");
+    my $test = 'about="' . $base_uri . '/bar/baz/bing"';
+    like($response->body, qr|$test|, "Subject URI OK");
 }
 
 

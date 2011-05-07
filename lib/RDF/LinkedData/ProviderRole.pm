@@ -215,7 +215,8 @@ sub content {
         my $preds = $self->helper_properties;
         my $title		= $preds->title( $node );
         my $desc		= $preds->description( $node );
-        my $description	= sprintf( "<table>%s</table>\n", join("\n\t\t", map { sprintf( '<tr><td>%s</td><td>%s</td></tr>', @$_ ) } @$desc) );
+        my $description	= sprintf('<table about="'. $node->uri_value  .'"' .">%s</table>\n", 
+				  join("\n\t\t", map { sprintf( '<tr><td>%s</td><td>%s</td></tr>', @$_ ) } @$desc) );
         $output{content_type} = 'text/html';
         $output{body} =<<"END";
 <?xml version="1.0"?>
