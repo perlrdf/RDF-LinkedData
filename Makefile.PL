@@ -11,7 +11,7 @@ test_requires 'Test::More' => 0.88;
 test_requires 'Test::RDF' => 0.20;
 test_requires 'Test::Exception';
 test_requires 'Config::JFDI';
-test_requires 'JSON';
+test_requires 'Test::JSON';
 
 requires 'Moose'			=> 0;
 requires 'MooseX::Log::Log4perl::Easy'  => 0;
