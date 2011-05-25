@@ -5,7 +5,6 @@ use HTTP::Headers;
 
 use strict;
 use Test::More tests => 38;
-use Test::Exception;
 use Test::RDF;
 use Log::Log4perl qw(:easy);
 
