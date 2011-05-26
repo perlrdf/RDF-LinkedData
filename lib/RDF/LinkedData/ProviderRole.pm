@@ -125,23 +125,7 @@ Returns the L<HTTP::Headers> object if it exists or sets it if a L<HTTP::Headers
 
 =cut
 
-has request => ( is => 'rw', isa => 'Plack::Request');#, builder => '_build_request');
-
-#sub _build_request {
-#    return Plack::Request->new() ;
-#}
-
-=item C<< headers_in ( [ $headers ] ) >>
-
-Returns the L<HTTP::Headers> object if it exists or sets it if a L<HTTP::Headers> object is given as parameter.
-
-=cut
-
-#has headers_in => ( is => 'rw', isa => 'HTTP::Headers');#, builder => '_build_headers_in', lazy => 1);
-
-#sub _build_headers_in {
-#    return $_[0]->request->headers ;
-#}
+has request => ( is => 'rw', isa => 'Plack::Request');
 
 
 
