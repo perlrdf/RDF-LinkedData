@@ -1,5 +1,5 @@
 #defaults
-^Makefile$
+^Makefile(.old)?$
 ^blib/
 ^blibdirs$
 ^pm_to_blib$
