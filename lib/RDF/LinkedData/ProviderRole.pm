@@ -74,7 +74,7 @@ very much in flux, and may change without warning.
 
 =over
 
-=item C<< new ( store => $store, model => $model, base_uri => $base_uri, headers_in => $headers_in ) >>
+=item C<< new ( store => $store, model => $model, base_uri => $base_uri, request => $request ) >>
 
 Creates a new handler object based on named parameters, given a store
 config (recommended usage is to pass a hashref of the type that can be
@@ -103,11 +103,33 @@ sub BUILD {
 
         throw Error -text => "No valid RDF::Trine::Model, need either a store config hashref or a model." unless ($self->model);
 
+# 	if ($self->endpoint_config) {
+# 	  eval { require RDF::Endpoint; };
+# 	  if ($@) {
+# 	    throw Error -text => "RDF::Endpoint not installed. Please install or remove its configuration.";
+# 	  }
+# 	  $self->endpoint(RDF::Endpoint->new($self->model, $self->endpoint_config));
+# 	}
 }
 
+has endpoint_config => (is => 'ro', isa => 'HashRef' );
+
+has endpoint => (is => 'rw', isa => 'RDF::Endpoint', default => undef );
 
 has store => (is => 'rw', isa => 'HashRef' );
 
+
+=item C<< request ( [ $headers ] ) >>
+
+Returns the L<HTTP::Headers> object if it exists or sets it if a L<HTTP::Headers> object is given as parameter.
+
+=cut
+
+has request => ( is => 'rw', isa => 'Plack::Request');#, builder => '_build_request');
+
+#sub _build_request {
+#    return Plack::Request->new() ;
+#}
 
 =item C<< headers_in ( [ $headers ] ) >>
 
@@ -115,11 +137,13 @@ Returns the L<HTTP::Headers> object if it exists or sets it if a L<HTTP::Headers
 
 =cut
 
-has headers_in => ( is => 'rw', isa => 'HTTP::Headers', builder => '_build_headers_in');
+has headers_in => ( is => 'rw', isa => 'HTTP::Headers');#, builder => '_build_headers_in', lazy => 1);
 
 sub _build_headers_in {
-    return HTTP::Headers->new() ;
+    return $_[0]->request->headers ;
 }
+
+
 
 =item C<< helper_properties (  ) >>
 
@@ -273,6 +297,13 @@ sub response {
     my ($self, $uri) = @_;
     my $response = Plack::Response->new;
 
+    my $headers_in = $self->headers_in;
+
+
+#    if(defined($self->endpoint) && ($uri->path eq '/sparql')) {
+#      return $end->run( $req );
+#    }
+
     my $type = $self->type;
     $self->type('');
     my $node = $self->my_node($uri);
@@ -293,7 +324,7 @@ sub response {
             if ($self->headers_in->can('header') && $self->headers_in->header('Accept')) {
                 $self->logger->debug('Found Accept header: ' . $self->headers_in->header('Accept'));
             } else {
-                $self->headers_in(HTTP::Headers->new('Accept' => 'application/rdf+xml'));
+                $self->headers_in->header(HTTP::Headers->new('Accept' => 'application/rdf+xml'));
                 $self->logger->warn('Setting Accept header: ' . $self->headers_in->header('Accept'));
             }
             $response->status(200);
