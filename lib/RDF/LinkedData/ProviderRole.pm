@@ -278,13 +278,14 @@ response object.
 =cut
 
 sub response {
-    my ($self, $uri) = @_;
+    my $self = shift;
+    my $uri = URI->new(shift);
     my $response = Plack::Response->new;
 
     my $headers_in = $self->request->headers;
+    my $endpoint_path = $self->endpoint_config->{endpoint_path} || '/sparql';
 
-
-    if(defined($self->endpoint) && ($uri->path eq '/sparql')) {
+    if(defined($self->endpoint) && ($uri->path eq $endpoint_path)) {
       return $self->endpoint->run( $self->request );
     }
 
