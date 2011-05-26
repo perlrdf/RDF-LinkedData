@@ -137,11 +137,11 @@ Returns the L<HTTP::Headers> object if it exists or sets it if a L<HTTP::Headers
 
 =cut
 
-has headers_in => ( is => 'rw', isa => 'HTTP::Headers');#, builder => '_build_headers_in', lazy => 1);
+#has headers_in => ( is => 'rw', isa => 'HTTP::Headers');#, builder => '_build_headers_in', lazy => 1);
 
-sub _build_headers_in {
-    return $_[0]->request->headers ;
-}
+#sub _build_headers_in {
+#    return $_[0]->request->headers ;
+#}
 
 
 
@@ -228,7 +228,7 @@ sub content {
     my %output;
     if ($type eq 'data') {
         $self->{_type} = 'data';
-        my ($type, $s) = RDF::Trine::Serializer->negotiate('request_headers' => $self->headers_in,
+        my ($type, $s) = RDF::Trine::Serializer->negotiate('request_headers' => $self->request->headers,
                                                            base => $self->base_uri,
                                                            namespaces => $self->namespaces);
         my $iter = $model->bounded_description($node);
@@ -297,7 +297,7 @@ sub response {
     my ($self, $uri) = @_;
     my $response = Plack::Response->new;
 
-    my $headers_in = $self->headers_in;
+    my $headers_in = $self->request->headers;
 
 
 #    if(defined($self->endpoint) && ($uri->path eq '/sparql')) {
@@ -321,11 +321,11 @@ sub response {
             }
 
             $self->logger->debug("Will render '$type' page ");
-            if ($self->headers_in->can('header') && $self->headers_in->header('Accept')) {
-                $self->logger->debug('Found Accept header: ' . $self->headers_in->header('Accept'));
+            if ($headers_in->can('header') && $headers_in->header('Accept')) {
+                $self->logger->debug('Found Accept header: ' . $headers_in->header('Accept'));
             } else {
-                $self->headers_in->header(HTTP::Headers->new('Accept' => 'application/rdf+xml'));
-                $self->logger->warn('Setting Accept header: ' . $self->headers_in->header('Accept'));
+                $headers_in->header(HTTP::Headers->new('Accept' => 'application/rdf+xml'));
+                $self->logger->warn('Setting Accept header: ' . $headers_in->header('Accept'));
             }
             $response->status(200);
             my $content = $self->content($node, $type);
@@ -336,7 +336,7 @@ sub response {
             $response->status(303);
             my ($ct, $s);
             eval {
-                ($ct, $s) = RDF::Trine::Serializer->negotiate('request_headers' => $self->headers_in,
+                ($ct, $s) = RDF::Trine::Serializer->negotiate('request_headers' => $headers_in,
                                                           base => $self->base_uri,
                                                           namespaces => $self->namespaces,
 							  extend => {

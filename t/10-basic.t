@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 use FindBin qw($Bin);
-use HTTP::Headers;
+use Plack::Request;
 
 use strict;
 use Test::More tests => 24;
@@ -49,18 +49,18 @@ my $preds = RDF::Helper::Properties->new(model => $model);
 is($preds->title($node), 'This is a test', "Correct title");
 
 {
-    my $h = HTTP::Headers->new(Accept	=> 'application/rdf+xml');
+    my $req = Plack::Request->new({ HTTP_ACCEPT  => 'application/rdf+xml' });
     my $ldh = $ld;
-    $ldh->headers_in($h);
+    $ldh->request($req);
     my $content = $ldh->content($node, 'data');
 
     is($content->{content_type}, 'application/rdf+xml', "RDF/XML content type");
 }
 
 {
-    my $h = HTTP::Headers->new(Accept	=> 'application/turtle');
+    my $req = Plack::Request->new({ HTTP_ACCEPT	=> 'application/turtle'});
     my $ldh = $ld;
-    $ldh->headers_in($h); 
+    $ldh->request($req);
     my $content = $ldh->content($node, 'data');
     is($content->{content_type}, 'application/turtle', "Turtle content type");
     is_valid_rdf($content->{body}, 'turtle', '/foo return RDF validates');
@@ -80,9 +80,9 @@ isa_ok($node, 'RDF::Trine::Node::Resource');
 is($barnode->uri_value, 'http://localhost/bar/baz/bing', "'Bar' URI is still there");
 
 {
-    my $h = HTTP::Headers->new(Accept	=> 'text/html');
+    my $req = Plack::Request->new({ HTTP_ACCEPT	=> 'text/html'});
     my $ldh = $ld;
-    $ldh->headers_in($h); 
+    $ldh->request($req);
     TODO: {
           local $TODO = "What should really be done with a text/html request for data?";
           my $content;
