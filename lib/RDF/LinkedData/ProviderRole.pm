@@ -103,13 +103,13 @@ sub BUILD {
 
         throw Error -text => "No valid RDF::Trine::Model, need either a store config hashref or a model." unless ($self->model);
 
-# 	if ($self->endpoint_config) {
-# 	  eval { require RDF::Endpoint; };
-# 	  if ($@) {
-# 	    throw Error -text => "RDF::Endpoint not installed. Please install or remove its configuration.";
-# 	  }
-# 	  $self->endpoint(RDF::Endpoint->new($self->model, $self->endpoint_config));
-# 	}
+ 	if ($self->endpoint_config) {
+ 	  eval { require RDF::Endpoint; };
+ 	  if ($@) {
+ 	    throw Error -text => "RDF::Endpoint not installed. Please install or remove its configuration.";
+ 	  }
+ 	  $self->endpoint(RDF::Endpoint->new($self->model, $self->endpoint_config));
+ 	}
 }
 
 has endpoint_config => (is => 'ro', isa => 'HashRef' );
@@ -284,9 +284,9 @@ sub response {
     my $headers_in = $self->request->headers;
 
 
-#    if(defined($self->endpoint) && ($uri->path eq '/sparql')) {
-#      return $end->run( $req );
-#    }
+    if(defined($self->endpoint) && ($uri->path eq '/sparql')) {
+      return $self->endpoint->run( $self->request );
+    }
 
     my $type = $self->type;
     $self->type('');

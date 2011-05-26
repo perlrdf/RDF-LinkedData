@@ -149,8 +149,7 @@ TODO: {
     is($mech->status, 406, "Returns 406");
 }
 
-TODO: {
-    local $TODO = "Check for SPARQL endpoint";
+{
     note "Check for SPARQL endpoint";
     my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester);
     $mech->get_ok("/sparql", "Returns 200");
