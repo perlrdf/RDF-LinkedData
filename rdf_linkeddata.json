@@ -4,22 +4,13 @@
 	"storetype"	: "Memory",
 	"sources" : [ { 
 	    "file" : "t/data/basic.ttl",
-	    "syntax" : "turtle",
-	    "base_uri"  : "http://localhost/"
+	    "syntax" : "turtle"
 	} ]
 	
     },
     "endpoint": {
-	"update": false,
-	"load_data": false,
 	"html": {
-	    "resource_links": true,
-	    "embed_images": false,
-	    "image_width": 200
-	},
-	"service_description": {
-	    "default": true,
-	    "named_graphs": true
+	    "resource_links": true
 	}
     },
 
