@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 46 ;
+use Test::More tests => 42 ;
 use Test::RDF;
 use Test::WWW::Mechanize::PSGI;
 
@@ -148,28 +148,6 @@ TODO: {
     my $res = $mech->get("/foo/data");
     is($mech->status, 406, "Returns 406");
 }
-
-SKIP: {
-  eval { require RDF::Endpoint; };
-  skip 'You need RDF::Endpoint for this test', 4 if ($@);
-
-    note "Check for SPARQL endpoint";
-    my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester);
-    $mech->get_ok("/sparql", "Returns 200");
-    $mech->title_like(qr/SPARQL/, "Title contains the word SPARQL");
-    $mech->submit_form_ok( {
-            form_id => 'queryform',
-            fields      => {
-                query => 'DESCRIBE <http://localhost/bar/baz/bing> WHERE {}',
-		'media-type' => 'text/turtle'
-            },
-        }, 'Submitting DESCRIBE query.'
-    );
-    is_rdf($mech->content, 'turtle', 
-	   '<http://localhost/bar/baz/bing> <http://www.w3.org/2000/01/rdf-schema#label> "Testing with longer URI."@en .',
-	   'turtle',  'SPARQL Query returns correct triple');
-}
-
 
 
 done_testing();

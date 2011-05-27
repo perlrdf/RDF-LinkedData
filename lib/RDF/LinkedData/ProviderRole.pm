@@ -109,14 +109,16 @@ sub BUILD {
 
  	if (defined($self->endpoint_config)) {
 	  use Data::Dumper;
-	  $self->logger->debug('Endpoint config found with config: ' . Dumper($self->endpoint_config) );
+	  $self->logger->debug('Endpoint config found with parameters: ' . Dumper($self->endpoint_config) );
 
  	  eval { require RDF::Endpoint; };
  	  if ($@) {
  	    throw Error -text => "RDF::Endpoint not installed. Please install or remove its configuration.";
  	  }
  	  $self->endpoint(RDF::Endpoint->new($self->model, $self->endpoint_config));
- 	}
+ 	} else {
+	  $self->logger->info('No endpoint config found');
+	}
 }
 
 has endpoint_config => (is => 'ro');
