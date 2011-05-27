@@ -149,7 +149,10 @@ TODO: {
     is($mech->status, 406, "Returns 406");
 }
 
-{
+SKIP: {
+  eval { require RDF::Endpoint; };
+  skip 'You need RDF::Endpoint for this test', 4 if ($@);
+
     note "Check for SPARQL endpoint";
     my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester);
     $mech->get_ok("/sparql", "Returns 200");

@@ -28,8 +28,14 @@ $parser->parse_file_into_model( $base_uri, $file, $model );
 
 ok($model, "We have a model");
 
-my $ld = RDF::LinkedData->new(model => $model, base=>$base_uri,
+my $ld;
+eval { require RDF::Endpoint; };
+if ($@) {
+  $ld = RDF::LinkedData->new(model => $model, base=>$base_uri);
+} else {
+  $ld = RDF::LinkedData->new(model => $model, base=>$base_uri,
 			      endpoint_config => {endpoint_path => '/sparql'});
+}
 
 isa_ok($ld, 'RDF::LinkedData');
 cmp_ok($ld->count, '>', 0, "There are triples in the model");
