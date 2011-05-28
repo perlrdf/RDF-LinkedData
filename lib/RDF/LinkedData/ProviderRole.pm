@@ -123,7 +123,7 @@ sub BUILD {
 
 has endpoint_config => (is => 'ro');
 
-has endpoint => (is => 'rw', isa => 'RDF::Endpoint', default => undef );
+has endpoint => (is => 'rw', isa => 'RDF::Endpoint');
 
 has store => (is => 'rw', isa => 'HashRef' );
 
