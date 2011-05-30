@@ -8,11 +8,9 @@ documents that describe them. It is pretty stable in that it is being
 used in production systems, but unstable in the sense that it is not
 yet very clear if the API it provides is sensible.
 
-There are other open issues too, especially with content negotation,
-such as that it gives RDF for the default Firefox accept header, and
-it should probably redirect to an HTML page. Also, not all content
-types are supported and it may not quite do the right thing if the
-desired the content type is not found.
+There are other open issues too, in particular, not all content types
+are supported and it may not quite do the right thing if the desired
+the content type is not found.
 
 It should be faster too. In particular, it should cache the query
 result between the first URI request and the second request, since it
@@ -29,6 +27,10 @@ Currently, RDF::LinkedData contains several methods that superclass
 may inherit to provide their own functionality. It is not quite clear
 yet if this is the Right Way to do it, so the API of this module may
 change.
+
+The functionality when using this as a server is unlikely to change in
+backwards-incompatible ways, so it may well be installed and used, and
+is in fact in production use for its author.
 
 
 

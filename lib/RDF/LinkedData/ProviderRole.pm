@@ -71,7 +71,10 @@ over time.
 
 Consequently, one should not rely in the current API unless you are
 planning to keep track of the development of this module. It is still
-very much in flux, and may change without warning.
+very much in flux, and may change without warning. Just installing and
+using it as a Linked Data server should be OK, however, as its
+important functionality is unlikely to change in non-backwards
+compatible ways.
 
 
 =head1 METHODS
