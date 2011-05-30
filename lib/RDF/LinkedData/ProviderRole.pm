@@ -130,7 +130,7 @@ has store => (is => 'rw', isa => 'HashRef' );
 
 =item C<< request ( [ $headers ] ) >>
 
-Returns the L<HTTP::Headers> object if it exists or sets it if a L<HTTP::Headers> object is given as parameter.
+Returns the L<Plack::Request> object if it exists or sets it if a L<Plack::Request> object is given as parameter.
 
 =cut
 
