@@ -81,14 +81,16 @@ compatible ways.
 
 =over
 
-=item C<< new ( store => $store, model => $model, base_uri => $base_uri, request => $request ) >>
+=item C<< new ( store => $store, model => $model, base_uri => $base_uri, 
+                request => $request, endpoint_config => $endpoint_config ) >>
 
 Creates a new handler object based on named parameters, given a store
 config (recommended usage is to pass a hashref of the type that can be
 passed to L<RDF::Trine::Store>->new_with_config, but a simple string
 can also be used) or model and a base URI. Optionally, you may pass a
-Apache request object, and you will need to pass a L<HTTP::Headers>
-object if you plan to call C<content>.
+L<Plack::Request> object (must be there if you if you plan to call
+C<content>) and an C<endpoint_config> hashref if you want to have a
+SPARQL Endpoint running using the recommended module L<RDF::Endpoint>.
 
 =cut
 
@@ -124,14 +126,24 @@ sub BUILD {
 	}
 }
 
+has store => (is => 'rw', isa => 'HashRef' );
+
 has endpoint_config => (is => 'ro', isa=>'HashRef', predicate => 'has_endpoint_config');
+
+=item C<< endpoint ( [ $endpoint ] ) >>
+
+Returns the L<RDF::Endpoint> object if it exists or sets it if a
+L<RDF::Endpoint> object is given as parameter. In most cases, it will
+be created for you if you pass a C<endpoint_config> hashref to the
+constructor, so you would most likely not use this method.
+
+=cut
+
 
 has endpoint => (is => 'rw', isa => 'RDF::Endpoint', predicate => 'has_endpoint');
 
-has store => (is => 'rw', isa => 'HashRef' );
 
-
-=item C<< request ( [ $headers ] ) >>
+=item C<< request ( [ $request ] ) >>
 
 Returns the L<Plack::Request> object if it exists or sets it if a L<Plack::Request> object is given as parameter.
 
