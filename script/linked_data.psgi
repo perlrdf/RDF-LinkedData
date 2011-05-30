@@ -132,7 +132,7 @@ predicate URI.
 my $config = Config::JFDI->open( name => "RDF::LinkedData") or confess "Couldn't find config";
 
 my $ld = RDF::LinkedData->new(store => $config->{store},
-			      endpoint_config => $config->{endpoint},
+			      endpoint_config => $config->{endpoint} || {},
 			      base_uri => $config->{base_uri}
 			     );
 

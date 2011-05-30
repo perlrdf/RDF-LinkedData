@@ -107,7 +107,7 @@ sub BUILD {
 
         throw Error -text => "No valid RDF::Trine::Model, need either a store config hashref or a model." unless ($self->model);
 
- 	if (defined($self->endpoint_config)) {
+ 	if ($self->has_endpoint_config) {
 	  use Data::Dumper;
 	  $self->logger->debug('Endpoint config found with parameters: ' . Dumper($self->endpoint_config) );
 
@@ -121,9 +121,9 @@ sub BUILD {
 	}
 }
 
-has endpoint_config => (is => 'ro');
+has endpoint_config => (is => 'ro', isa=>'HashRef', predicate => 'has_endpoint_config');
 
-has endpoint => (is => 'rw', isa => 'RDF::Endpoint');
+has endpoint => (is => 'rw', isa => 'RDF::Endpoint', predicate => 'has_endpoint');
 
 has store => (is => 'rw', isa => 'HashRef' );
 
@@ -293,11 +293,11 @@ sub response {
 
     my $headers_in = $self->request->headers;
     my $endpoint_path = '/sparql';
-    if (defined($self->endpoint_config) && defined($self->endpoint_config->{endpoint_path})) {
+    if ($self->has_endpoint_config && defined($self->endpoint_config->{endpoint_path})) {
       my $endpoint_path = $self->endpoint_config->{endpoint_path};
     }
 
-    if(defined($self->endpoint) && ($uri->path eq $endpoint_path)) {
+    if($self->has_endpoint && ($uri->path eq $endpoint_path)) {
       return $self->endpoint->run( $self->request );
     }
 
