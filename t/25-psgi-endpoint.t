@@ -12,9 +12,7 @@ if ($@) {
   plan skip_all => 'You need RDF::Endpoint for this test'
 }
 
-BEGIN {
-  $ENV{'RDF_LINKEDDATA_CONFIG_LOCAL_SUFFIX'} = 'end';
-}
+$ENV{'RDF_LINKEDDATA_CONFIG_LOCAL_SUFFIX'} = 'end';
 
 my $tester = do "script/linked_data.psgi";
 
