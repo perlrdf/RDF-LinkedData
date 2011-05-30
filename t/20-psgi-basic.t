@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 42 ;
+use Test::More tests => 44 ;
 use Test::RDF;
 use Test::WWW::Mechanize::PSGI;
 
@@ -149,5 +149,15 @@ TODO: {
     is($mech->status, 406, "Returns 406");
 }
 
+
+{
+    note "Check for SPARQL endpoint";
+    my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester);
+    $mech->get("/sparql");
+    isnt($mech->status, 200, "/sparql doesn't return 200");
+    $mech->get("/");
+    isnt($mech->status, 200, "root doesn't return 200");
+
+}
 
 done_testing();
