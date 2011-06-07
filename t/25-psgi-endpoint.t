@@ -6,11 +6,15 @@ use warnings;
 use Test::More;
 use Test::RDF;
 use Test::WWW::Mechanize::PSGI;
+use Module::Load::Conditional qw[check_install];
 
-eval { require RDF::Endpoint; };
-if ($@) {
+
+unless (defined(check_install( module => 'RDF::Endpoint', version => 0.02))) {
   plan skip_all => 'You need RDF::Endpoint for this test'
 }
+
+
+
 
 $ENV{'RDF_LINKEDDATA_CONFIG_LOCAL_SUFFIX'} = 'end';
 

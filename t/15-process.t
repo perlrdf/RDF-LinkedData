@@ -7,6 +7,7 @@ use strict;
 use Test::More tests => 38;
 use Test::RDF;
 use Log::Log4perl qw(:easy);
+use Module::Load::Conditional qw[can_load];
 
 Log::Log4perl->easy_init( { level   => $FATAL } ) unless $ENV{TEST_VERBOSE};
 
@@ -28,14 +29,11 @@ $parser->parse_file_into_model( $base_uri, $file, $model );
 
 ok($model, "We have a model");
 
-my $ld;
-eval { require RDF::Endpoint; };
-if ($@) {
-  $ld = RDF::LinkedData->new(model => $model, base=>$base_uri);
-} else {
-  $ld = RDF::LinkedData->new(model => $model, base=>$base_uri,
-			      endpoint_config => {endpoint_path => '/sparql'});
-}
+my $ld = can_load( modules => { 'RDF::Endpoint' => 0.02 })
+  ? RDF::LinkedData->new(model => $model, base=>$base_uri)
+  : RDF::LinkedData->new(model => $model, base=>$base_uri,
+			 endpoint_config => {endpoint_path => '/sparql'});
+
 
 isa_ok($ld, 'RDF::LinkedData');
 cmp_ok($ld->count, '>', 0, "There are triples in the model");

@@ -11,6 +11,7 @@ use Log::Log4perl qw(:easy);
 use Plack::Response;
 use RDF::Helper::Properties;
 use URI;
+use Module::Load::Conditional qw[can_load];
 
 with_role 'MooseX::Log::Log4perl::Easy';
 
@@ -116,8 +117,7 @@ sub BUILD {
 	  use Data::Dumper;
 	  $self->logger->debug('Endpoint config found with parameters: ' . Dumper($self->endpoint_config) );
 
- 	  eval { require RDF::Endpoint; };
- 	  if ($@) {
+ 	  unless (can_load( modules => { 'RDF::Endpoint' => 0.02 })) {
  	    throw Error -text => "RDF::Endpoint not installed. Please install or remove its configuration.";
  	  }
  	  $self->endpoint(RDF::Endpoint->new($self->model, $self->endpoint_config));
