@@ -9,7 +9,7 @@ use Test::WWW::Mechanize::PSGI;
 use Module::Load::Conditional qw[check_install];
 
 
-unless (defined(check_install( module => 'RDF::Endpoint', version => 0.02))) {
+unless (defined(check_install( module => 'RDF::Endpoint', version => 0.03))) {
   plan skip_all => 'You need RDF::Endpoint for this test'
 }
 

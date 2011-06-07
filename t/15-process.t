@@ -29,7 +29,7 @@ $parser->parse_file_into_model( $base_uri, $file, $model );
 
 ok($model, "We have a model");
 
-my $ld = can_load( modules => { 'RDF::Endpoint' => 0.02 })
+my $ld = can_load( modules => { 'RDF::Endpoint' => 0.03 })
   ? RDF::LinkedData->new(model => $model, base=>$base_uri,
 			 endpoint_config => {endpoint_path => '/sparql'})
   : RDF::LinkedData->new(model => $model, base=>$base_uri);

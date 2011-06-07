@@ -117,7 +117,7 @@ sub BUILD {
 	  use Data::Dumper;
 	  $self->logger->debug('Endpoint config found with parameters: ' . Dumper($self->endpoint_config) );
 
- 	  unless (can_load( modules => { 'RDF::Endpoint' => 0.02 })) {
+ 	  unless (can_load( modules => { 'RDF::Endpoint' => 0.03 })) {
  	    throw Error -text => "RDF::Endpoint not installed. Please install or remove its configuration.";
  	  }
  	  $self->endpoint(RDF::Endpoint->new($self->model, $self->endpoint_config));
