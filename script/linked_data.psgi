@@ -131,17 +131,15 @@ predicate URI.
 =cut
 my $config = Config::JFDI->open( name => "RDF::LinkedData") or confess "Couldn't find config";
 
-my $ld;
-if ($config->{endpoint}) {
-  $ld = RDF::LinkedData->new(store => $config->{store},
+my $ld = ($config->{endpoint})
+  ? RDF::LinkedData->new(store => $config->{store},
 			     endpoint_config => $config->{endpoint},
 			     base_uri => $config->{base_uri}
-			    );
-} else {
-  $ld = RDF::LinkedData->new(store => $config->{store},
+			    )
+  : RDF::LinkedData->new(store => $config->{store},
 			     base_uri => $config->{base_uri}
 			    );
-}
+
 
 $ld->namespaces($config->{namespaces}) if ($config->{namespaces});
 
