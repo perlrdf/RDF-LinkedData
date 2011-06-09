@@ -21,6 +21,7 @@ my:project
     :maintainer <http://www.kjetil.kjernsmo.net/foaf#me> ;
     :developer <http://kasei.us/about/foaf.xrdf#greg> ;
     :bug-database <http://rt.cpan.org/NoAuth/ReportBug.html?Queue=RDF-LinkedData> ;
+    :release    my:v_0_30 ;
     :release    my:v_0_20 ;
     :release    my:v_0_18 ;
     :release    my:v_0_16 ;
@@ -47,6 +48,25 @@ my:project
     owl:sameAs  <http://purl.org/NET/cpan-uri/person/gwilliams> ;
     foaf:name   "Gregory Todd Williams" ;
     foaf:mbox   <mailto:gwilliams@cpan.org> .
+
+my:v_0_30
+    a           :Version ;
+    dc:issued   "2011-06-09"^^xsd:date ;
+    rdfs:label "Use RDF::Endpoint for the same data."@en ;
+    :revision   "0.30"^^xsd:string ;
+    dcs:changeset [
+      dcs:item
+        [ rdfs:label "Optionally use RDF::Endpoint to set up a SPARQL endpoint for the data."@en ; a dcs:Addition ] , 
+        [ rdfs:label "Many minor documentation fixes."@en ; a dcs:Change ] , 
+        [ rdfs:label "Many minor test and code fixes."@en ; a dcs:Change ] , 
+        [ rdfs:label "headers_in method removed."@en ; a dcs:Removal ] , 
+        [ rdfs:label "Added request method to pass the whole request rather than just headers."@en ; a dcs:Addition ] , 
+        [ rdfs:label "Remove Test::NoWarnings; too many false positives."@en ; a dcs:Change ] , 
+	[ rdfs:label "Correct test dep to Test::JSON rather than just JSON."@en ; a dcs:Bugfix ] ,	
+	[ rdfs:label "Add the subject URI to the HTML output, since this would often break."@en ; a dcs:Bugfix ] ,	
+        [ rdfs:label "Allow namespaces to be skipped from the config."@en ; a dcs:Change ] 
+    ] .
+
 
 my:v_0_20
     a           :Version ;
