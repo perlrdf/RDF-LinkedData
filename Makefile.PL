@@ -34,6 +34,8 @@ install_script glob('script/*');
 author_tests('xt');
 
 auto_set_repository;
+
+build_requires 'URI::Escape'; # Seems to be required by the next bugtracker below
 auto_set_bugtracker;
 
 write_doap_changes;
