@@ -4,7 +4,7 @@ use FindBin qw($Bin);
 use Plack::Request;
 
 use strict;
-use Test::More tests => 24;
+use Test::More tests => 23;
 use Test::RDF;
 use Test::Exception;
 
@@ -83,16 +83,12 @@ is($barnode->uri_value, 'http://localhost/bar/baz/bing', "'Bar' URI is still the
     my $req = Plack::Request->new({ HTTP_ACCEPT	=> 'text/html'});
     my $ldh = $ld;
     $ldh->request($req);
-    TODO: {
-          local $TODO = "What should really be done with a text/html request for data?";
-          my $content;
-          lives_ok{ $content = $ldh->content($barnode, 'data') } "Should give us a way to give a 406";
-          is($content->{content_type}, 'application/rdf+xml', "Data type overrides and gives RDF/XML"); # TODO: is this correct?
-    }
-    {
-        my $content = $ldh->content($barnode, 'page');
-        is($content->{content_type}, 'text/html', "Page gives HTML");
-    }
+	 my $content = $ldh->content($barnode, 'data');
+	 is($content->{content_type}, 'text/html', "HTML is proper data type");
+	 {
+		 my $mcontent = $ldh->content($barnode, 'page');
+		 is($mcontent->{content_type}, 'text/html', "Page gives HTML");
+	 }
 }
 
 is($preds->page($node), 'http://en.wikipedia.org/wiki/Foo', "/foo has a foaf:page at Wikipedia");
