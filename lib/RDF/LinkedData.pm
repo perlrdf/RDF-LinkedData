@@ -39,41 +39,7 @@ our $VERSION = '0.40';
 
 =head1 SYNOPSIS
 
-See L<RDF::LinkedData> for default usage.
-
-
-=head1 DISCUSSION
-
-This module is now a L<Moose::Role>. The intention with this role is threefold:
-
-=over
-
-=item * This module may run standalone, in which case the default
-implementation in this role should be sufficient for a working Linked
-Data server. The empty L<RDF::LinkedData> class should provide such a
-default implementation.
-
-=item * This role may be implemented in classes that need to change
-some parts of its functionality, such as a L<mod_perl>-based server.
-
-=item * It may be a part of a larger server framework, for example a
-server that supports the SPARQL protocol and the SPARQL RESTful
-protocol.
-
-=back
-
-It is not completely clear at this point what the requirements are for
-these three scenarios, but it currently satisfies the first
-scenario. Thus, the role may need to be changed substantially and
-possibly split into different roles based on the usage that evolves
-over time.
-
-Consequently, one should not rely in the current API unless you are
-planning to keep track of the development of this module. It is still
-very much in flux, and may change without warning. Just installing and
-using it as a Linked Data server should be OK, however, as its
-important functionality is unlikely to change in non-backwards
-compatible ways.
+See L<RDF::LinkedData> for default usage. TODO
 
 
 =head1 METHODS
