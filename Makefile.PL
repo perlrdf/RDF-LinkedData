@@ -24,6 +24,9 @@ requires 'HTTP::Headers'                => 0;
 requires 'RDF::Helper::Properties'      => 0.10;
 requires 'URI'                          => 1.52;
 requires 'Module::Load::Conditional'    => 0;
+requires 'Encode'                       => 0;
+requires 'RDF::RDFa::Generator'         => 0.102;
+requires 'HTML::HTML5::Writer'          => 0;
 
 recommends 'Config::JFDI'               => 0; # If you plan to use the Plack script
 recommends 'JSON'                       => 0; # If you plan to use the Plack script

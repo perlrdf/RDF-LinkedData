@@ -10,6 +10,9 @@ use RDF::Helper::Properties;
 use URI;
 use Module::Load::Conditional qw[can_load];
 use Any::Moose;
+use Encode;
+use RDF::RDFa::Generator 0.102;
+use HTML::HTML5::Writer qw(DOCTYPE_XHTML_RDFA);
 
 with 'MooseX::Log::Log4perl::Easy';
 
@@ -197,44 +200,30 @@ actual use cases that surfaces in the future.
 sub content {
     my ($self, $node, $type) = @_;
     my $model = $self->model;
+	 my $iter = $model->bounded_description($node);
     my %output;
     if ($type eq 'data') {
         $self->{_type} = 'data';
         my ($type, $s) = RDF::Trine::Serializer->negotiate('request_headers' => $self->request->headers,
                                                            base => $self->base_uri,
                                                            namespaces => $self->namespaces);
-        my $iter = $model->bounded_description($node);
         $output{content_type} = $type;
         $output{body} = $s->serialize_iterator_to_string ( $iter );
     } else {
         $self->{_type} = 'page';
+		  my $returnmodel = RDF::Trine::Model->temporary_model;
+		  while (my $st = $iter->next) {
+			  $returnmodel->add_statement($st);
+		  }
         my $preds = $self->helper_properties;
-        my $title		= $preds->title( $node );
-        my $desc		= $preds->description( $node );
-        my $description	= sprintf('<table about="'. $node->uri_value  .'"' .">%s</table>\n", 
-				  join("\n\t\t", map { sprintf( '<tr><td>%s</td><td>%s</td></tr>', @$_ ) } @$desc) );
-        $output{content_type} = 'text/html';
-        $output{body} =<<"END";
-<?xml version="1.0"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN"
-	 "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-	<title>${title}</title>
-</head>
-<body xmlns:foaf="http://xmlns.com/foaf/0.1/">
-
-<h1>${title}</h1>
-<hr/>
-
-<div>
-	${description}
-</div>
-
-</body></html>
-END
-    }     
+		  my $gen	= RDF::RDFa::Generator->new( style => 'HTML::Head',
+															  title => $preds->title( $node ),
+															  base => $self->base_uri,
+															  namespaces => $self->namespaces);
+		  my $writer = HTML::HTML5::Writer->new( markup => 'xhtml', doctype => DOCTYPE_XHTML_RDFA );
+		  $output{body} = encode_utf8( $writer->document($gen->create_document($returnmodel)) );
+		  $output{content_type} = 'text/html';
+    }
     return \%output;
 }
 
