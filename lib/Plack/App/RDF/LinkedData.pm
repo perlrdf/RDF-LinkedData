@@ -12,14 +12,10 @@ sub configure {
 sub prepare_app {
 	my $self = shift;
 	my $config = $self->{config};
-	$self->{linkeddata} = ($self->{config}->{endpoint})
-	  ? RDF::LinkedData->new(store => $config->{store},
-									 endpoint_config => $config->{endpoint},
-									 base_uri => $config->{base_uri}
-									)
-		 : RDF::LinkedData->new(store => $config->{store},
-										base_uri => $config->{base_uri}
-									  );
+	$self->{linkeddata} = RDF::LinkedData->new(store => $config->{store},
+															 endpoint_config => $config->{endpoint},
+															 base_uri => $config->{base_uri}
+															);
 	$self->{linkeddata}->namespaces($config->{namespaces}) if ($config->{namespaces});
 }
 
