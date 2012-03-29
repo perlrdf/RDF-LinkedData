@@ -148,6 +148,7 @@ my $rdf_linkeddata = $linkeddata->to_app;
 builder {
 	enable "Head";
 	enable "ContentLength";
+	enable "ConditionalGET";
 	if (can_load( modules => { 'Plack::Middleware::CrossOrigin' => 0 })) { enable 'CrossOrigin' => %{$config->{cors}}};
 	$rdf_linkeddata;
 };

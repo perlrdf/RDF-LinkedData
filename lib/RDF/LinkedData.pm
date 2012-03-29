@@ -123,6 +123,20 @@ Returns the L<Plack::Request> object if it exists or sets it if a L<Plack::Reque
 has request => ( is => 'rw', isa => 'Plack::Request');
 
 
+=item C<< etag ( [ $etag ] ) >>
+
+Returns an Etag suitable for use in a HTTP header
+
+=cut
+
+has etag => ( is => 'ro', isa => 'Str', lazy => 1, builder => '_build_etag');
+
+sub _build_etag {
+	return $_[0]->model->etag;
+}
+
+
+
 
 =item C<< helper_properties (  ) >>
 
@@ -297,6 +311,7 @@ sub response {
 			$response->status(200);
 			my $content = $self->content($node, $type);
 			$response->headers->header('Vary' => join(", ", qw(Accept)));
+			$response->headers->header('ETag' => $self->etag);
 			$response->headers->content_type($content->{content_type});
 			$response->content($content->{body});
 		} else {
