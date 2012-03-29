@@ -95,3 +95,4 @@ is($preds->page($node), 'http://en.wikipedia.org/wiki/Foo', "/foo has a foaf:pag
 
 is($preds->page($barnode), 'http://localhost/bar/baz/bing/page', "/bar/baz/bing has default page");
 
+done_testing;
