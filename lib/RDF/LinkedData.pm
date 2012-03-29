@@ -10,6 +10,7 @@ use RDF::Helper::Properties;
 use URI;
 use Module::Load::Conditional qw[can_load];
 use Any::Moose;
+use MooseX::UndefTolerant::Attribute;
 use Encode;
 use RDF::RDFa::Generator 0.102;
 use HTML::HTML5::Writer qw(DOCTYPE_XHTML_RDFA);
@@ -97,7 +98,8 @@ sub BUILD {
 
 has store => (is => 'rw', isa => 'HashRef' );
 
-has endpoint_config => (is => 'ro', isa=>'HashRef', predicate => 'has_endpoint_config');
+has endpoint_config => (is => 'rw', traits => [ qw(MooseX::UndefTolerant::Attribute)],
+								isa=>'HashRef', predicate => 'has_endpoint_config');
 
 =item C<< endpoint ( [ $endpoint ] ) >>
 
