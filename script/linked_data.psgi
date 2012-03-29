@@ -144,8 +144,6 @@ my $linkeddata = Plack::App::RDF::LinkedData->new();
 $linkeddata->configure($config);
 
 my $rdf_linkeddata = $linkeddata->to_app;
-use Data::Dumper;
-warn Dumper($config->{cors});
 
 builder {
 	enable "Head";

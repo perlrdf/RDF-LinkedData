@@ -3,9 +3,10 @@
 use strict;
 use warnings;
 
-use Test::More tests => 51 ;
+use Test::More tests => 52 ;
 use Test::RDF;
 use Test::WWW::Mechanize::PSGI;
+use Module::Load::Conditional qw[can_load];
 
 my $tester = do "script/linked_data.psgi";
 
@@ -118,10 +119,15 @@ my $base_uri = 'http://localhost/';
 {
     note "Get /bar/baz/bing, no redirects, ask for RDF/XML";
     my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester, requests_redirectable => []);
-    $mech->default_header('Accept' => 'application/rdf+xml');
+    $mech->default_header('Accept' => 'application/rdf+xml'); 
+	 $mech->add_header('Origin' => 'http://example.org');
     my $res = $mech->get("/bar/baz/bing");
     is($mech->status, 303, "Returns 303");
     like($res->header('Location'), qr|/bar/baz/bing/data$|, "Location is OK");
+	 SKIP: {
+			skip 'CrossOrigin not installed', 1 unless can_load( modules => { 'Plack::Middleware::CrossOrigin' => 0 });
+			is($res->header('Access-Control-Allow-Origin'), '*', 'CORS header OK');
+		}
 }
 
 
