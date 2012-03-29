@@ -8,6 +8,7 @@ use Plack::Request;
 use Plack::Builder;
 use Config::JFDI;
 use Carp qw(confess);
+use Module::Load::Conditional qw[can_load];
 
 =head1 NAME
 
@@ -32,7 +33,10 @@ Create a configuration file C<rdf_linkeddata.json> that looks something like:
         	"html": {
 	                 "resource_links": true
 	                }
-                    }
+                    },
+        "cors": {
+                  "origins": '*'
+                }
   }
 
 In your shell set
@@ -137,6 +141,8 @@ BEGIN {
 
 my $linkeddata = Plack::App::RDF::LinkedData->new();
 
+
+
 $linkeddata->configure($config);
 
 my $rdf_linkeddata = $linkeddata->to_app;
@@ -144,6 +150,7 @@ my $rdf_linkeddata = $linkeddata->to_app;
 builder {
 	enable "Head";
 	enable "ContentLength";
+	enable_if { can_load( modules => { 'Plack::Middleware::CrossOrigin' => 0 }) } 'CrossOrigin', $config->{cors};
 	$rdf_linkeddata;
 };
 

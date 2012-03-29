@@ -284,7 +284,6 @@ sub response {
 				# Then, we have a foaf:page set that we should redirect to
 				$response->status(301);
 				$response->headers->header('Location' => $page);
-				$response->headers->header('Access-Control-Allow-Origin' => '*');
 				return $response;
 			}
 
@@ -329,7 +328,6 @@ sub response {
 			$response->headers->header('Location' => $newurl);
 			$response->headers->header('Vary' => join(", ", qw(Accept)));
 		}
-		$response->headers->header('Access-Control-Allow-Origin' => '*');
 		return $response;
 	} else {
 		$response->status(404);
