@@ -23,7 +23,7 @@ sub call {
 	my($self, $env) = @_;
 	my $req = Plack::Request->new($env);
 	my $ld = $self->{linkeddata};
-	unless ($req->method eq 'GET') {
+	unless (($req->method eq 'GET') || ($req->method eq 'HEAD')) {
 		return [ 405, [ 'Content-type', 'text/plain' ], [ 'Method not allowed' ] ];
 	}
 
