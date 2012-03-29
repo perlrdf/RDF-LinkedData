@@ -9,7 +9,7 @@ use Plack::Response;
 use RDF::Helper::Properties;
 use URI;
 use Module::Load::Conditional qw[can_load];
-use Any::Moose;
+use Moose;
 use MooseX::UndefTolerant::Attribute;
 use Encode;
 use RDF::RDFa::Generator 0.102;
