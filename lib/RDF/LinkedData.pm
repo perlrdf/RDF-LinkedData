@@ -216,7 +216,7 @@ sub content {
 			  $returnmodel->add_statement($st);
 		  }
         my $preds = $self->helper_properties;
-		  my $gen	= RDF::RDFa::Generator->new( style => 'HTML::Head',
+		  my $gen	= RDF::RDFa::Generator->new( style => 'HTML::Pretty',
 															  title => $preds->title( $node ),
 															  base => $self->base_uri,
 															  namespaces => $self->namespaces);
