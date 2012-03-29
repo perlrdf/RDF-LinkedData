@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More;# tests => 44 ;
+use Test::More tests => 51 ;
 use Test::RDF;
 use Test::WWW::Mechanize::PSGI;
 
@@ -102,6 +102,17 @@ my $base_uri = 'http://localhost/';
     $parser->parse_into_model( $base_uri, $mech->content, $model );
     has_subject($base_uri . 'foo', $model, "Subject URI in content");
     has_literal('This is a test', 'en', undef, $model, "Test phrase in content");
+}
+
+{
+    note "Get /foo/data, ask for XHTML";
+    my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester);
+    $mech->default_header('Accept' => 'application/xhtml+xml');
+    $mech->get_ok("/foo/data");
+    is($mech->ct, 'application/xhtml+xml', "Correct content-type");
+    like($mech->uri, qr|/foo/data$|, "Location is OK");
+	 $mech->content_like(qr|about=\"http://\S+?/foo\"|, 'Subject URI is OK in RDFa' );
+	 $mech->content_contains('rel="foaf:page"', 'foaf:page is in RDFa' );
 }
 
 {
