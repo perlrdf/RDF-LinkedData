@@ -410,6 +410,19 @@ The perlrdf mailing list is the right place to seek help and discuss this module
 
 L<http://lists.perlrdf.org/listinfo/dev>
 
+=head1 TODO
+
+=over
+
+=item * Use L<IO::Handle> streams when they become available from the serializers.
+
+=item * Figure out what needs to be done to use this code in other frameworks, such as Magpie.
+
+=item * Make it read-write hypermedia.
+
+=back
+
+
 =head1 ACKNOWLEDGEMENTS
 
 This module was started by Gregory Todd Williams C<<
