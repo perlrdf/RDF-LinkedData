@@ -17,11 +17,11 @@ use HTML::HTML5::Writer qw(DOCTYPE_XHTML_RDFA);
 with 'MooseX::Log::Log4perl::Easy';
 
 BEGIN {
-  if ($ENV{TEST_VERBOSE}) {
-    Log::Log4perl->easy_init( { level   => $TRACE } );
-  } else {
-    Log::Log4perl->easy_init( { level   => $FATAL } );
-  }
+	if ($ENV{TEST_VERBOSE}) {
+		Log::Log4perl->easy_init( { level   => $TRACE } );
+	} else {
+		Log::Log4perl->easy_init( { level   => $FATAL } );
+	}
 }
 
 
@@ -65,17 +65,17 @@ SPARQL Endpoint running using the recommended module L<RDF::Endpoint>.
 sub BUILD {
 	my $self = shift;
 
-        unless($self->model) {
-	  # First, set the base if none is configured
-	  my $i = 0;
-	  foreach my $source (@{$self->store->{sources}}) {
-	    unless ($source->{base_uri}) {
-	      ${$self->store->{sources}}[$i]->{base_uri} = $self->base_uri;
-	    }
-	    $i++;
-	  }
-	  my $store	= RDF::Trine::Store->new( $self->store );
-	  $self->model(RDF::Trine::Model->new( $store ));
+	unless($self->model) {
+		# First, set the base if none is configured
+		my $i = 0;
+		foreach my $source (@{$self->store->{sources}}) {
+			unless ($source->{base_uri}) {
+				${$self->store->{sources}}[$i]->{base_uri} = $self->base_uri;
+			}
+			$i++;
+		}
+		my $store	= RDF::Trine::Store->new( $self->store );
+		$self->model(RDF::Trine::Model->new( $store ));
 	}
 
 	unless ($self->model) {
@@ -83,15 +83,15 @@ sub BUILD {
 	}
 
  	if ($self->has_endpoint_config) {
-	  use Data::Dumper;
-	  $self->logger->debug('Endpoint config found with parameters: ' . Dumper($self->endpoint_config) );
+		use Data::Dumper;
+		$self->logger->debug('Endpoint config found with parameters: ' . Dumper($self->endpoint_config) );
 
- 	  unless (can_load( modules => { 'RDF::Endpoint' => 0.03 })) {
- 	    throw Error -text => "RDF::Endpoint not installed. Please install or remove its configuration.";
- 	  }
- 	  $self->endpoint(RDF::Endpoint->new($self->model, $self->endpoint_config));
+		unless (can_load( modules => { 'RDF::Endpoint' => 0.03 })) {
+			throw Error -text => "RDF::Endpoint not installed. Please install or remove its configuration.";
+		}
+		$self->endpoint(RDF::Endpoint->new($self->model, $self->endpoint_config));
  	} else {
-	  $self->logger->info('No endpoint config found');
+		$self->logger->info('No endpoint config found');
 	}
 }
 
@@ -132,8 +132,8 @@ it if a L<RDF::Helper::Properties> object is given as parameter.
 has helper_properties => ( is => 'rw', isa => 'RDF::Helper::Properties', lazy => 1, builder => '_build_helper_properties');
 
 sub _build_helper_properties {
-    my $self = shift;
-    return RDF::Helper::Properties->new(model => $self->model);
+	my $self = shift;
+	return RDF::Helper::Properties->new(model => $self->model);
 }
 
 
@@ -156,12 +156,12 @@ get a URI object containing the full URI of the node.
 =cut
 
 sub my_node {
-    my ($self, $iri) = @_;
+	my ($self, $iri) = @_;
     
-    # not happy with this, but it helps for clients that do content sniffing based on filename
-    $iri	=~ s/.(nt|rdf|ttl)$//;
-    $self->logger->info("Subject URI to be used: $iri");
-    return RDF::Trine::Node::Resource->new( $iri );
+	# not happy with this, but it helps for clients that do content sniffing based on filename
+	$iri	=~ s/.(nt|rdf|ttl)$//;
+	$self->logger->info("Subject URI to be used: $iri");
+	return RDF::Trine::Node::Resource->new( $iri );
 }
 
 =item C<< count ( $node) >>
@@ -172,9 +172,9 @@ Returns the number of statements that has the $node as subject, or all if $node 
 
 
 sub count {
-    my $self = shift;
-    my $node = shift;
-    return $self->model->count_statements( $node, undef, undef );
+	my $self = shift;
+	my $node = shift;
+	return $self->model->count_statements( $node, undef, undef );
 }
 
 =item C<< content ( $node, $type) >>
@@ -198,33 +198,33 @@ actual use cases that surfaces in the future.
 
 
 sub content {
-    my ($self, $node, $type) = @_;
-    my $model = $self->model;
-	 my $iter = $model->bounded_description($node);
-    my %output;
-    if ($type eq 'data') {
-        $self->{_type} = 'data';
-        my ($type, $s) = RDF::Trine::Serializer->negotiate('request_headers' => $self->request->headers,
-                                                           base => $self->base_uri,
-                                                           namespaces => $self->namespaces);
-        $output{content_type} = $type;
-        $output{body} = $s->serialize_iterator_to_string ( $iter );
-    } else {
-        $self->{_type} = 'page';
-		  my $returnmodel = RDF::Trine::Model->temporary_model;
-		  while (my $st = $iter->next) {
-			  $returnmodel->add_statement($st);
-		  }
-        my $preds = $self->helper_properties;
-		  my $gen	= RDF::RDFa::Generator->new( style => 'HTML::Pretty',
-															  title => $preds->title( $node ),
-															  base => $self->base_uri,
-															  namespaces => $self->namespaces);
-		  my $writer = HTML::HTML5::Writer->new( markup => 'xhtml', doctype => DOCTYPE_XHTML_RDFA );
-		  $output{body} = encode_utf8( $writer->document($gen->create_document($returnmodel)) );
-		  $output{content_type} = 'text/html';
-    }
-    return \%output;
+	my ($self, $node, $type) = @_;
+	my $model = $self->model;
+	my $iter = $model->bounded_description($node);
+	my %output;
+	if ($type eq 'data') {
+		$self->{_type} = 'data';
+		my ($type, $s) = RDF::Trine::Serializer->negotiate('request_headers' => $self->request->headers,
+																			base => $self->base_uri,
+																			namespaces => $self->namespaces);
+		$output{content_type} = $type;
+		$output{body} = $s->serialize_iterator_to_string ( $iter );
+	} else {
+		$self->{_type} = 'page';
+		my $returnmodel = RDF::Trine::Model->temporary_model;
+		while (my $st = $iter->next) {
+			$returnmodel->add_statement($st);
+		}
+		my $preds = $self->helper_properties;
+		my $gen	= RDF::RDFa::Generator->new( style => 'HTML::Pretty',
+														  title => $preds->title( $node ),
+														  base => $self->base_uri,
+														  namespaces => $self->namespaces);
+		my $writer = HTML::HTML5::Writer->new( markup => 'xhtml', doctype => DOCTYPE_XHTML_RDFA );
+		$output{body} = encode_utf8( $writer->document($gen->create_document($returnmodel)) );
+		$output{content_type} = 'text/html';
+	}
+	return \%output;
 }
 
 
@@ -256,90 +256,90 @@ response object.
 =cut
 
 sub response {
-    my $self = shift;
-    my $uri = URI->new(shift);
-    my $response = Plack::Response->new;
+	my $self = shift;
+	my $uri = URI->new(shift);
+	my $response = Plack::Response->new;
 
-    my $headers_in = $self->request->headers;
-    my $endpoint_path = '/sparql';
-    if ($self->has_endpoint_config && defined($self->endpoint_config->{endpoint_path})) {
+	my $headers_in = $self->request->headers;
+	my $endpoint_path = '/sparql';
+	if ($self->has_endpoint_config && defined($self->endpoint_config->{endpoint_path})) {
       my $endpoint_path = $self->endpoint_config->{endpoint_path};
-    }
+	}
 
-    if($self->has_endpoint && ($uri->path eq $endpoint_path)) {
+	if ($self->has_endpoint && ($uri->path eq $endpoint_path)) {
       return $self->endpoint->run( $self->request );
-    }
+	}
 
-    my $type = $self->type;
-    $self->type('');
-    my $node = $self->my_node($uri);
-    $self->logger->info("Try rendering '$type' page for subject node: " . $node->as_string);
-    if ($self->count($node) > 0) {
-        if ($type) {
-            my $preds = $self->helper_properties;
-            my $page = $preds->page($node);
-            if (($type eq 'page') && ($page ne $node->uri_value . '/page')) {
-                # Then, we have a foaf:page set that we should redirect to
-                $response->status(301);
-                $response->headers->header('Location' => $page);
-                $response->headers->header('Access-Control-Allow-Origin' => '*');
-                return $response;
-            }
+	my $type = $self->type;
+	$self->type('');
+	my $node = $self->my_node($uri);
+	$self->logger->info("Try rendering '$type' page for subject node: " . $node->as_string);
+	if ($self->count($node) > 0) {
+		if ($type) {
+			my $preds = $self->helper_properties;
+			my $page = $preds->page($node);
+			if (($type eq 'page') && ($page ne $node->uri_value . '/page')) {
+				# Then, we have a foaf:page set that we should redirect to
+				$response->status(301);
+				$response->headers->header('Location' => $page);
+				$response->headers->header('Access-Control-Allow-Origin' => '*');
+				return $response;
+			}
 
-            $self->logger->debug("Will render '$type' page ");
-            if ($headers_in->can('header') && $headers_in->header('Accept')) {
-                $self->logger->debug('Found Accept header: ' . $headers_in->header('Accept'));
-            } else {
-                $headers_in->header(HTTP::Headers->new('Accept' => 'application/rdf+xml'));
-                $self->logger->warn('Setting Accept header: ' . $headers_in->header('Accept'));
-            }
-            $response->status(200);
-            my $content = $self->content($node, $type);
-            $response->headers->header('Vary' => join(", ", qw(Accept)));
-            $response->headers->content_type($content->{content_type});
-            $response->content($content->{body});
-        } else {
-            $response->status(303);
-            my ($ct, $s);
-            eval {
-                ($ct, $s) = RDF::Trine::Serializer->negotiate('request_headers' => $headers_in,
+			$self->logger->debug("Will render '$type' page ");
+			if ($headers_in->can('header') && $headers_in->header('Accept')) {
+				$self->logger->debug('Found Accept header: ' . $headers_in->header('Accept'));
+			} else {
+				$headers_in->header(HTTP::Headers->new('Accept' => 'application/rdf+xml'));
+				$self->logger->warn('Setting Accept header: ' . $headers_in->header('Accept'));
+			}
+			$response->status(200);
+			my $content = $self->content($node, $type);
+			$response->headers->header('Vary' => join(", ", qw(Accept)));
+			$response->headers->content_type($content->{content_type});
+			$response->content($content->{body});
+		} else {
+			$response->status(303);
+			my ($ct, $s);
+			eval {
+				($ct, $s) = RDF::Trine::Serializer->negotiate('request_headers' => $headers_in,
                                                           base => $self->base_uri,
                                                           namespaces => $self->namespaces,
-							  extend => {
-								     'text/html'	=> 'html',
-								     'application/xhtml+xml' => 'html'
-								    }
-							  )
+																			 extend => {
+																							'text/html'	=> 'html',
+																							'application/xhtml+xml' => 'html'
+																						  }
+																			)
 	      };
-            $self->logger->debug("Got $ct content type");
-            if ($@) {
-	      $response->status(406);
-	      $response->headers->content_type('text/plain');
-	      $response->body('HTTP 406: No serialization available any specified content type');
-	      return $response;
-            }
-            my $newurl = $uri . '/data';
-            unless ($s->isa('RDF::Trine::Serializer')) {
-                my $preds = $self->helper_properties;
-                $newurl = $preds->page($node);
-            }
-            $self->logger->debug('Will do a 303 redirect to ' . $newurl);
-            $response->headers->header('Location' => $newurl);
-            $response->headers->header('Vary' => join(", ", qw(Accept)));
-        }
-		  $response->headers->header('Access-Control-Allow-Origin' => '*');
-        return $response;
-    } else {
-        $response->status(404);
-        $response->headers->content_type('text/plain');
-        $response->body('HTTP 404: Unknown resource');
-        return $response;
-      }
-    # We should never get here.
-    $response->status(500);
-    $response->headers->content_type('text/plain');
-    $response->body('HTTP 500: No such functionality.');
-    return $response;
+			$self->logger->debug("Got $ct content type");
+			if ($@) {
+				$response->status(406);
+				$response->headers->content_type('text/plain');
+				$response->body('HTTP 406: No serialization available any specified content type');
+				return $response;
+			}
+			my $newurl = $uri . '/data';
+			unless ($s->isa('RDF::Trine::Serializer')) {
+				my $preds = $self->helper_properties;
+				$newurl = $preds->page($node);
+			}
+			$self->logger->debug('Will do a 303 redirect to ' . $newurl);
+			$response->headers->header('Location' => $newurl);
+			$response->headers->header('Vary' => join(", ", qw(Accept)));
+		}
+		$response->headers->header('Access-Control-Allow-Origin' => '*');
+		return $response;
+	} else {
+		$response->status(404);
+		$response->headers->content_type('text/plain');
+		$response->body('HTTP 404: Unknown resource');
+		return $response;
+	}
+	# We should never get here.
+	$response->status(500);
+	$response->headers->content_type('text/plain');
+	$response->body('HTTP 500: No such functionality.');
+	return $response;
 }
 
 

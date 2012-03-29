@@ -142,9 +142,9 @@ $linkeddata->configure($config);
 my $rdf_linkeddata = $linkeddata->to_app;
 
 builder {
-        enable "Plack::Middleware::Head";
-        enable "Plack::Middleware::ContentLength";
-        $rdf_linkeddata;
+	enable "Plack::Middleware::Head";
+	enable "Plack::Middleware::ContentLength";
+	$rdf_linkeddata;
 };
 
 
