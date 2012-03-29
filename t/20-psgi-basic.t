@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 44 ;
+use Test::More;# tests => 44 ;
 use Test::RDF;
 use Test::WWW::Mechanize::PSGI;
 
@@ -122,6 +122,8 @@ my $base_uri = 'http://localhost/';
     is($mech->ct, 'text/html', "Correct content-type");
     like($mech->uri, qr|/bar/baz/bing/page$|, "Location is OK");
     $mech->title_is('Testing with longer URI.', "Title is correct");
+    $mech->has_tag('h1', 'Testing with longer URI.', "Title in body is correct");
+	 $mech->content_like(qr|about=\"http://\S+?/bar/baz/bing\"|, 'Subject URI is OK in RDFa' );
 }
 
 
