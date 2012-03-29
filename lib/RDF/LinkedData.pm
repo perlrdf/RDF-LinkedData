@@ -78,7 +78,9 @@ sub BUILD {
 	  $self->model(RDF::Trine::Model->new( $store ));
 	}
 
-        throw Error -text => "No valid RDF::Trine::Model, need either a store config hashref or a model." unless ($self->model);
+	unless ($self->model) {
+		throw Error -text => "No valid RDF::Trine::Model, need either a store config hashref or a model.";
+	}
 
  	if ($self->has_endpoint_config) {
 	  use Data::Dumper;
@@ -141,8 +143,6 @@ sub _build_helper_properties {
 Returns or sets the type of result to return, i.e. C<page>, in the case of a human-intended page or C<data> for machine consumption, or an empty string if it is an actual resource URI that should be redirected.
 
 =cut
-
-#requires 'type';
 
 has 'type' => (is => 'rw', isa => 'Str', default => ''); 
 
@@ -238,6 +238,7 @@ Returns or sets the RDF::Trine::Model object.
 
 has model => (is => 'rw', isa => 'RDF::Trine::Model');
 
+
 =item C<< base_uri >>
 
 Returns or sets the base URI for this handler.
@@ -326,7 +327,7 @@ sub response {
             $response->headers->header('Location' => $newurl);
             $response->headers->header('Vary' => join(", ", qw(Accept)));
         }
-	$response->headers->header('Access-Control-Allow-Origin' => '*');
+		  $response->headers->header('Access-Control-Allow-Origin' => '*');
         return $response;
     } else {
         $response->status(404);
