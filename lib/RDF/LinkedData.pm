@@ -57,9 +57,13 @@ Creates a new handler object based on named parameters, given a store
 config (recommended usage is to pass a hashref of the type that can be
 passed to L<RDF::Trine::Store>->new_with_config, but a simple string
 can also be used) or model and a base URI. Optionally, you may pass a
-L<Plack::Request> object (must be there if you if you plan to call
-C<content>) and an C<endpoint_config> hashref if you want to have a
-SPARQL Endpoint running using the recommended module L<RDF::Endpoint>.
+L<Plack::Request> object (must be passed before you call C<content>)
+and an C<endpoint_config> hashref if you want to have a SPARQL
+Endpoint running using the recommended module L<RDF::Endpoint>.
+
+=item C<< BUILD >>
+
+Called by Moose to initialize an object.
 
 =cut
 
