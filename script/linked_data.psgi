@@ -35,7 +35,7 @@ Create a configuration file C<rdf_linkeddata.json> that looks something like:
 	                }
                     },
         "cors": {
-                  "origins": '*'
+                  "origins": "*"
                 }
   }
 
@@ -141,16 +141,16 @@ BEGIN {
 
 my $linkeddata = Plack::App::RDF::LinkedData->new();
 
-
-
 $linkeddata->configure($config);
 
 my $rdf_linkeddata = $linkeddata->to_app;
+use Data::Dumper;
+warn Dumper($config->{cors});
 
 builder {
 	enable "Head";
 	enable "ContentLength";
-	enable_if { can_load( modules => { 'Plack::Middleware::CrossOrigin' => 0 }) } 'CrossOrigin', $config->{cors};
+	if (can_load( modules => { 'Plack::Middleware::CrossOrigin' => 0 })) { enable 'CrossOrigin' => %{$config->{cors}}};
 	$rdf_linkeddata;
 };
 
