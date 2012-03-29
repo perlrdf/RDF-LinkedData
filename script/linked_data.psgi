@@ -2,12 +2,12 @@
 
 use strict;
 use warnings;
+use Plack::App::RDF::LinkedData;
 use RDF::LinkedData;
 use Plack::Request;
-use RDF::Trine;
+use Plack::Builder;
 use Config::JFDI;
 use Carp qw(confess);
-use URI 1.52;
 
 =head1 NAME
 
@@ -129,36 +129,24 @@ which is simply based on attempting to extract a useful suffix from the
 predicate URI.
 
 =cut
-my $config = Config::JFDI->open( name => "RDF::LinkedData") or confess "Couldn't find config";
 
-my $ld = ($config->{endpoint})
-  ? RDF::LinkedData->new(store => $config->{store},
-			     endpoint_config => $config->{endpoint},
-			     base_uri => $config->{base_uri}
-			    )
-  : RDF::LinkedData->new(store => $config->{store},
-			     base_uri => $config->{base_uri}
-			    );
-
-
-$ld->namespaces($config->{namespaces}) if ($config->{namespaces});
-
-my $linked_data = sub {
-    my $env = shift;
-    my $req = Plack::Request->new($env);
-    my $uri = $req->uri;
-
-    unless ($req->method eq 'GET') {
-        return [ 405, [ 'Content-type', 'text/plain' ], [ 'Method not allowed' ] ];
-    }
-
-    if ($uri->as_iri =~ m!^(.+?)/?(page|data)$!) {
-        $uri = URI->new($1);
-        $ld->type($2);
-    }
-    $ld->request($req);
-    return $ld->response($uri)->finalize;
+my $config;
+BEGIN {
+	$config = Config::JFDI->open( name => "RDF::LinkedData") or confess "Couldn't find config";
 }
+
+my $linkeddata = Plack::App::RDF::LinkedData->new();
+
+$linkeddata->configure($config);
+
+my $rdf_linkeddata = $linkeddata->to_app;
+
+builder {
+        enable "Plack::Middleware::Head";
+        enable "Plack::Middleware::ContentLength";
+        $rdf_linkeddata;
+};
+
 
 __END__
 
