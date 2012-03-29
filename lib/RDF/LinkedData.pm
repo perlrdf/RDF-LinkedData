@@ -43,7 +43,20 @@ our $VERSION = '0.39_1';
 
 =head1 SYNOPSIS
 
-See L<RDF::LinkedData> for default usage. TODO
+For just setting this up and get it to run, you would just use the
+L<linked_data.psgi> script in this distribution, which again use
+L<Plack::App::RDF::LinkedData>. If you want to try and use this
+directly, you'd do stuff like:
+
+	my $ld = RDF::LinkedData->new(store => $config->{store},
+		  								   endpoint_config => $config->{endpoint},
+											base_uri => $config->{base_uri}
+										  );
+	$ld->namespaces($config->{namespaces}) if ($config->{namespaces});
+	$ld->request($req);
+	return $ld->response($uri)->finalize;
+
+See L<Plack::App::RDF::LinkedData> for a complete example.
 
 
 =head1 METHODS
@@ -396,7 +409,6 @@ You can find documentation for this module with the perldoc command.
 The perlrdf mailing list is the right place to seek help and discuss this module:
 
 L<http://lists.perlrdf.org/listinfo/dev>
-
 
 =head1 ACKNOWLEDGEMENTS
 
