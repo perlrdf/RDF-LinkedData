@@ -359,9 +359,7 @@ has 'namespaces' => (is => 'rw', isa => 'HashRef', default => sub { { rdf => 'ht
 
 =head1 AUTHOR
 
-This module was started by by Gregory Todd Williams C<<
-<gwilliams@cpan.org> >> for L<RDF::LinkedData::Apache>, but heavily
-refactored and rewritten by by Kjetil Kjernsmo, C<< <kjetilk@cpan.org> >>
+Kjetil Kjernsmo, C<< <kjetilk@cpan.org> >>
 
 =head1 BUGS
 
@@ -383,10 +381,13 @@ L<http://lists.perlrdf.org/listinfo/dev>
 
 =head1 ACKNOWLEDGEMENTS
 
+This module was started by Gregory Todd Williams C<<
+<gwilliams@cpan.org> >> for L<RDF::LinkedData::Apache>, but has been
+almost totally rewritten.
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2010-2011 Kjetil Kjernsmo, Gregory Todd Williams and ABC Startsiden AS.
+Copyright 2010 Gregory Todd Williams and ABC Startsiden AS, 2010-2012 Kjetil Kjernsmo
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
