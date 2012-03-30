@@ -5,6 +5,8 @@ all_from 'lib/RDF/LinkedData.pm';
 author   'Kjetil Kjernsmo <kjetilk@cpan.org>';
 license  'perl';
 
+configure_requires 'URI::Escape'; # Seems to be required by the bugtracker below
+
 test_requires 'FindBin';
 test_requires 'Test::WWW::Mechanize::PSGI';
 test_requires 'Test::More' => 0.88;
@@ -39,8 +41,6 @@ install_script glob('script/*');
 author_tests('xt');
 
 auto_set_repository;
-
-build_requires 'URI::Escape'; # Seems to be required by the next bugtracker below
 auto_set_bugtracker;
 
 write_doap_changes;
