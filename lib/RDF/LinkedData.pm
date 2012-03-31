@@ -8,6 +8,7 @@ use Log::Log4perl qw(:easy);
 use Plack::Response;
 use RDF::Helper::Properties;
 use URI;
+use HTTP::Headers;
 use Module::Load::Conditional qw[can_load];
 use Moose;
 use MooseX::UndefTolerant::Attribute;
