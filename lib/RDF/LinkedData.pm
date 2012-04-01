@@ -85,16 +85,7 @@ sub BUILD {
 	my $self = shift;
 
 	unless($self->model) {
-		# First, set the base if none is configured
-		my $i = 0;
-		foreach my $source (@{$self->store->{sources}}) {
-			unless ($source->{base_uri}) {
-				${$self->store->{sources}}[$i]->{base_uri} = $self->base_uri;
-			}
-			$i++;
-		}
-		my $store	= RDF::Trine::Store->new( $self->store );
-		$self->model(RDF::Trine::Model->new( $store ));
+
 	}
 
 	unless ($self->model) {
@@ -270,7 +261,21 @@ Returns or sets the RDF::Trine::Model object.
 
 =cut
 
-has model => (is => 'rw', isa => 'RDF::Trine::Model');
+has model => (is => 'ro', isa => 'RDF::Trine::Model', lazy => 1, builder => '_build_model');
+
+sub _build_model {
+	my $self = shift;
+	# First, set the base if none is configured
+	my $i = 0;
+	foreach my $source (@{$self->store->{sources}}) {
+		unless ($source->{base_uri}) {
+			${$self->store->{sources}}[$i]->{base_uri} = $self->base_uri;
+		}
+		$i++;
+	}
+	my $store	= RDF::Trine::Store->new( $self->store );
+	return RDF::Trine::Model->new( $store );
+}
 
 
 =item C<< base_uri >>
