@@ -104,6 +104,39 @@ sub BUILD {
 
 has store => (is => 'rw', isa => 'HashRef' );
 
+
+=item C<< model >>
+
+Returns or sets the RDF::Trine::Model object.
+
+=cut
+
+has model => (is => 'ro', isa => 'RDF::Trine::Model', lazy => 1, builder => '_build_model', predicate => 'has_model');
+
+sub _build_model {
+	my $self = shift;
+	# First, set the base if none is configured
+	my $i = 0;
+	foreach my $source (@{$self->store->{sources}}) {
+		unless ($source->{base_uri}) {
+			${$self->store->{sources}}[$i]->{base_uri} = $self->base_uri;
+		}
+		$i++;
+	}
+	my $store	= RDF::Trine::Store->new( $self->store );
+	return RDF::Trine::Model->new( $store );
+}
+
+
+=item C<< base_uri >>
+
+Returns or sets the base URI for this handler.
+
+=cut
+
+has base_uri => (is => 'rw', isa => 'Str' );
+
+
 has endpoint_config => (is => 'rw', traits => [ qw(MooseX::UndefTolerant::Attribute)],
 								isa=>'HashRef', predicate => 'has_endpoint_config');
 
@@ -250,38 +283,6 @@ sub content {
 }
 
 
-
-
-=item C<< model >>
-
-Returns or sets the RDF::Trine::Model object.
-
-=cut
-
-has model => (is => 'ro', isa => 'RDF::Trine::Model', lazy => 1, builder => '_build_model', predicate => 'has_model');
-
-sub _build_model {
-	my $self = shift;
-	# First, set the base if none is configured
-	my $i = 0;
-	foreach my $source (@{$self->store->{sources}}) {
-		unless ($source->{base_uri}) {
-			${$self->store->{sources}}[$i]->{base_uri} = $self->base_uri;
-		}
-		$i++;
-	}
-	my $store	= RDF::Trine::Store->new( $self->store );
-	return RDF::Trine::Model->new( $store );
-}
-
-
-=item C<< base_uri >>
-
-Returns or sets the base URI for this handler.
-
-=cut
-
-has base_uri => (is => 'rw', isa => 'Str' );
 
 
 =item C<< response ( $uri ) >>
