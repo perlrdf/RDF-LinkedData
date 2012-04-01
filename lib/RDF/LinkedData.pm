@@ -107,11 +107,11 @@ has store => (is => 'rw', isa => 'HashRef' );
 
 =item C<< model >>
 
-Returns or sets the RDF::Trine::Model object.
+Returns the RDF::Trine::Model object.
 
 =cut
 
-has model => (is => 'ro', isa => 'RDF::Trine::Model', lazy => 1, builder => '_build_model', predicate => 'has_model');
+has model => (is => 'ro', isa => 'RDF::Trine::Model', lazy => 1, builder => '_build_model');
 
 sub _build_model {
 	my $self = shift;
