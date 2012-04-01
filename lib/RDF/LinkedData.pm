@@ -84,11 +84,8 @@ Called by Moose to initialize an object.
 sub BUILD {
 	my $self = shift;
 
-	unless($self->model) {
-
-	}
-
-	unless ($self->model) {
+	# A model will be passed or built by the _build_model, so we can check directly if we have one
+	unless ($self->model->isa('RDF::Trine::Model')) {
 		throw Error -text => "No valid RDF::Trine::Model, need either a store config hashref or a model.";
 	}
 
@@ -261,7 +258,7 @@ Returns or sets the RDF::Trine::Model object.
 
 =cut
 
-has model => (is => 'ro', isa => 'RDF::Trine::Model', lazy => 1, builder => '_build_model');
+has model => (is => 'ro', isa => 'RDF::Trine::Model', lazy => 1, builder => '_build_model', predicate => 'has_model');
 
 sub _build_model {
 	my $self = shift;
