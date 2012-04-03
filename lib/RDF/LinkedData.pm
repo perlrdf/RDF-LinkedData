@@ -15,6 +15,7 @@ use MooseX::UndefTolerant::Attribute;
 use Encode;
 use RDF::RDFa::Generator 0.102;
 use HTML::HTML5::Writer qw(DOCTYPE_XHTML_RDFA);
+use Data::Dumper;
 
 with 'MooseX::Log::Log4perl::Easy';
 
@@ -90,7 +91,6 @@ sub BUILD {
 	}
 
  	if ($self->has_endpoint_config) {
-		use Data::Dumper;
 		$self->logger->debug('Endpoint config found with parameters: ' . Dumper($self->endpoint_config) );
 
 		unless (can_load( modules => { 'RDF::Endpoint' => 0.03 })) {
