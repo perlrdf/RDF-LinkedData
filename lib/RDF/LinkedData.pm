@@ -123,7 +123,7 @@ sub _build_model {
 		}
 		$i++;
 	}
-	my $store	= RDF::Trine::Store->new( $self->store );
+	my $store = RDF::Trine::Store->new( $self->store );
 	return RDF::Trine::Model->new( $store );
 }
 
@@ -189,7 +189,7 @@ sub response {
 	my $headers_in = $self->request->headers;
 	my $endpoint_path = '/sparql';
 	if ($self->has_endpoint_config && defined($self->endpoint_config->{endpoint_path})) {
-      my $endpoint_path = $self->endpoint_config->{endpoint_path};
+      $endpoint_path = $self->endpoint_config->{endpoint_path};
 	}
 
 	if ($self->has_endpoint && ($uri->path eq $endpoint_path)) {
@@ -232,7 +232,7 @@ sub response {
                                                           base => $self->base_uri,
                                                           namespaces => $self->namespaces,
 																			 extend => {
-																							'text/html'	=> 'html',
+																							'text/html' => 'html',
 																							'application/xhtml+xml' => 'html'
 																						  }
 																			)
@@ -305,7 +305,7 @@ sub my_node {
 	my ($self, $iri) = @_;
     
 	# not happy with this, but it helps for clients that do content sniffing based on filename
-	$iri	=~ s/.(nt|rdf|ttl)$//;
+	$iri =~ s/.(nt|rdf|ttl)$//;
 	$self->logger->info("Subject URI to be used: $iri");
 	return RDF::Trine::Node::Resource->new( $iri );
 }
@@ -350,10 +350,10 @@ sub content {
 	my %output;
 	if ($type eq 'data') {
 		$self->{_type} = 'data';
-		my ($type, $s) = RDF::Trine::Serializer->negotiate('request_headers' => $self->request->headers,
+		my ($ctype, $s) = RDF::Trine::Serializer->negotiate('request_headers' => $self->request->headers,
 																			base => $self->base_uri,
 																			namespaces => $self->namespaces);
-		$output{content_type} = $type;
+		$output{content_type} = $ctype;
 		$output{body} = $s->serialize_iterator_to_string ( $iter );
 	} else {
 		$self->{_type} = 'page';
@@ -362,7 +362,7 @@ sub content {
 			$returnmodel->add_statement($st);
 		}
 		my $preds = $self->helper_properties;
-		my $gen	= RDF::RDFa::Generator->new( style => 'HTML::Pretty',
+		my $gen  = RDF::RDFa::Generator->new( style => 'HTML::Pretty',
 														  title => $preds->title( $node ),
 														  base => $self->base_uri,
 														  namespaces => $self->namespaces);
