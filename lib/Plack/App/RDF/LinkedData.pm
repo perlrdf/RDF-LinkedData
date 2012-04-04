@@ -1,4 +1,6 @@
 package Plack::App::RDF::LinkedData;
+use strict;
+use warnings;
 use parent qw( Plack::Component );
 use RDF::LinkedData;
 use Plack::Request;
