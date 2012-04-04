@@ -46,7 +46,7 @@ our $VERSION = '0.40';
 =head1 SYNOPSIS
 
 For just setting this up and get it to run, you would just use the
-L<linked_data.psgi> script in this distribution, which again use
+C<linked_data.psgi> script in this distribution. The usage of that is documented in
 L<Plack::App::RDF::LinkedData>. If you want to try and use this
 directly, you'd do stuff like:
 
