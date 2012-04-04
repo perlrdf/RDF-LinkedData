@@ -37,7 +37,7 @@ is in fact in production use for its author.
 SUPPORT AND DOCUMENTATION
 
 The best source of documentation is CPAN, e.g.
-    http://search.cpan.org/dist/RDF-LinkedData
+    https://metacpan.org/release/RDF-LinkedData
 
 The perlrdf mailing list is the right place to seek help and discuss this module:
 
