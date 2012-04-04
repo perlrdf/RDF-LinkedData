@@ -51,9 +51,9 @@ L<Plack::App::RDF::LinkedData>. If you want to try and use this
 directly, you'd do stuff like:
 
 	my $ld = RDF::LinkedData->new(store => $config->{store},
-		  								   endpoint_config => $config->{endpoint},
-											base_uri => $config->{base_uri}
-										  );
+                                 endpoint_config => $config->{endpoint},
+                                 base_uri => $config->{base_uri}
+                                );
 	$ld->namespaces($config->{namespaces}) if ($config->{namespaces});
 	$ld->request($req);
 	return $ld->response($uri)->finalize;
