@@ -43,6 +43,7 @@ author_tests('xt');
 auto_set_repository;
 auto_set_bugtracker;
 
+rdf_metadata;
 write_doap_changes;
 
 sign;
