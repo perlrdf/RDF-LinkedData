@@ -2,7 +2,8 @@ package RDF::LinkedData;
 
 use namespace::autoclean;
 
-use RDF::Trine;
+use RDF::Trine qw[iri literal blank statement];
+;
 use RDF::Trine::Serializer;
 use Log::Log4perl qw(:easy);
 use Plack::Response;
@@ -65,7 +66,7 @@ See L<Plack::App::RDF::LinkedData> for a complete example.
 
 =over
 
-=item C<< new ( store => $store, model => $model, base_uri => $base_uri, 
+=item C<< new ( store => $store, model => $model, base_uri => $base_uri, hypermedia => 1,
                 request => $request, endpoint_config => $endpoint_config ) >>
 
 Creates a new handler object based on named parameters, given a store
@@ -75,6 +76,10 @@ can also be used) or model and a base URI. Optionally, you may pass a
 L<Plack::Request> object (must be passed before you call C<content>)
 and an C<endpoint_config> hashref if you want to have a SPARQL
 Endpoint running using the recommended module L<RDF::Endpoint>.
+
+This module can also provide additional triples to turn the respons
+into a hypermedia type. If you don't want this, set the C<hypermedia>
+argument to false.
 
 =item C<< BUILD >>
 
@@ -136,6 +141,7 @@ Returns or sets the base URI for this handler.
 
 has base_uri => (is => 'rw', isa => 'Str' );
 
+has hypermedia => (is => 'ro', isa => 'Bool', default => 1);
 
 has endpoint_config => (is => 'rw', traits => [ qw(MooseX::UndefTolerant::Attribute)],
 								isa=>'HashRef', predicate => 'has_endpoint_config');
@@ -354,7 +360,16 @@ sub content {
 																			base => $self->base_uri,
 																			namespaces => $self->namespaces);
 		$output{content_type} = $ctype;
+		if ($self->hypermedia && $self->has_endpoint) {
+			my $hmmodel = RDF::Trine::Model->temporary_model;
+			$hmmodel->add_statement(iri($node->uri_value . '/data'), iri('http://rdfs.org/ns/void#inDataset'), blank('void'));
+			$hmmodel->add_statement(blank('void'), iri('http://rdfs.org/ns/void#sparqlEndpoint'),
+											ifi($self->base_uri . $self->endpoint_config->{endpoint_path}));
+			$iter->concat($hmmodel->as_stream);
+		}
 		$output{body} = $s->serialize_iterator_to_string ( $iter );
+		$self->logger->trace("Message body is $output{body}");
+
 	} else {
 		$self->{_type} = 'page';
 		my $returnmodel = RDF::Trine::Model->temporary_model;
