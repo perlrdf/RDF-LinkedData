@@ -42,23 +42,33 @@ cmp_ok($ld->count, '>', 0, "There are triples in the model");
 
 
 {
-	note "Get /foo";
+	note "Get /foo, ensure nothing changed.";
 	$ld->request(Plack::Request->new({}));
 	my $response = $ld->response($base_uri . '/foo');
 	isa_ok($response, 'Plack::Response');
 	is($response->status, 303, "Returns 303");
 	like($response->header('Location'), qr|/foo/data$|, "Location is OK");
+}
+
+{
+    note "Get /foo/data";
+    $ld->type('data');
+    my $response = $ld->response($base_uri . '/foo');
+    isa_ok($response, 'Plack::Response');
+    is($response->status, 200, "Returns 200");
+	 my $model = return_model($response->content, $parser);
+    has_literal('This is a test', 'en', undef, $model, "Test phrase in content");
  SKIP: {
 		skip "No endpoint configured", 2 unless ($ld->has_endpoint);
-		pattern_target(return_model($response->content, $parser));
+		pattern_target($model);
 		pattern_ok(
 					  statement(
 									iri($base_uri . '/foo/data'),
 									iri('http://rdfs.org/ns/void#inDataset'),
-									blank('void')
+									variable('void')
 								  ),
 					  statement(
-									blank('void'),
+									variable('void'),
 									iri('http://rdfs.org/ns/void#sparqlEndpoint'),
 									iri($base_uri . '/sparql'),
 								  )
@@ -68,105 +78,6 @@ cmp_ok($ld->count, '>', 0, "There are triples in the model");
 
 done_testing;
 
-exit 0;
-{
-    note "Get /foo, ask for text/html";
-    $ld->request(Plack::Request->new({ HTTP_ACCEPT => 'text/html' }));
-    my $response = $ld->response($base_uri . '/foo');
-    isa_ok($response, 'Plack::Response');
-    is($response->status, 303, "Returns 303");
-    is($response->header('Location'), 'http://en.wikipedia.org/wiki/Foo', "Location is Wikipedia page");
-}
-
-{
-    note "Get /foo, use Firefox' default Accept header";
-    $ld->request(Plack::Request->new({ HTTP_ACCEPT => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'}));
-    my $response = $ld->response($base_uri . '/foo');
-    isa_ok($response, 'Plack::Response');
-    is($response->status, 303, "Returns 303");
-    is($response->header('Location'), 'http://en.wikipedia.org/wiki/Foo', "Location is Wikipedia page");
-}
-
-{
-    note "Get /foo, ask for RDF/XML";
-    $ld->request(Plack::Request->new({ HTTP_ACCEPT => 'application/rdf+xml'}));
-    my $response = $ld->response($base_uri . '/foo');
-    isa_ok($response, 'Plack::Response');
-    is($response->status, 303, "Returns 303");
-    like($response->header('Location'), qr|/foo/data$|, "Location is OK");
-}
-
-
-{
-    note "Get /foo, ask for Turtle";
-    $ld->request(Plack::Request->new({ HTTP_ACCEPT => 'application/turtle'}));
-    my $response = $ld->response($base_uri . "/foo");
-    like($response->header('Location'), qr|/foo/data$|, "Location is OK");
-}
-
-
-{
-    note "Get /dahut, ask for RDF/XML";
-    $ld->request(Plack::Request->new({ HTTP_ACCEPT => 'application/rdf+xml'}));
-    my $response = $ld->response($base_uri . '/dahut');
-    isa_ok($response, 'Plack::Response');
-    is($response->status, 404, "Returns 404");
-}
-
-
-{
-    note "Get /foo/page";
-    $ld->type('page');
-    my $response = $ld->response($base_uri . '/foo');
-    isa_ok($response, 'Plack::Response');
-    is($response->status, 301, "Returns 301");
-    is($response->header('Location'), 'http://en.wikipedia.org/wiki/Foo', "Location is Wikipedia page");
-}
-
-{
-    note "Get /bar/baz/bing";
-    $ld->request(Plack::Request->new({ HTTP_ACCEPT => 'text/html'}));
-    my $response = $ld->response($base_uri . "/bar/baz/bing");
-    isa_ok($response, 'Plack::Response');
-    is($response->status, 303, "Returns 303");
-    like($response->header('Location'), qr|/bar/baz/bing/page$|, "Location is OK");
-}
-
-{
-    note "Get /bar/baz/bing/page";
-    $ld->type('page');
-    my $response = $ld->response($base_uri . "/bar/baz/bing");
-    isa_ok($response, 'Plack::Response');
-    is($response->status, 200, "Returns 200");
-    is($response->content_type, 'text/html', 'Returns HTML');
-    like($response->body, qr|Testing with longer URI\.|, "Test phrase in content");
-    my $test = 'about="' . $base_uri . '/bar/baz/bing"';
-    like($response->body, qr|$test|, "Subject URI OK");
-}
-
-
-{
-    note "Get /bar/baz/bing, ask for RDF/XML";
-    $ld->request(Plack::Request->new({ HTTP_ACCEPT => 'application/rdf+xml'}));
-    my $response = $ld->response($base_uri . "/bar/baz/bing");
-    is($response->status, 303, "Returns 303");
-    like($response->header('Location'), qr|/bar/baz/bing/data$|, "Location is OK");
-}
-
-
-
-
-{
-    note "Get /foo/data";
-    $ld->type('data');
-    my $response = $ld->response($base_uri . '/foo');
-    isa_ok($response, 'Plack::Response');
-    is($response->status, 200, "Returns 200");
-    my $model = RDF::Trine::Model->temporary_model;
-    my $parser = RDF::Trine::Parser->new( 'rdfxml' );
-    $parser->parse_into_model( $base_uri, $response->body, $model );
-    has_literal('This is a test', 'en', undef, $model, "Test phrase in content");
-}
 
 sub return_model {
 	my ($content, $parser) = @_;

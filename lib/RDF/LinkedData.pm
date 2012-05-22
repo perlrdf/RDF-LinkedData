@@ -362,10 +362,13 @@ sub content {
 		$output{content_type} = $ctype;
 		if ($self->hypermedia && $self->has_endpoint) {
 			my $hmmodel = RDF::Trine::Model->temporary_model;
-			$hmmodel->add_statement(iri($node->uri_value . '/data'), iri('http://rdfs.org/ns/void#inDataset'), blank('void'));
-			$hmmodel->add_statement(blank('void'), iri('http://rdfs.org/ns/void#sparqlEndpoint'),
-											ifi($self->base_uri . $self->endpoint_config->{endpoint_path}));
-			$iter->concat($hmmodel->as_stream);
+			$hmmodel->add_statement(statement(iri($node->uri_value . '/data'), 
+														 iri('http://rdfs.org/ns/void#inDataset'), 
+														 blank('void')));
+			$hmmodel->add_statement(statement(blank('void'), 
+														 iri('http://rdfs.org/ns/void#sparqlEndpoint'),
+														 iri($self->base_uri . $self->endpoint_config->{endpoint_path})));
+			$iter = $iter->concat($hmmodel->as_stream);
 		}
 		$output{body} = $s->serialize_iterator_to_string ( $iter );
 		$self->logger->trace("Message body is $output{body}");
