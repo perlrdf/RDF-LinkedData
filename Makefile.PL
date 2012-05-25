@@ -41,7 +41,9 @@ install_script glob('script/*');
 author_tests('xt');
 
 auto_set_repository;
-auto_set_bugtracker;
+
+resources
+  bugtracker    => "https://github.com/kjetilk/RDF-LinkedData/issues";
 
 rdf_metadata;
 write_doap_changes;
