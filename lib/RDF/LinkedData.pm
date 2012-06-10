@@ -143,6 +143,8 @@ has base_uri => (is => 'rw', isa => 'Str' );
 
 has hypermedia => (is => 'ro', isa => 'Bool', default => 1);
 
+has namespaces_as_vocabularies => (is => 'ro', isa => 'Bool', default => 1);
+
 has endpoint_config => (is => 'rw', traits => [ qw(MooseX::UndefTolerant::Attribute)],
 								isa=>'HashRef', predicate => 'has_endpoint_config');
 
@@ -360,14 +362,26 @@ sub content {
 																			base => $self->base_uri,
 																			namespaces => $self->namespaces);
 		$output{content_type} = $ctype;
-		if ($self->hypermedia && $self->has_endpoint) {
+		if ($self->hypermedia) {
 			my $hmmodel = RDF::Trine::Model->temporary_model;
-			$hmmodel->add_statement(statement(iri($node->uri_value . '/data'), 
-														 iri('http://rdfs.org/ns/void#inDataset'), 
-														 blank('void')));
-			$hmmodel->add_statement(statement(blank('void'), 
-														 iri('http://rdfs.org/ns/void#sparqlEndpoint'),
-														 iri($self->base_uri . $self->endpoint_config->{endpoint_path})));
+			if($self->has_endpoint) {
+				$hmmodel->add_statement(statement(iri($node->uri_value . '/data'), 
+															 iri('http://rdfs.org/ns/void#inDataset'), 
+															 blank('void')));
+				$hmmodel->add_statement(statement(blank('void'), 
+															 iri('http://rdfs.org/ns/void#sparqlEndpoint'),
+															 iri($self->base_uri . $self->endpoint_config->{endpoint_path})));
+			}
+			if($self->namespaces_as_vocabularies) {
+				$hmmodel->add_statement(statement(iri($node->uri_value . '/data'), 
+															 iri('http://rdfs.org/ns/void#inDataset'), 
+															 blank('void')));
+				foreach my $nsuri (values(%{$self->namespaces})) {
+					$hmmodel->add_statement(statement(blank('void'), 
+																 iri('http://rdfs.org/ns/void#vocabulary'),
+																 iri($nsuri)));
+				}
+			}
 			$iter = $iter->concat($hmmodel->as_stream);
 		}
 		$output{body} = $s->serialize_iterator_to_string ( $iter );
