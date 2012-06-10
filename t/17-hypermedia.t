@@ -4,7 +4,7 @@ use FindBin qw($Bin);
 use Plack::Request;
 
 use strict;
-use Test::More;# tests => 38;
+use Test::More tests => 37;
 use Test::RDF;
 use RDF::Trine qw[iri literal blank variable statement];
 use Log::Log4perl qw(:easy);
@@ -140,6 +140,21 @@ ok($model, "We have a model");
 	has_literal('This is a test', 'en', undef, $retmodel, "Test phrase in content");
 	hasnt_uri('http://rdfs.org/ns/void#sparqlEndpoint', $retmodel, 'No SPARQL endpoint entered');
 }
+{
+	note "Now testing no endpoint";
+	my $ld = RDF::LinkedData->new(model => $model, base=>$base_uri, namespaces_as_vocabularies => 0);
+	isa_ok($ld, 'RDF::LinkedData');
+	cmp_ok($ld->count, '>', 0, "There are triples in the model");
+	$ld->type('data');
+	$ld->request(Plack::Request->new({}));
+	my $response = $ld->response($base_uri . '/foo');
+	isa_ok($response, 'Plack::Response');
+	is($response->status, 200, "Returns 200");
+	my $retmodel = return_model($response->content, $parser);
+	has_literal('This is a test', 'en', undef, $retmodel, "Test phrase in content");
+	hasnt_uri('http://rdfs.org/ns/void#vocabulary', $retmodel, 'No vocabs entered');
+}
+
 
 
 done_testing;
