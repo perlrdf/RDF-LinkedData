@@ -57,11 +57,11 @@ ok($model, "We have a model");
 		my $response = $ld->response($base_uri . '/foo');
 		isa_ok($response, 'Plack::Response');
 		is($response->status, 200, "Returns 200");
-		my $model = return_model($response->content, $parser);
-		has_literal('This is a test', 'en', undef, $model, "Test phrase in content");
+		my $retmodel = return_model($response->content, $parser);
+		has_literal('This is a test', 'en', undef, $retmodel, "Test phrase in content");
 	 SKIP: {
 			skip "No endpoint configured", 2 unless ($ld->has_endpoint);
-			pattern_target($model);
+			pattern_target($retmodel);
 			pattern_ok(
 						  statement(
 										iri($base_uri . '/foo/data'),
@@ -101,9 +101,9 @@ ok($model, "We have a model");
 		my $response = $ld->response($base_uri . '/foo');
 		isa_ok($response, 'Plack::Response');
 		is($response->status, 200, "Returns 200");
-		my $model = return_model($response->content, $parser);
-		has_literal('This is a test', 'en', undef, $model, "Test phrase in content");
-		pattern_target($model);
+		my $retmodel = return_model($response->content, $parser);
+		has_literal('This is a test', 'en', undef, $retmodel, "Test phrase in content");
+		pattern_target($retmodel);
 		pattern_ok(
 						  statement(
 										iri($base_uri . '/foo/data'),
@@ -122,8 +122,24 @@ ok($model, "We have a model");
 									  )
 						 )
 		}
+
 }
 
+
+{
+	note "Now testing no endpoint";
+	my $ld = RDF::LinkedData->new(model => $model, base=>$base_uri);
+	isa_ok($ld, 'RDF::LinkedData');
+	cmp_ok($ld->count, '>', 0, "There are triples in the model");
+	$ld->type('data');
+	$ld->request(Plack::Request->new({}));
+	my $response = $ld->response($base_uri . '/foo');
+	isa_ok($response, 'Plack::Response');
+	is($response->status, 200, "Returns 200");
+	my $retmodel = return_model($response->content, $parser);
+	has_literal('This is a test', 'en', undef, $retmodel, "Test phrase in content");
+	hasnt_uri('http://rdfs.org/ns/void#sparqlEndpoint', $retmodel, 'No SPARQL endpoint entered');
+}
 
 
 done_testing;
@@ -131,7 +147,7 @@ done_testing;
 
 sub return_model {
 	my ($content, $parser) = @_;
-	my $model = RDF::Trine::Model->temporary_model;
-	$parser->parse_into_model( $base_uri, $content, $model );
-	return $model;
+	my $retmodel = RDF::Trine::Model->temporary_model;
+	$parser->parse_into_model( $base_uri, $content, $retmodel );
+	return $retmodel;
 }
