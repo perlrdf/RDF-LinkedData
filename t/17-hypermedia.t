@@ -30,51 +30,101 @@ $parser->parse_file_into_model( $base_uri, $file, $model );
 
 ok($model, "We have a model");
 
-my $ec;
-if (can_load( modules => { 'RDF::Endpoint' => 0.03 })) {
-	$ec = {endpoint_path => '/sparql'} ;
-}
-
-my $ld = RDF::LinkedData->new(model => $model, base=>$base_uri, endpoint_config => $ec);
-
-isa_ok($ld, 'RDF::LinkedData');
-cmp_ok($ld->count, '>', 0, "There are triples in the model");
-
-
 {
-	note "Get /foo, ensure nothing changed.";
-	$ld->request(Plack::Request->new({}));
-	my $response = $ld->response($base_uri . '/foo');
-	isa_ok($response, 'Plack::Response');
-	is($response->status, 303, "Returns 303");
-	like($response->header('Location'), qr|/foo/data$|, "Location is OK");
-}
-
-{
-    note "Get /foo/data";
-    $ld->type('data');
-    my $response = $ld->response($base_uri . '/foo');
-    isa_ok($response, 'Plack::Response');
-    is($response->status, 200, "Returns 200");
-	 my $model = return_model($response->content, $parser);
-    has_literal('This is a test', 'en', undef, $model, "Test phrase in content");
- SKIP: {
-		skip "No endpoint configured", 2 unless ($ld->has_endpoint);
-		pattern_target($model);
-		pattern_ok(
-					  statement(
-									iri($base_uri . '/foo/data'),
-									iri('http://rdfs.org/ns/void#inDataset'),
-									variable('void')
-								  ),
-					  statement(
-									variable('void'),
-									iri('http://rdfs.org/ns/void#sparqlEndpoint'),
-									iri($base_uri . '/sparql'),
-								  )
-					 )
+	my $ec;
+	if (can_load( modules => { 'RDF::Endpoint' => 0.03 })) {
+		$ec = {endpoint_path => '/sparql'} ;
+	}
+	
+	my $ld = RDF::LinkedData->new(model => $model, base=>$base_uri, endpoint_config => $ec);
+	
+	isa_ok($ld, 'RDF::LinkedData');
+	cmp_ok($ld->count, '>', 0, "There are triples in the model");
+	
+	
+	{
+		note "Get /foo, ensure nothing changed.";
+		$ld->request(Plack::Request->new({}));
+		my $response = $ld->response($base_uri . '/foo');
+		isa_ok($response, 'Plack::Response');
+		is($response->status, 303, "Returns 303");
+		like($response->header('Location'), qr|/foo/data$|, "Location is OK");
+	}
+	
+	{
+		note "Get /foo/data";
+		$ld->type('data');
+		my $response = $ld->response($base_uri . '/foo');
+		isa_ok($response, 'Plack::Response');
+		is($response->status, 200, "Returns 200");
+		my $model = return_model($response->content, $parser);
+		has_literal('This is a test', 'en', undef, $model, "Test phrase in content");
+	 SKIP: {
+			skip "No endpoint configured", 2 unless ($ld->has_endpoint);
+			pattern_target($model);
+			pattern_ok(
+						  statement(
+										iri($base_uri . '/foo/data'),
+										iri('http://rdfs.org/ns/void#inDataset'),
+										variable('void')
+									  ),
+						  statement(
+										variable('void'),
+										iri('http://rdfs.org/ns/void#sparqlEndpoint'),
+										iri($base_uri . '/sparql'),
+									  )
+						 )
+		}
 	}
 }
+
+{
+	my $ld = RDF::LinkedData->new(model => $model, base=>$base_uri);
+	
+	isa_ok($ld, 'RDF::LinkedData');
+	cmp_ok($ld->count, '>', 0, "There are triples in the model");
+	
+	
+	{
+		note "Get /foo, ensure nothing changed.";
+		$ld->request(Plack::Request->new({}));
+		my $response = $ld->response($base_uri . '/foo');
+		isa_ok($response, 'Plack::Response');
+		is($response->status, 303, "Returns 303");
+		like($response->header('Location'), qr|/foo/data$|, "Location is OK");
+	}
+	
+	{
+		note "Get /foo/data";
+		$ld->type('data');
+		$ld->namespaces ( { skos => 'http://www.w3.org/2004/02/skos/core#', dct => 'http://purl.org/dc/terms/' } );
+		my $response = $ld->response($base_uri . '/foo');
+		isa_ok($response, 'Plack::Response');
+		is($response->status, 200, "Returns 200");
+		my $model = return_model($response->content, $parser);
+		has_literal('This is a test', 'en', undef, $model, "Test phrase in content");
+		pattern_target($model);
+		pattern_ok(
+						  statement(
+										iri($base_uri . '/foo/data'),
+										iri('http://rdfs.org/ns/void#inDataset'),
+										variable('void')
+									  ),
+						  statement(
+										variable('void'),
+										iri('http://rdfs.org/ns/void#vocabulary'),
+										iri('http://www.w3.org/2004/02/skos/core#'),
+									  ),
+						  statement(
+										variable('void'),
+										iri('http://rdfs.org/ns/void#vocabulary'),
+										iri('http://purl.org/dc/terms/'),
+									  )
+						 )
+		}
+}
+
+
 
 done_testing;
 
