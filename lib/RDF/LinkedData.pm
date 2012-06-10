@@ -66,7 +66,8 @@ See L<Plack::App::RDF::LinkedData> for a complete example.
 
 =over
 
-=item C<< new ( store => $store, model => $model, base_uri => $base_uri, hypermedia => 1,
+=item C<< new ( store => $store, model => $model, base_uri => $base_uri, 
+                hypermedia => 1, namespaces_as_vocabularies => 1, 
                 request => $request, endpoint_config => $endpoint_config ) >>
 
 Creates a new handler object based on named parameters, given a store
@@ -79,7 +80,10 @@ Endpoint running using the recommended module L<RDF::Endpoint>.
 
 This module can also provide additional triples to turn the respons
 into a hypermedia type. If you don't want this, set the C<hypermedia>
-argument to false.
+argument to false. Currently this entails setting the SPARQL endpoint
+and vocabularies used using the L<VoID vocabulary|http://vocab.deri.ie/void>.
+The latter is very limited at present, all it'll do is use the namespaces
+if you have C<namespaces_as_vocabularies> enabled, which it is by default.
 
 =item C<< BUILD >>
 
