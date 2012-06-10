@@ -30,7 +30,7 @@ $parser->parse_file_into_model( $base_uri, $file, $model );
 
 ok($model, "We have a model");
 
-my $ld = RDF::LinkedData->new(model => $model, base_uri=>$base_uri);
+my $ld = RDF::LinkedData->new(model => $model, base_uri=>$base_uri, hypermedia => 0);
 
 isa_ok($ld, 'RDF::LinkedData');
 is($ld->count, 3, "There are 3 triples in model");
