@@ -477,4 +477,7 @@ under the same terms as Perl itself.
 
 =cut
 
+# TODO : immutable doesn't seem to work with UndefTolerant
+#__PACKAGE__->meta->make_immutable();
+
 1;
