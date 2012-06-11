@@ -64,6 +64,7 @@ my $base_uri = 'http://localhost/';
     has_subject($base_uri . 'bar/baz/bing', $model, "Subject URI in content");
     has_literal('Testing with longer URI.', 'en', undef, $model, "Test phrase in content");
 	 has_uri('http://rdfs.org/ns/void#sparqlEndpoint', $model, 'SPARQL endpoint link in data');
+	 has_uri($base_uri . '/sparql', $model, 'SPARQL endpoint in data');
 }
 
 
