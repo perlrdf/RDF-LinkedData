@@ -77,9 +77,9 @@ my $base_uri = 'http://localhost/';
     $mech->submit_form_ok( {
             form_id => 'queryform',
             fields      => {
-                query => 'DESCRIBE <http://localhost/bar/baz/bing> WHERE {}',
-		'media-type' => 'text/turtle'
-            },
+            query => 'DESCRIBE <http://localhost/bar/baz/bing> WHERE {}',
+				'media-type' => 'text/turtle'
+          },
         }, 'Submitting DESCRIBE query.'
     );
     is_rdf($mech->content, 'turtle', 
