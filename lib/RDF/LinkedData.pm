@@ -227,7 +227,11 @@ sub response {
 				$self->logger->debug('Found Accept header: ' . $headers_in->header('Accept'));
 			} else {
 				$headers_in->header(HTTP::Headers->new('Accept' => 'application/rdf+xml'));
-				$self->logger->warn('Setting Accept header: ' . $headers_in->header('Accept'));
+				if ($headers_in->header('Accept')) {
+					$self->logger->warn('Setting Accept header: ' . $headers_in->header('Accept'));
+				} else {
+					$self->logger->warn('No content type header can be set');
+				}
 			}
 			$response->status(200);
 			my $content = $self->content($node, $type);
