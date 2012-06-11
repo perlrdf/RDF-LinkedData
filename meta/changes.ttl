@@ -7,7 +7,21 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl:  <http://www.w3.org/2002/07/owl#> .
 
-my:project :release my:v_0_40 .
+my:project :release my:v_0_44 .
+
+my:v_0_44
+    a           :Version ;
+    dc:issued   "2012-06-12"^^xsd:date ;
+    rdfs:label "Bugfix release."@en ;
+    :revision   "0.44"^^xsd:string ;
+    dcs:changeset [
+      dcs:item
+        [ rdfs:label "Some minor fixes."@en ; a dcs:Change ] , 
+        [ rdfs:label "The endpoint path was not correctly sent to the hypermedia."@en ; a dcs:Bugfix ] , 
+        [ rdfs:label "Actually, the TODO test about content type failed for everyone else."@en ; a dcs:Bugfix ] , 
+        [ rdfs:label "More tests (obviously)."@en ; a dcs:Addition ] , 
+        [ rdfs:label "Use empty string as default base_uri"@en ; a dcs:Change ] 
+    ] .
 
 my:v_0_42
     a           :Version ;

@@ -21,7 +21,7 @@ my:project
     :maintainer <http://www.kjetil.kjernsmo.net/foaf#me> ;
     :developer <http://kasei.us/about/foaf.xrdf#greg> ;
     :bug-database <https://github.com/kjetilk/RDF-LinkedData/issues> ;
-    :release    my:v_0_42, my:v_0_40 ; 
+    :release    my:v_0_44, my:v_0_42, my:v_0_40 ; 
     :release    my:v_0_30, my:v_0_20, my:v_0_18, my:v_0_16, my:v_0_14, my:v_0_12, my:v_0_10 ;
     :release    my:v_0_09_1, my:v_0_08, my:v_0_06, my:v_0_05, my:v_0_03, my:v_0_02, my:v_0_01, my:pre .
 
