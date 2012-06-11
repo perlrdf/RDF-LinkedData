@@ -3,7 +3,6 @@ package RDF::LinkedData;
 use namespace::autoclean;
 
 use RDF::Trine qw[iri literal blank statement];
-;
 use RDF::Trine::Serializer;
 use Log::Log4perl qw(:easy);
 use Plack::Response;
