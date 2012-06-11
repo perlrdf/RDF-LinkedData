@@ -9,6 +9,22 @@
 
 my:project :release my:v_0_40 .
 
+my:v_0_42
+    a           :Version ;
+    dc:issued   "2012-06-11"^^xsd:date ;
+    rdfs:label "Enable very basic VoID for hypermedia."@en ;
+    :revision   "0.42"^^xsd:string ;
+    dcs:changeset [
+      dcs:item
+        [ rdfs:label "Add hypermedia method which will be on by default to enable hypermedia."@en ; a dcs:Addition ] , 
+        [ rdfs:label "Add namespaces_as_vocabularies method which will be on by default to use declared namespaces as vocabularies."@en ; a dcs:Addition ] , 
+        [ rdfs:label "Add void:endpoint and void:vocabulary to all output if enabled."@en ; a dcs:Addition ] , 
+        [ rdfs:label "TODO test about content type now pass."@en ; a dcs:Change ] , 
+        [ rdfs:label "Some minor test and code fixes."@en ; a dcs:Change ] , 
+        [ rdfs:label "Use Test::RDF 0.26."@en ; a dcs:Change ] ,
+        [ rdfs:label "Use the github issue tracker."@en ; a dcs:Change ] . 
+    ] .
+
 my:v_0_40
     a           :Version ;
     dc:issued   "2012-04-04"^^xsd:date ;
