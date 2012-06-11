@@ -22,7 +22,7 @@ my:v_0_42
         [ rdfs:label "TODO test about content type now pass."@en ; a dcs:Change ] , 
         [ rdfs:label "Some minor test and code fixes."@en ; a dcs:Change ] , 
         [ rdfs:label "Use Test::RDF 0.26."@en ; a dcs:Change ] ,
-        [ rdfs:label "Use the github issue tracker."@en ; a dcs:Change ] . 
+        [ rdfs:label "Use the github issue tracker."@en ; a dcs:Change ] 
     ] .
 
 my:v_0_40
