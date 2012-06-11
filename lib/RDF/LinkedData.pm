@@ -142,7 +142,7 @@ Returns or sets the base URI for this handler.
 
 =cut
 
-has base_uri => (is => 'rw', isa => 'Str' );
+has base_uri => (is => 'rw', isa => 'Str', default => '' );
 
 has hypermedia => (is => 'ro', isa => 'Bool', default => 1);
 
