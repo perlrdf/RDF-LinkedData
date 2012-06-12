@@ -244,7 +244,7 @@ sub response {
 			my ($ct, $s);
 			eval {
 				($ct, $s) = RDF::Trine::Serializer->negotiate('request_headers' => $headers_in,
-                                                          base => $self->base_uri,
+                                                          base_uri => $self->base_uri,
                                                           namespaces => $self->namespaces,
 																			 extend => {
 																							'text/html' => 'html',
