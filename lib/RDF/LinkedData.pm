@@ -119,7 +119,7 @@ Returns the RDF::Trine::Model object.
 
 =cut
 
-has model => (is => 'ro', isa => 'RDF::Trine::Model', lazy => 1, builder => '_build_model');
+has model => (is => 'ro', isa => 'RDF::Trine::Model', lazy => 1, builder => '_build_model', handles => ['etag']);
 
 sub _build_model {
 	my $self = shift;
@@ -164,16 +164,6 @@ has request => ( is => 'rw', isa => 'Plack::Request');
 =item C<< etag >>
 
 Returns an Etag suitable for use in a HTTP header
-
-=cut
-
-has etag => ( is => 'ro', isa => 'Str', lazy => 1, builder => '_build_etag');
-
-sub _build_etag {
-	return $_[0]->model->etag;
-}
-
-
 
 =item namespaces ( { skos => 'http://www.w3.org/2004/02/skos/core#', dct => 'http://purl.org/dc/terms/' } )
 
