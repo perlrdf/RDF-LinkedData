@@ -22,6 +22,12 @@ Plack::App::RDF::LinkedData - A Plack application for running RDF::LinkedData
 	  $rdf_linkeddata;
   };
 
+=head1 DESCRIPTION
+
+This module sets up a basic Plack application to use
+L<RDF::LinkedData> to serve Linked Data, while making sure it does
+follow best practices for doing so.
+
 =head1 MAKE IT RUN
 
 =head2 Configuration

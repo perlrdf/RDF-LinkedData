@@ -60,6 +60,14 @@ directly, you'd do stuff like:
 
 See L<Plack::App::RDF::LinkedData> for a complete example.
 
+=head1 DESCRIPTION
+
+This module is used to create a minimal Linked Data server that can
+serve RDF data out of an L<RDF::Trine::Model>. It will look up URIs in
+the model and do the right thing (known as the 303 dance) and mint
+URLs for that, as well as content negotiation. Thus, you can
+concentrate on URIs for your things, you need not be concerned about
+minting URLs for the pages to serve it.
 
 =head1 METHODS
 
