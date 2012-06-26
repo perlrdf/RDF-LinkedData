@@ -205,6 +205,17 @@ sub response {
       return $self->endpoint->run( $self->request );
 	}
 
+	my $voidg;
+	if ($self->has_void_config) {
+		my $dataset_uri = (defined($self->void_config->{dataset_uri}))
+								  ? $self->void_config->{dataset_uri} 
+								  : URI->new($self->base_uri . '/#dataset')->canonical;
+		$voidg = RDF::Generator::Void->new(inmodel => $self->model, dataset_uri => $dataset_uri);
+	}
+	if ($self->has_void && ($uri eq $voidg->dataset_uri) {
+		
+	}
+
 	my $type = $self->type;
 	$self->type('');
 	my $node = $self->my_node($uri);
