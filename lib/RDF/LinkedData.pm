@@ -192,13 +192,13 @@ has request => ( is => 'rw', isa => 'Plack::Request');
 
 Returns the current Etag of the model suitable for use in a HTTP header. This is a read-only attribute.
 
-=item C<< last_etag >>
+=item C<< last_etag >>, C<< has_last_etag >>
 
 Returns or sets the last Etag of so that changes to the model can be detected.
 
 =cut
 
-has last_etag => ( is => 'rw', isa => 'Str');
+has last_etag => ( is => 'rw', isa => 'Str', predicate => 'has_last_etag');
 
 
 =item namespaces ( { skos => 'http://www.w3.org/2004/02/skos/core#', dct => 'http://purl.org/dc/terms/' } )
@@ -488,7 +488,13 @@ sub _void_content {
 		if ($self->has_endpoint) {
 			$generator->add_endpoints($self->base_uri . $endpoint_path);
 		}
-		$self->_voidmodel($generator->generate);
+		if ($self->has_last_etag && ($self->last_etag ne $self->current_etag)) {
+			$self->_clear_voidmodel;
+		}
+		unless ($self->_has_voidmodel) {
+			$self->_voidmodel($generator->generate);
+			$self->last_etag($self->current_etag);
+		}
 		my ($ct, $s) = $self->_negotiate($self->request->headers);
 		return $ct if ($ct->isa('Plack::Response')); # A hack to allow for the failed conneg case
 		my $body;
@@ -506,7 +512,7 @@ sub _void_content {
 		my $response = Plack::Response->new;
 		$response->status(200);
 		$response->headers->header('Vary' => join(", ", qw(Accept)));
-		$response->headers->header('ETag' => $self->current_etag);
+		$response->headers->header('ETag' => $self->last_etag);
 		$response->headers->content_type($ct);
 		$response->content($body);
 		return $response;
@@ -515,7 +521,7 @@ sub _void_content {
 	}
 }
 
-has _voidmodel => (is => 'rw', isa => 'RDF::Trine::Model');
+has _voidmodel => (is => 'rw', isa => 'RDF::Trine::Model', predicate => '_has_voidmodel', clearer => '_clear_voidmodel');
 
 
 =back
