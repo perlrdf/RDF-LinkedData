@@ -35,7 +35,7 @@ recommends 'RDF::Endpoint'              => 0.03; # If you plan to use the Plack 
 recommends 'Plack::Middleware::CrossOrigin' => 0; # If you'd like to add CORS headers
 recommends 'RDF::Generator::Void'       => 0; # If you'd like a VoID description
 
-install_script glob('script/*');
+install_script 'script/linked_data.psgi';
 
 author_tests('xt');
 

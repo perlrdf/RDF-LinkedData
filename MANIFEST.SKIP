@@ -9,3 +9,4 @@
 .bak$
 .tar.gz$
 ^script/templates/
+^script/write_sqlite-db.pl
