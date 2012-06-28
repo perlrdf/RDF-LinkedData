@@ -3,14 +3,15 @@
 use strict;
 use warnings;
 
-use Test::More tests => 2 ;
+use Test::More tests => 6 ;
 
 use Test::JSON;
 
-ok(open(CONFIG, '<rdf_linkeddata.json'), 'Test config file opened OK');
-my $json = join("\n", <CONFIG>);
-close CONFIG;
-is_valid_json ($json, 'File contains valid JSON');
-
+foreach my $filename (glob('rdf_linkeddata*json')) {
+	ok(open(CONFIG, '<' . $filename), "Test config file $filename opened OK");
+	my $json = join("\n", <CONFIG>);
+	close CONFIG;
+	is_valid_json ($json, "File $filename contains valid JSON");
+}
 
 done_testing();

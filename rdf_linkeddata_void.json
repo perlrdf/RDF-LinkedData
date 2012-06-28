@@ -1,0 +1,21 @@
+{
+    "base_uri"  : "http://localhost/",
+    "store" : {
+	"storetype"	: "Memory",
+	"sources" : [ { 
+	    "file" : "t/data/basic.ttl",
+	    "syntax" : "turtle"
+	} ]
+	
+    },
+    "endpoint": {
+	"html": {
+	    "resource_links": true
+	}
+    },
+
+    "namespaces" : { "rdfs" : "http://www.w3.org/2000/01/rdf-schema#", 
+	             "dct" : "http://purl.org/dc/terms/" },
+    "void" : true
+		   
+}
