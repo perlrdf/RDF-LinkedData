@@ -52,7 +52,7 @@ is($preds->title($node), 'This is a test', "Correct title");
     my $req = Plack::Request->new({ HTTP_ACCEPT  => 'application/rdf+xml' });
     my $ldh = $ld;
     $ldh->request($req);
-    my $content = $ldh->content($node, 'data');
+    my $content = $ldh->_content($node, 'data');
 
     is($content->{content_type}, 'application/rdf+xml', "RDF/XML content type");
 }
@@ -61,7 +61,7 @@ is($preds->title($node), 'This is a test', "Correct title");
     my $req = Plack::Request->new({ HTTP_ACCEPT	=> 'application/turtle'});
     my $ldh = $ld;
     $ldh->request($req);
-    my $content = $ldh->content($node, 'data');
+    my $content = $ldh->_content($node, 'data');
     is($content->{content_type}, 'application/turtle', "Turtle content type");
     is_valid_rdf($content->{body}, 'turtle', '/foo return RDF validates');
     is_rdf($content->{body}, 'turtle', 
@@ -83,10 +83,10 @@ is($barnode->uri_value, 'http://localhost/bar/baz/bing', "'Bar' URI is still the
     my $req = Plack::Request->new({ HTTP_ACCEPT	=> 'text/html'});
     my $ldh = $ld;
     $ldh->request($req);
-	 my $content = $ldh->content($barnode, 'data');
+	 my $content = $ldh->_content($barnode, 'data');
 	 is($content->{content_type}, 'text/html', "HTML is proper data type");
 	 {
-		 my $mcontent = $ldh->content($barnode, 'page');
+		 my $mcontent = $ldh->_content($barnode, 'page');
 		 is($mcontent->{content_type}, 'text/html', "Page gives HTML");
 	 }
 }
