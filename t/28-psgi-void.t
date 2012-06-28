@@ -62,6 +62,7 @@ my $base_uri = 'http://localhost/';
 		 local $TODO = 'Hypermedia now only links to void';
 		 hasnt_uri('http://rdfs.org/ns/void#sparqlEndpoint', $model, 'SPARQL endpoint link in data');
 		 hasnt_uri($base_uri . 'sparql', $model, 'SPARQL endpoint in data');
+		 has_object($base_uri . '#dataset-0', $model, "Void oject URI in content");
 	 }
 }
 

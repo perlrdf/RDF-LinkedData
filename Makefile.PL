@@ -5,8 +5,6 @@ all_from 'lib/RDF/LinkedData.pm';
 author   'Kjetil Kjernsmo <kjetilk@cpan.org>';
 license  'perl';
 
-configure_requires 'URI::Escape'; # Seems to be required by the bugtracker below
-
 test_requires 'FindBin';
 test_requires 'Test::WWW::Mechanize::PSGI';
 test_requires 'Test::More' => 0.88;

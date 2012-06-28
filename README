@@ -1,6 +1,14 @@
 RDF-LinkedData
 --------------
 
+This module is used to create a minimal Linked Data server that can
+serve RDF data out of an L<RDF::Trine::Model>. It will look up URIs in
+the model and do the right thing (known as the 303 dance) and mint
+URLs for that, as well as content negotiation. Thus, you can
+concentrate on URIs for your things, you need not be concerned about
+minting URLs for the pages to serve it.
+
+
 This is a simple server framework for serving RDF Linked Data.
 It follows the basic best practice recommendations with 303 redirects
 from the URIs that point to the physical or abstract things to
