@@ -495,7 +495,7 @@ sub _void_content {
 		$response->content($body);
 		return $response;
 	} else {
-		return undef;
+		return;
 	}
 }
 
