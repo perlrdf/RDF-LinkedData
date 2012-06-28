@@ -216,6 +216,7 @@ sub prepare_app {
 	my $config = $self->{config};
 	$self->{linkeddata} = RDF::LinkedData->new(store => $config->{store},
 															 endpoint_config => $config->{endpoint},
+															 void_config => $config->{void},
 															 base_uri => $config->{base_uri}
 															);
 	$self->{linkeddata}->namespaces($config->{namespaces}) if ($config->{namespaces});
