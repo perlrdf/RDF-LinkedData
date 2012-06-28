@@ -142,7 +142,8 @@ Returns the RDF::Trine::Model object.
 
 =cut
 
-has model => (is => 'ro', isa => 'RDF::Trine::Model', lazy => 1, builder => '_build_model', handles => ['etag']);
+has model => (is => 'ro', isa => 'RDF::Trine::Model', lazy => 1, builder => '_build_model', 
+				  handles => { current_etag => 'etag' });
 
 sub _build_model {
 	my $self = shift;
@@ -187,9 +188,18 @@ Returns the L<Plack::Request> object if it exists or sets it if a L<Plack::Reque
 has request => ( is => 'rw', isa => 'Plack::Request');
 
 
-=item C<< etag >>
+=item C<< current_etag >>
 
-Returns an Etag suitable for use in a HTTP header
+Returns the current Etag of the model suitable for use in a HTTP header. This is a read-only attribute.
+
+=item C<< last_etag >>
+
+Returns or sets the last Etag of so that changes to the model can be detected.
+
+=cut
+
+has last_etag => ( is => 'rw', isa => 'Str');
+
 
 =item namespaces ( { skos => 'http://www.w3.org/2004/02/skos/core#', dct => 'http://purl.org/dc/terms/' } )
 
@@ -257,7 +267,7 @@ sub response {
 			$response->status(200);
 			my $content = $self->_content($node, $type, $endpoint_path);
 			$response->headers->header('Vary' => join(", ", qw(Accept)));
-			$response->headers->header('ETag' => $self->etag);
+			$response->headers->header('ETag' => $self->current_etag);
 			$response->headers->content_type($content->{content_type});
 			$response->content($content->{body});
 		} else {
@@ -496,7 +506,7 @@ sub _void_content {
 		my $response = Plack::Response->new;
 		$response->status(200);
 		$response->headers->header('Vary' => join(", ", qw(Accept)));
-		$response->headers->header('ETag' => $self->etag);
+		$response->headers->header('ETag' => $self->current_etag);
 		$response->headers->content_type($ct);
 		$response->content($body);
 		return $response;
