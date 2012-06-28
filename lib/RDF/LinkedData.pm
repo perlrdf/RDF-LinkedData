@@ -75,7 +75,8 @@ minting URLs for the pages to serve it.
 
 =item C<< new ( store => $store, model => $model, base_uri => $base_uri, 
                 hypermedia => 1, namespaces_as_vocabularies => 1, 
-                request => $request, endpoint_config => $endpoint_config ) >>
+                request => $request, endpoint_config => $endpoint_config, 
+                void_config => $void_config ) >>
 
 Creates a new handler object based on named parameters, given a store
 config (recommended usage is to pass a hashref of the type that can be
@@ -115,6 +116,20 @@ sub BUILD {
 		$self->endpoint(RDF::Endpoint->new($self->model, $self->endpoint_config));
  	} else {
 		$self->logger->info('No endpoint config found');
+	}
+
+ 	if ($self->has_void_config) {
+		$self->logger->debug('VoID config found with parameters: ' . Dumper($self->void_config) );
+
+		unless (can_load( modules => { 'RDF::Generator::Void' => 0.02 })) {
+			throw Error -text => "RDF::Generator::Void not installed. Please install or remove its configuration.";
+		}
+		my $dataset_uri = (defined($self->void_config->{dataset_uri}))
+								  ? $self->void_config->{dataset_uri} 
+								  : URI->new($self->base_uri . '/#dataset-0')->canonical;
+		$self->void(RDF::Generator::Void->new(inmodel => $self->model, dataset_uri => $dataset_uri));
+ 	} else {
+		$self->logger->info('No VoID config found');
 	}
 }
 
@@ -158,6 +173,9 @@ has namespaces_as_vocabularies => (is => 'ro', isa => 'Bool', default => 1);
 
 has endpoint_config => (is => 'rw', traits => [ qw(MooseX::UndefTolerant::Attribute)],
 								isa=>'HashRef', predicate => 'has_endpoint_config');
+
+has void_config => (is => 'rw', traits => [ qw(MooseX::UndefTolerant::Attribute)],
+								isa=>'HashRef', predicate => 'has_void_config');
 
 
 =item C<< request ( [ $request ] ) >>
@@ -205,15 +223,33 @@ sub response {
       return $self->endpoint->run( $self->request );
 	}
 
-	my $voidg;
-	if ($self->has_void_config) {
-		my $dataset_uri = (defined($self->void_config->{dataset_uri}))
-								  ? $self->void_config->{dataset_uri} 
-								  : URI->new($self->base_uri . '/#dataset')->canonical;
-		$voidg = RDF::Generator::Void->new(inmodel => $self->model, dataset_uri => $dataset_uri);
-	}
-	if ($self->has_void && ($uri eq $voidg->dataset_uri) {
-		
+	my $generator = $self->void;
+	if ($self->has_void && ($uri eq $generator->dataset_uri)) {
+		$generator->urispace($self->base_uri);
+		if ($self->has_endpoint) {
+			$generator->add_endpoints($self->base_uri . $endpoint_path);
+		}
+		my $voidmodel = $generator->generate;
+		my ($ct, $s) = $self->_negotiate($self->request->headers);
+		return $ct if ($ct->isa('Plack::Response')); # A hack to allow for the failed conneg case
+		my $body;
+		if ($s->isa('RDF::Trine::Serializer')) { # Then we just serialize since we have a serializer.
+			$body = $s->serialize_model_to_string($voidmodel);
+		} else {
+			# For (X)HTML, we need to do extra work
+			my $gen = RDF::RDFa::Generator->new( style => 'HTML::Pretty',
+															 #title => $preds->title( $node ),
+															 base => $self->base_uri,
+															 namespaces => $self->namespaces);
+			my $writer = HTML::HTML5::Writer->new( markup => 'xhtml', doctype => DOCTYPE_XHTML_RDFA );
+			$body = encode_utf8( $writer->document($gen->create_document($voidmodel)) );
+		}
+		$response->status(200);
+		$response->headers->header('Vary' => join(", ", qw(Accept)));
+		$response->headers->header('ETag' => $self->etag);
+		$response->headers->content_type($ct);
+		$response->content($body);
+		return $response;
 	}
 
 	my $type = $self->type;
@@ -250,24 +286,8 @@ sub response {
 			$response->content($content->{body});
 		} else {
 			$response->status(303);
-			my ($ct, $s);
-			eval {
-				($ct, $s) = RDF::Trine::Serializer->negotiate('request_headers' => $headers_in,
-                                                          base_uri => $self->base_uri,
-                                                          namespaces => $self->namespaces,
-																			 extend => {
-																							'text/html' => 'html',
-																							'application/xhtml+xml' => 'html'
-																						  }
-																			)
-	      };
-			$self->logger->debug("Got $ct content type");
-			if ($@) {
-				$response->status(406);
-				$response->headers->content_type('text/plain');
-				$response->body('HTTP 406: No serialization available any specified content type');
-				return $response;
-			}
+			my ($ct, $s) = $self->_negotiate($headers_in);
+			return $ct if ($ct->isa('Plack::Response')); # A hack to allow for the failed conneg case
 			my $newurl = $uri . '/data';
 			unless ($s->isa('RDF::Trine::Serializer')) {
 				my $preds = $self->helper_properties;
@@ -435,6 +455,45 @@ constructor, so you would most likely not use this method.
 
 
 has endpoint => (is => 'rw', isa => 'RDF::Endpoint', predicate => 'has_endpoint');
+
+
+=item C<< void ( [ $voidg ] ) >>
+
+Returns the L<RDF::Generator::Void> object if it exists or sets it if
+a L<RDF::Generator::Void> object is given as parameter. Like
+C<endpoint>, it will be created for you if you pass a C<void_config>
+hashref to the constructor, so you would most likely not use this
+method.
+
+=cut
+
+
+has void => (is => 'rw', isa => 'RDF::Generator::Void', predicate => 'has_void');
+
+
+sub _negotiate {
+	my ($self, $headers_in) = @_;
+	my ($ct, $s);
+	eval {
+		($ct, $s) = RDF::Trine::Serializer->negotiate('request_headers' => $headers_in,
+																	 base_uri => $self->base_uri,
+																	 namespaces => $self->namespaces,
+																	 extend => {
+																					'text/html' => 'html',
+																					'application/xhtml+xml' => 'html'
+																				  }
+																	)
+	};
+	$self->logger->debug("Got $ct content type");
+	if ($@) {
+		my $response = Plack::Response->new;
+		$response->status(406);
+		$response->headers->content_type('text/plain');
+		$response->body('HTTP 406: No serialization available any specified content type');
+		return $response;
+	}
+	return ($ct, $s)
+}
 
 
 =back
