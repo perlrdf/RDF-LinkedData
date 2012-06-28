@@ -484,7 +484,14 @@ sub _void_content {
 	my $fragment = $dataset_uri->fragment;
 	$dataset_uri =~ s/(\#$fragment)$//;
 	if ($uri->eq($dataset_uri)) {
-		$generator->urispace($self->base_uri);
+		if ($self->void_config->{urispace}) {
+			$generator->urispace($self->void_config->{urispace});
+		} else {
+			$generator->urispace($self->base_uri);
+		}
+		if ($self->namespaces_as_vocabularies) {
+			$generator->add_vocabularies(values(%{$self->namespaces}));
+		}
 		if ($self->has_endpoint) {
 			$generator->add_endpoints($self->base_uri . $endpoint_path);
 		}
