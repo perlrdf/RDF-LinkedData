@@ -284,7 +284,7 @@ sub response {
 				}
 			}
 			$response->status(200);
-			my $content = $self->content($node, $type, $endpoint_path);
+			my $content = $self->_content($node, $type, $endpoint_path);
 			$response->headers->header('Vary' => join(", ", qw(Accept)));
 			$response->headers->header('ETag' => $self->etag);
 			$response->headers->content_type($content->{content_type});
@@ -372,28 +372,18 @@ sub count {
 	return $self->model->count_statements( $node, undef, undef );
 }
 
-=item C<< content ( $node, $type, $endpoint_path) >>
+# =item C<< _content ( $node, $type, $endpoint_path) >>
+#
+# Private method to return the a hashref with content for this URI,
+# based on the $node subject, and the type of node, which may be either
+# C<data> or C<page>. In the first case, an RDF document serialized to a
+# format set by content negotiation. In the latter, a simple HTML
+# document will be returned. Finally, you may pass the endpoint path if
+# it is available. The returned hashref has two keys: C<content_type>
+# and C<body>. The former is self-explanatory, the latter contains the
+# actual content.
 
-Will return the a hashref with content for this URI, based on the
-$node subject, and the type of node, which may be either C<data> or
-C<page>. In the first case, an RDF document serialized to a format set
-by content negotiation. In the latter, a simple HTML document will be
-returned. Finally, you may pass the endpoint path if it is
-available. The returned hashref has two keys: C<content_type> and
-C<body>. The former is self-explanatory, the latter contains the
-actual content.
-
-One may argue that a hashref with magic keys should be a class of its
-own, and for that reason, this method should be considered "at
-risk". Currently, it is only used in one place, and it may be turned
-into a private method, get passed the L<Plack::Response> object,
-removed altogether or turned into a role of its own, depending on the
-actual use cases that surfaces in the future.
-
-=cut
-
-
-sub content {
+sub _content {
 	my ($self, $node, $type, $endpoint_path) = @_;
 	my $model = $self->model;
 	my $iter = $model->bounded_description($node);
