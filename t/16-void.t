@@ -39,7 +39,8 @@ $parser->parse_file_into_model( $base_uri, $file, $model );
 ok($model, "We have a model");
 is($model->size, 3, "We have a model with 3 statements");
 
-my $ld = RDF::LinkedData->new(model => $model, base_uri => $base_uri, void_config => { something => 1 });
+
+my $ld = RDF::LinkedData->new(model => $model, base_uri => $base_uri, namespaces_as_vocabularies => 1, void_config => { urispace => 'http://localhost' });
 
 isa_ok($ld, 'RDF::LinkedData');
 is($ld->count, 3, "There are 3 triples in the model");
@@ -93,8 +94,6 @@ is($ld->count, 3, "There are 3 triples in the model");
 	$parser->parse_into_model( $base_uri, $content, $retmodel );
 	has_subject($base_uri . '/#dataset-0', $retmodel, "Subject URI in content");
 	pattern_target($retmodel);
-	my $s = RDF::Trine::Serializer->new('turtle');
-	diag $s->serialize_model_to_string($retmodel);
 	my $void = RDF::Trine::Namespace->new('http://rdfs.org/ns/void#');
 	my $xsd  = RDF::Trine::Namespace->new('http://www.w3.org/2001/XMLSchema#');
 	pattern_ok(
