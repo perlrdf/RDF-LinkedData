@@ -1,5 +1,5 @@
 {
-    "base_uri"  : "http://localhost/",
+    "base_uri"  : "http://localhost",
     "store" : {
 	"storetype"	: "Memory",
 	"sources" : [ { 
@@ -16,6 +16,6 @@
 
     "namespaces" : { "rdfs" : "http://www.w3.org/2000/01/rdf-schema#", 
 	             "dct" : "http://purl.org/dc/terms/" },
-    "void" : true
+    "void" : { "something" : true }
 		   
 }

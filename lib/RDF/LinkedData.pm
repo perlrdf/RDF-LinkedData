@@ -126,7 +126,7 @@ sub BUILD {
 		}
 		my $dataset_uri = (defined($self->void_config->{dataset_uri}))
 								  ? $self->void_config->{dataset_uri} 
-								  : URI->new($self->base_uri . '/#dataset-0')->canonical;
+								  : URI->new($self->base_uri . '#dataset-0')->canonical;
 		$self->void(RDF::Generator::Void->new(inmodel => $self->model, dataset_uri => $dataset_uri));
  	} else {
 		$self->logger->info('No VoID config found');
@@ -224,7 +224,10 @@ sub response {
 	}
 
 	my $generator = $self->void;
-	if ($self->has_void && ($uri eq $generator->dataset_uri)) {
+	my $dataset_uri = URI->new($generator->dataset_uri);
+	my $fragment = $dataset_uri->fragment;
+	$dataset_uri =~ s/(\#$fragment)$//;
+	if ($self->has_void && ($uri->eq($dataset_uri))) {
 		$generator->urispace($self->base_uri);
 		if ($self->has_endpoint) {
 			$generator->add_endpoints($self->base_uri . $endpoint_path);
