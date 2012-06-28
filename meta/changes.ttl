@@ -7,7 +7,22 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl:  <http://www.w3.org/2002/07/owl#> .
 
-my:project :release my:v_0_44 .
+my:project :release my:v_0_50 .
+
+my:v_0_50
+    a           :Version ;
+    dc:issued   "2012-06-29"^^xsd:date ;
+    rdfs:label "Use VoID Generator."@en ;
+    :revision   "0.50"^^xsd:string ;
+    dcs:changeset [
+      dcs:item
+        [ rdfs:label "Some minor fixes."@en ; a dcs:Change ] , 
+        [ rdfs:label "The content method is now private."@en ; a dcs:Change ] , 
+        [ rdfs:label "RDF::LinkedData now can use RDF::Generator::Void, but not all its features."@en ; a dcs:Addition ] , 
+        [ rdfs:label "Add descriptions to POD and README."@en ; a dcs:Addition ] , 
+        [ rdfs:label "Remove SQLite generator script."@en ; a dcs:Removal ] , 
+        [ rdfs:label "Use current_etag instead of etag"@en ; a dcs:Change ] 
+    ] .
 
 my:v_0_44
     a           :Version ;
