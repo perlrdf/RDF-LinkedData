@@ -488,12 +488,12 @@ sub _void_content {
 		if ($self->has_endpoint) {
 			$generator->add_endpoints($self->base_uri . $endpoint_path);
 		}
-		my $voidmodel = $generator->generate;
+		$self->_voidmodel($generator->generate);
 		my ($ct, $s) = $self->_negotiate($self->request->headers);
 		return $ct if ($ct->isa('Plack::Response')); # A hack to allow for the failed conneg case
 		my $body;
 		if ($s->isa('RDF::Trine::Serializer')) { # Then we just serialize since we have a serializer.
-			$body = $s->serialize_model_to_string($voidmodel);
+			$body = $s->serialize_model_to_string($self->_voidmodel);
 		} else {
 			# For (X)HTML, we need to do extra work
 			my $gen = RDF::RDFa::Generator->new( style => 'HTML::Pretty',
@@ -501,7 +501,7 @@ sub _void_content {
 															 base => $self->base_uri,
 															 namespaces => $self->namespaces);
 			my $writer = HTML::HTML5::Writer->new( markup => 'xhtml', doctype => DOCTYPE_XHTML_RDFA );
-			$body = encode_utf8( $writer->document($gen->create_document($voidmodel)) );
+			$body = encode_utf8( $writer->document($gen->create_document($self->_voidmodel)) );
 		}
 		my $response = Plack::Response->new;
 		$response->status(200);
@@ -514,6 +514,9 @@ sub _void_content {
 		return;
 	}
 }
+
+has _voidmodel => (is => 'rw', isa => 'RDF::Trine::Model');
+
 
 =back
 
