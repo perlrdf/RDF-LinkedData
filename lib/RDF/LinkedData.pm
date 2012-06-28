@@ -223,36 +223,38 @@ sub response {
       return $self->endpoint->run( $self->request );
 	}
 
-	my $generator = $self->void;
-	my $dataset_uri = URI->new($generator->dataset_uri);
-	my $fragment = $dataset_uri->fragment;
-	$dataset_uri =~ s/(\#$fragment)$//;
-	if ($self->has_void && ($uri->eq($dataset_uri))) {
-		$generator->urispace($self->base_uri);
-		if ($self->has_endpoint) {
-			$generator->add_endpoints($self->base_uri . $endpoint_path);
+	if ($self->has_void) {
+		my $generator = $self->void;
+		my $dataset_uri = URI->new($generator->dataset_uri);
+		my $fragment = $dataset_uri->fragment;
+		$dataset_uri =~ s/(\#$fragment)$//;
+		if ($uri->eq($dataset_uri)) {
+			$generator->urispace($self->base_uri);
+			if ($self->has_endpoint) {
+				$generator->add_endpoints($self->base_uri . $endpoint_path);
+			}
+			my $voidmodel = $generator->generate;
+			my ($ct, $s) = $self->_negotiate($self->request->headers);
+			return $ct if ($ct->isa('Plack::Response')); # A hack to allow for the failed conneg case
+			my $body;
+			if ($s->isa('RDF::Trine::Serializer')) { # Then we just serialize since we have a serializer.
+				$body = $s->serialize_model_to_string($voidmodel);
+			} else {
+				# For (X)HTML, we need to do extra work
+				my $gen = RDF::RDFa::Generator->new( style => 'HTML::Pretty',
+																 title => 'VoID Description',
+																 base => $self->base_uri,
+																 namespaces => $self->namespaces);
+				my $writer = HTML::HTML5::Writer->new( markup => 'xhtml', doctype => DOCTYPE_XHTML_RDFA );
+				$body = encode_utf8( $writer->document($gen->create_document($voidmodel)) );
+			}
+			$response->status(200);
+			$response->headers->header('Vary' => join(", ", qw(Accept)));
+			$response->headers->header('ETag' => $self->etag);
+			$response->headers->content_type($ct);
+			$response->content($body);
+			return $response;
 		}
-		my $voidmodel = $generator->generate;
-		my ($ct, $s) = $self->_negotiate($self->request->headers);
-		return $ct if ($ct->isa('Plack::Response')); # A hack to allow for the failed conneg case
-		my $body;
-		if ($s->isa('RDF::Trine::Serializer')) { # Then we just serialize since we have a serializer.
-			$body = $s->serialize_model_to_string($voidmodel);
-		} else {
-			# For (X)HTML, we need to do extra work
-			my $gen = RDF::RDFa::Generator->new( style => 'HTML::Pretty',
-															 title => 'VoID Description',
-															 base => $self->base_uri,
-															 namespaces => $self->namespaces);
-			my $writer = HTML::HTML5::Writer->new( markup => 'xhtml', doctype => DOCTYPE_XHTML_RDFA );
-			$body = encode_utf8( $writer->document($gen->create_document($voidmodel)) );
-		}
-		$response->status(200);
-		$response->headers->header('Vary' => join(", ", qw(Accept)));
-		$response->headers->header('ETag' => $self->etag);
-		$response->headers->content_type($ct);
-		$response->content($body);
-		return $response;
 	}
 
 	my $type = $self->type;
