@@ -8,7 +8,7 @@ use Test::RDF;
 use RDF::Trine qw[iri literal blank variable statement];
 use Test::WWW::Mechanize::PSGI;
 use Module::Load::Conditional qw[check_install];
-use RDF::Trine::Namespace qw(rdf);;
+use RDF::Trine::Namespace qw(rdf);
 
 
 unless (defined(check_install( module => 'RDF::Endpoint', version => 0.03))) {
