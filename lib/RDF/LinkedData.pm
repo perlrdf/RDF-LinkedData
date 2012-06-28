@@ -241,7 +241,7 @@ sub response {
 		} else {
 			# For (X)HTML, we need to do extra work
 			my $gen = RDF::RDFa::Generator->new( style => 'HTML::Pretty',
-															 #title => $preds->title( $node ),
+															 title => 'VoID Description',
 															 base => $self->base_uri,
 															 namespaces => $self->namespaces);
 			my $writer = HTML::HTML5::Writer->new( markup => 'xhtml', doctype => DOCTYPE_XHTML_RDFA );
