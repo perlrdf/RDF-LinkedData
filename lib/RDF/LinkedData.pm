@@ -367,22 +367,28 @@ sub _content {
 		$output{content_type} = $ctype;
 		if ($self->hypermedia) {
 			my $hmmodel = RDF::Trine::Model->temporary_model;
-			if($self->has_endpoint) {
+			if($self->has_void) {
 				$hmmodel->add_statement(statement(iri($node->uri_value . '/data'), 
 															 iri('http://rdfs.org/ns/void#inDataset'), 
-															 blank('void')));
-				$hmmodel->add_statement(statement(blank('void'), 
-															 iri('http://rdfs.org/ns/void#sparqlEndpoint'),
-															 iri($self->base_uri . $endpoint_path)));
-			}
-			if($self->namespaces_as_vocabularies) {
-				$hmmodel->add_statement(statement(iri($node->uri_value . '/data'), 
-															 iri('http://rdfs.org/ns/void#inDataset'), 
-															 blank('void')));
-				foreach my $nsuri (values(%{$self->namespaces})) {
+															 $self->void->dataset_uri));
+			} else {
+				if($self->has_endpoint) {
+					$hmmodel->add_statement(statement(iri($node->uri_value . '/data'), 
+																 iri('http://rdfs.org/ns/void#inDataset'), 
+																 blank('void')));
 					$hmmodel->add_statement(statement(blank('void'), 
-																 iri('http://rdfs.org/ns/void#vocabulary'),
-																 iri($nsuri)));
+																 iri('http://rdfs.org/ns/void#sparqlEndpoint'),
+																 iri($self->base_uri . $endpoint_path)));
+				}
+				if($self->namespaces_as_vocabularies) {
+					$hmmodel->add_statement(statement(iri($node->uri_value . '/data'), 
+																 iri('http://rdfs.org/ns/void#inDataset'), 
+																 blank('void')));
+					foreach my $nsuri (values(%{$self->namespaces})) {
+						$hmmodel->add_statement(statement(blank('void'), 
+																	 iri('http://rdfs.org/ns/void#vocabulary'),
+																	 iri($nsuri)));
+					}
 				}
 			}
 			$iter = $iter->concat($hmmodel->as_stream);
