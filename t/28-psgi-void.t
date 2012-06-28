@@ -62,7 +62,7 @@ my $base_uri = 'http://localhost/';
 		 local $TODO = 'Hypermedia now only links to void';
 		 hasnt_uri('http://rdfs.org/ns/void#sparqlEndpoint', $model, 'SPARQL endpoint link in data');
 		 hasnt_uri($base_uri . 'sparql', $model, 'SPARQL endpoint in data');
-		 has_object($base_uri . '#dataset-0', $model, "Void oject URI in content");
+		 has_object_uri($base_uri . '#dataset-0', $model, "Void oject URI in content");
 	 }
 }
 
@@ -97,6 +97,17 @@ my $base_uri = 'http://localhost/';
 							  ),
 				  'Common statements are there');
 }
+
+{
+	note "Get the base_uri with the VoID";
+	my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester);
+	$mech->default_header('Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8');
+	$mech->get_ok($base_uri);
+	is($mech->ct, 'text/html', "Correct content-type");
+	my $model = RDF::Trine::Model->temporary_model;
+	is_valid_rdf($mech->content, 'rdfa', 'Returns valid RDFa');
+}
+
 
 
 
