@@ -4,7 +4,7 @@ use FindBin qw($Bin);
 use Plack::Request;
 
 use strict;
-use Test::More;#tests => 38;
+use Test::More;
 use Test::RDF;
 use Log::Log4perl qw(:easy);
 use Module::Load::Conditional qw[check_install];
