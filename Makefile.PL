@@ -35,6 +35,7 @@ recommends 'Config::JFDI'               => 0; # If you plan to use the Plack scr
 recommends 'JSON'                       => 0; # If you plan to use the Plack script
 recommends 'RDF::Endpoint'              => 0.03; # If you plan to use the Plack script with a SPARQL Endpoint
 recommends 'Plack::Middleware::CrossOrigin' => 0; # If you'd like to add CORS headers
+recommends 'RDF::Generator::Void'       => 0; # If you'd like a VoID description
 
 install_script glob('script/*');
 
