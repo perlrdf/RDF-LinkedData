@@ -21,14 +21,8 @@ Log::Log4perl->easy_init( { level   => $FATAL } ) unless $ENV{TEST_VERBOSE};
 
 my $file = $Bin . '/data/basic.ttl';
 
-BEGIN {
-    use_ok('RDF::LinkedData');
-    use_ok('RDF::Helper::Properties');
-    use_ok('RDF::Trine::Parser');
-    use_ok('RDF::Trine::Model');
-}
-
-
+use_ok('RDF::LinkedData');
+use_ok('RDF::Generator::Void');
 
 my $parser     = RDF::Trine::Parser->new( 'turtle' );
 my $store = RDF::Trine::Store::Hexastore->temporary_store;
