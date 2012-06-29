@@ -36,7 +36,7 @@ ok($model, "We have a model");
 		$ec = {endpoint_path => '/sparql'} ;
 	}
 	
-	my $ld = RDF::LinkedData->new(model => $model, base=>$base_uri, endpoint_config => $ec);
+	my $ld = RDF::LinkedData->new(model => $model, base_uri=>$base_uri, endpoint_config => $ec);
 	
 	isa_ok($ld, 'RDF::LinkedData');
 	cmp_ok($ld->count, '>', 0, "There are triples in the model");
@@ -79,7 +79,7 @@ ok($model, "We have a model");
 }
 
 {
-	my $ld = RDF::LinkedData->new(model => $model, base=>$base_uri);
+	my $ld = RDF::LinkedData->new(model => $model, base_uri=>$base_uri);
 	
 	isa_ok($ld, 'RDF::LinkedData');
 	cmp_ok($ld->count, '>', 0, "There are triples in the model");
@@ -95,7 +95,7 @@ ok($model, "We have a model");
 	}
 	
 	{
-		note "Get /foo/data";
+		note "Get /foo/data, namespaces set";
 		$ld->type('data');
 		$ld->namespaces ( { skos => 'http://www.w3.org/2004/02/skos/core#', dct => 'http://purl.org/dc/terms/' } );
 		my $response = $ld->response($base_uri . '/foo');
@@ -128,7 +128,7 @@ ok($model, "We have a model");
 
 {
 	note "Now testing no endpoint";
-	my $ld = RDF::LinkedData->new(model => $model, base=>$base_uri);
+	my $ld = RDF::LinkedData->new(model => $model, base_uri=>$base_uri);
 	isa_ok($ld, 'RDF::LinkedData');
 	cmp_ok($ld->count, '>', 0, "There are triples in the model");
 	$ld->type('data');
@@ -142,7 +142,7 @@ ok($model, "We have a model");
 }
 {
 	note "Now testing no endpoint";
-	my $ld = RDF::LinkedData->new(model => $model, base=>$base_uri, namespaces_as_vocabularies => 0);
+	my $ld = RDF::LinkedData->new(model => $model, base_uri=>$base_uri, namespaces_as_vocabularies => 0);
 	isa_ok($ld, 'RDF::LinkedData');
 	cmp_ok($ld->count, '>', 0, "There are triples in the model");
 	$ld->type('data');
