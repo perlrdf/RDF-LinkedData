@@ -18,7 +18,8 @@
 	             "dct" : "http://purl.org/dc/terms/" },
     "void": {
         "pagetitle": "VoID Description for my dataset",
-	"titles": [ [ "This is a title", "en" ], [ "Dette er en tittel", "no" ]]
+	"titles": [ [ "This is a title", "en" ], [ "Dette er en tittel", "no" ]],
+	"add_void": { "file": "t/data/add.ttl", "syntax": "turtle" }
     }
 
 		   
