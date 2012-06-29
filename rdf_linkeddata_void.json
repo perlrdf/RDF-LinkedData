@@ -17,7 +17,8 @@
     "namespaces" : { "rdfs" : "http://www.w3.org/2000/01/rdf-schema#", 
 	             "dct" : "http://purl.org/dc/terms/" },
     "void": {
-        "pagetitle": "VoID Description for my dataset"
+        "pagetitle": "VoID Description for my dataset",
+	"titles": [ [ "This is a title", "en" ], [ "Dette er en tittel", "no" ]]
     }
 
 		   

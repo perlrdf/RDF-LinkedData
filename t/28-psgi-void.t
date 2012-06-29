@@ -73,6 +73,8 @@ my $base_uri = 'http://localhost/';
 	is_valid_rdf($mech->content, 'rdfxml', 'Returns valid RDF/XML');
 	$rxparser->parse_into_model( $base_uri, $mech->content, $model );
 	has_subject($base_uri . '#dataset-0', $model, "Subject URI in content");
+	has_literal("This is a title", "en", undef, $model, "Correct English title");
+	has_literal("Dette er en tittel", "no", undef, $model, "Correct Norwegian title");
 	pattern_target($model);
 	my $void = RDF::Trine::Namespace->new('http://rdfs.org/ns/void#');
 	my $xsd  = RDF::Trine::Namespace->new('http://www.w3.org/2001/XMLSchema#');

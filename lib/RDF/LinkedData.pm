@@ -501,8 +501,8 @@ sub _void_content {
 		if ($self->void_config->{licenses}) {
 		  $generator->add_licenses($self->void_config->{licenses});
 		}
-		if ($self->void_config->{titles}) {
-		  $generator->add_titles(literal($self->void_config->{titles}));
+		foreach my $title (@{$self->void_config->{titles}}) {
+		  $generator->add_titles(literal(@{$title}));
 		}
 		if ($self->void_config->{endpoints}) {
 		  $generator->add_endpoints(literal($self->void_config->{endpoints}));
