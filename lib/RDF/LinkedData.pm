@@ -498,6 +498,19 @@ sub _void_content {
 		if ($self->has_last_etag && ($self->last_etag ne $self->current_etag)) {
 			$self->_clear_voidmodel;
 		}
+		if ($self->void_config->{licenses}) {
+		  $generator->add_licenses($self->void_config->{licenses});
+		}
+		if ($self->void_config->{titles}) {
+		  $generator->add_titles(literal($self->void_config->{titles}));
+		}
+		if ($self->void_config->{endpoints}) {
+		  $generator->add_endpoints(literal($self->void_config->{endpoints}));
+		}
+		if ($self->void_config->{vocabularies}) {
+		  $generator->add_vocabularies($self->void_config->{vocabularies});
+		}
+
 		unless ($self->_has_voidmodel) {
 			$self->_voidmodel($generator->generate);
 			$self->last_etag($self->current_etag);
@@ -510,7 +523,7 @@ sub _void_content {
 		} else {
 			# For (X)HTML, we need to do extra work
 			my $gen = RDF::RDFa::Generator->new( style => 'HTML::Pretty',
-															 title => 'VoID Description',
+															 title => $self->void_config->{pagetitle} || 'VoID Description',
 															 base => $self->base_uri,
 															 namespaces => $self->namespaces);
 			my $writer = HTML::HTML5::Writer->new( markup => 'xhtml', doctype => DOCTYPE_XHTML_RDFA );
