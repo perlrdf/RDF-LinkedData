@@ -512,8 +512,15 @@ sub _void_content {
 		 $self->_clear_voidmodel; 
 	  }
 
+	  my $file_model = undef;
+	  if ($self->void_config->{add_void}) {
+		 my $file_model = RDF::Trine::Model->temporary_model;
+		 my $parser = RDF::Trine::Parser->new($self->void_config->{add_void}->{syntax});
+		 $parser->parse_file_into_model($self->base_uri, $self->void_config->{add_void}->{file}, $file_model);
+	  }
+
 	   unless ($self->_has_voidmodel) {
-			$self->_voidmodel($generator->generate);
+			$self->_voidmodel($generator->generate($file_model));
 			$self->last_etag($self->current_etag);
 		}
 		my ($ct, $s) = $self->_negotiate($self->request->headers);
