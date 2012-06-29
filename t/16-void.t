@@ -42,6 +42,7 @@ is($ld->count, 3, "There are 3 triples in the model");
 {
 	note "Basic VoID test";
 	$ld->request(Plack::Request->new({}));
+	$ld->void->add_licenses('http://example.org/open-data-license');
 	my $response = $ld->response($base_uri);
 	isa_ok($response, 'Plack::Response');
 	my $content = $response->content;
@@ -49,6 +50,8 @@ is($ld->count, 3, "There are 3 triples in the model");
 	my $retmodel = RDF::Trine::Model->temporary_model;
 	$parser->parse_into_model( $base_uri, $content, $retmodel );
 	has_subject($base_uri . '/#dataset-0', $retmodel, "Subject URI in content");
+	has_predicate('http://purl.org/dc/terms/license', $retmodel, "Has license predicate");
+	has_object_uri('http://example.org/open-data-license', $retmodel, "Has license object");
 	pattern_target($retmodel);
 	my $void = RDF::Trine::Namespace->new('http://rdfs.org/ns/void#');
 	my $xsd  = RDF::Trine::Namespace->new('http://www.w3.org/2001/XMLSchema#');
