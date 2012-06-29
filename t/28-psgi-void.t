@@ -103,6 +103,7 @@ my $base_uri = 'http://localhost/';
 	is($mech->ct, 'text/html', "Correct content-type");
 	my $model = RDF::Trine::Model->temporary_model;
 	is_valid_rdf($mech->content, 'rdfa', 'Returns valid RDFa');
+	$mech->title_is('VoID Description for my dataset', 'Correct title in RDFa');
 }
 
 

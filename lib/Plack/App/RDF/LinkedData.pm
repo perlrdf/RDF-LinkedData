@@ -51,6 +51,9 @@ Create a configuration file C<rdf_linkeddata.json> that looks something like:
                     },
         "cors": {
                   "origins": "*"
+                },
+        "void": {
+                  "pagetitle": "VoID Description for my dataset"
                 }
   }
 
