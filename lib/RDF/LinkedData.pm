@@ -127,7 +127,9 @@ sub BUILD {
 		my $dataset_uri = (defined($self->void_config->{dataset_uri}))
 								  ? $self->void_config->{dataset_uri} 
 								  : URI->new($self->base_uri . '#dataset-0')->canonical;
-		$self->void(RDF::Generator::Void->new(inmodel => $self->model, dataset_uri => $dataset_uri));
+		$self->void(RDF::Generator::Void->new(inmodel => $self->model, 
+														  dataset_uri => $dataset_uri,
+														  namespaces_as_vocabularies => $self->void_config->{namespaces_as_vocabularies}));
  	} else {
 		$self->logger->info('No VoID config found');
 	}
