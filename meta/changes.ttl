@@ -7,7 +7,21 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl:  <http://www.w3.org/2002/07/owl#> .
 
-my:project :release my:v_0_52 .
+my:project :release my:v_0_54 .
+
+my:v_0_54
+    a           :Version ;
+    dc:issued   "2012-06-30"^^xsd:date ;
+    rdfs:label "Improve VoID generator use."@en ;
+    :revision   "0.54"^^xsd:string ;
+    dcs:changeset [
+      dcs:item
+        [ rdfs:label "Some minor fixes."@en ; a dcs:Change ] , 
+        [ rdfs:label "Add a pagetitle config parameter for RDFa title."@en ; a dcs:Change ] , 
+        [ rdfs:label "Use the Generators new feature to add a model with arbitrary data to load a file."@en ; a dcs:Addition ] , 
+        [ rdfs:label "Make it possible to use the Generators property attributes."@en ; a dcs:Addition ] 
+    ] .
+
 
 my:v_0_52
     a           :Version ;
