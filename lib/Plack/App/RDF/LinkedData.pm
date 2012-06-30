@@ -191,6 +191,20 @@ Please refer to the L<RDF::Generator::Void> for more details about
 what can be set, and the C<rdf_linkeddata_void.json> test config in
 the distribution for example.
 
+By adding an C<add_void> config key, you can make pass a file to the
+generator so that arbitrary RDF can be added to the VoID
+description. This is a very preliminary implementation, but it solves
+many use cases as much of the VoID description cannot be simply
+generated. To use it, the configuration would in JSON look something
+like this:
+
+	"add_void": { "file": "/data/add.ttl", "syntax": "turtle" }
+
+where C<file> is the full path to RDF that should be added and
+C<syntax> is needed by the parser to parse it.
+
+
+
 =head1 FEEDBACK WANTED
 
 Please contact the author if this documentation is unclear. It is
