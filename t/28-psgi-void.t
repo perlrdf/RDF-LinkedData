@@ -60,6 +60,7 @@ my $base_uri = 'http://localhost/';
     has_literal('Testing with longer URI.', 'en', undef, $model, "Test phrase in content");
 	 hasnt_uri('http://rdfs.org/ns/void#sparqlEndpoint', $model, 'SPARQL endpoint link in data');
 	 hasnt_uri($base_uri . 'sparql', $model, 'SPARQL endpoint in data');
+	 hasnt_uri('http://purl.org/dc/terms/modified', $model, 'None of the added description in data');
 	 has_object_uri($base_uri . '#dataset-0', $model, "Void oject URI in content");
 }
 
