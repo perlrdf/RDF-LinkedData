@@ -121,7 +121,7 @@ sub BUILD {
  	if ($self->has_void_config) {
 		$self->logger->debug('VoID config found with parameters: ' . Dumper($self->void_config) );
 
-		unless (can_load( modules => { 'RDF::Generator::Void' => 0.02 })) {
+		unless (can_load( modules => { 'RDF::Generator::Void' => 0.04 })) {
 			throw Error -text => "RDF::Generator::Void not installed. Please install or remove its configuration.";
 		}
 		my $dataset_uri = (defined($self->void_config->{dataset_uri}))

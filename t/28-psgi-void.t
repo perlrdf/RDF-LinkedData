@@ -15,7 +15,7 @@ unless (defined(check_install( module => 'RDF::Endpoint', version => 0.03))) {
   plan skip_all => 'You need RDF::Endpoint for this test'
 }
 
-unless (defined(check_install( module => 'RDF::Generator::Void', version => 0.02))) {
+unless (defined(check_install( module => 'RDF::Generator::Void', version => 0.04))) {
   plan skip_all => 'You need RDF::Generator::Void for this test'
 }
 
