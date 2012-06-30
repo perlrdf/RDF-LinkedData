@@ -72,7 +72,6 @@ my $base_uri = 'http://localhost/';
 	is($mech->ct, 'application/rdf+xml', "Correct content-type");
 	my $model = RDF::Trine::Model->temporary_model;
 	is_valid_rdf($mech->content, 'rdfxml', 'Returns valid RDF/XML');
-	diag $mech->content;
 	$rxparser->parse_into_model( $base_uri, $mech->content, $model );
 	has_subject($base_uri . '#dataset-0', $model, "Subject URI in content");
 	has_literal("This is a title", "en", undef, $model, "Correct English title");
