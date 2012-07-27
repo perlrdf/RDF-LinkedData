@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 6 ;
+use Test::More;
 
 use Test::JSON;
 
