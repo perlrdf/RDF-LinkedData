@@ -419,7 +419,7 @@ sub _content {
 														  title => $preds->title( $node ),
 														  base => $self->base_uri,
 														  namespaces => $self->namespaces);
-		my $writer = HTML::HTML5::Writer->new( charset => 'ascii', markup => 'xhtml', doctype => DOCTYPE_XHTML_RDFA );
+		my $writer = HTML::HTML5::Writer->new( charset => 'ascii', markup => 'html' );
 		$output{body} = $writer->document($gen->create_document($returnmodel));
 		$output{content_type} = 'text/html';
 	}
