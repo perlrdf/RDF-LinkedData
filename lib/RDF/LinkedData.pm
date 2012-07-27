@@ -464,7 +464,7 @@ sub _negotiate {
 																	 namespaces => $self->namespaces,
 																	 extend => {
 																					'text/html' => 'html',
-																					'application/xhtml+xml' => 'html'
+																					'application/xhtml+xml' => 'xhtml'
 																				  }
 																	)
 	};
@@ -536,7 +536,8 @@ sub _void_content {
 															 title => $self->void_config->{pagetitle} || 'VoID Description',
 															 base => $self->base_uri,
 															 namespaces => $self->namespaces);
-			my $writer = HTML::HTML5::Writer->new( charset => 'ascii', markup => 'xhtml', doctype => DOCTYPE_XHTML_RDFA );
+			my $markup = ($ct eq 'application/xhtml+xml') ? 'xhtml' : 'html';
+			my $writer = HTML::HTML5::Writer->new( charset => 'ascii', markup => $markup );
 			$body = $writer->document($gen->create_document($self->_voidmodel));
 		}
 		my $response = Plack::Response->new;
