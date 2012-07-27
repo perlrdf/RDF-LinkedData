@@ -504,7 +504,7 @@ sub _void_content {
 		 $generator->add_titles(literal(@{$title}));
 	  }
 	  if ($self->void_config->{endpoints}) {
-		 $generator->add_endpoints(literal($self->void_config->{endpoints}));
+		 $generator->add_endpoints($self->void_config->{endpoints});
 	  }
 	  if ($self->void_config->{vocabularies}) {
 		 $generator->add_vocabularies($self->void_config->{vocabularies});
