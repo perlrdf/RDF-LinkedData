@@ -1,3 +1,4 @@
+rdf_linkeddata_dev.json
 #defaults
 ^Makefile(.old)?$
 ^blib/
