@@ -271,7 +271,7 @@ sub response {
 			$response->headers->header('Vary' => join(", ", qw(Accept)));
 			$response->headers->header('ETag' => $self->current_etag);
 			$response->headers->content_type($content->{content_type});
-			$response->content(encode_utf8($content->{body}));
+			$response->body(encode_utf8($content->{body}));
 		} else {
 			$response->status(303);
 			my ($ct, $s) = $self->_negotiate($headers_in);
@@ -544,7 +544,7 @@ sub _void_content {
 		$response->headers->header('Vary' => join(", ", qw(Accept)));
 		$response->headers->header('ETag' => $self->last_etag);
 		$response->headers->content_type($ct);
-		$response->content(encode_utf8($body));
+		$response->body(encode_utf8($body));
 		return $response;
 	} else {
 		return;
