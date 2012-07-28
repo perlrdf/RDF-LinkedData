@@ -564,8 +564,7 @@ sub _void_content {
 		my $response = Plack::Response->new;
 		$response->status(200);
 		$response->headers->header('Vary' => join(", ", qw(Accept)));
-		my $etag;
-		$etag = $self->_last_extvoid_mtime if ($self->void_config->{add_void});
+		my $etag = $self->_last_extvoid_mtime if ($self->void_config->{add_void});
 		$etag .= $self->last_etag if (defined($self->last_etag));
 		if ($etag) {
 			$response->headers->header('ETag' => $etag);
