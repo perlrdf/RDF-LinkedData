@@ -122,10 +122,15 @@ is($ld->count, 3, "There are 3 triples in the model");
 
 	isa_ok($dld, 'RDF::LinkedData');
 	is($dld->count, 3, "There are 3 triples in the model");
-	is($dld->last_etag, $dld->current_etag, 'Etags have not changed');
+	is($dld->last_etag, $dld->current_etag, 'Etags are the same');
+	is($dld->current_etag, undef, 'Current Etag is undefined');
+
+
+
 	$dld->model->add_statement(statement(iri($base_uri . '/foo'), $rdfs->label, literal('DAHUT')));
 	is($dld->count, 4, "There are 4 triples in the model");
-	isnt($dld->last_etag, $dld->current_etag, 'Etags have changed');
+	is($dld->last_etag, $dld->current_etag, 'Etags are still the same');
+	is($dld->current_etag, undef, 'Current Etag is still undefined');
 	$dld->type('data');
 	$dld->request(Plack::Request->new({}));
 	my $fresponse = $dld->response($base_uri .'/foo');
