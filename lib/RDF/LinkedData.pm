@@ -486,45 +486,47 @@ sub _void_content {
 	my $fragment = $dataset_uri->fragment;
 	$dataset_uri =~ s/(\#$fragment)$//;
 	if ($uri->eq($dataset_uri)) {
-	  if ($self->void_config->{urispace}) {
-		 $generator->urispace($self->void_config->{urispace});
-	  } else {
-		 $generator->urispace($self->base_uri);
-	  }
-	  if ($self->namespaces_as_vocabularies) {
-		 $generator->add_vocabularies(values(%{$self->namespaces}));
-	  }
-	  if ($self->has_endpoint) {
-		 $generator->add_endpoints($self->base_uri . $endpoint_path);
-	  }
-	  if ($self->void_config->{licenses}) {
-		 $generator->add_licenses($self->void_config->{licenses});
-	  }
-	  foreach my $title (@{$self->void_config->{titles}}) {
-		 $generator->add_titles(literal(@{$title}));
-	  }
-	  if ($self->void_config->{endpoints}) {
-		 $generator->add_endpoints($self->void_config->{endpoints});
-	  }
-	  if ($self->void_config->{vocabularies}) {
-		 $generator->add_vocabularies($self->void_config->{vocabularies});
-	  }
-
-	  if ($self->has_last_etag && ($self->last_etag ne $self->current_etag)) {
-		 $self->_clear_voidmodel; 
-	  }
-
-	  my $file_model = undef;
-	  if ($self->void_config->{add_void}) {
-		 $file_model = RDF::Trine::Model->temporary_model;
-		 my $parser = RDF::Trine::Parser->new($self->void_config->{add_void}->{syntax});
-		 $parser->parse_file_into_model($self->base_uri, $self->void_config->{add_void}->{file}, $file_model);
-	  }
-
+		if ($self->void_config->{urispace}) {
+			$generator->urispace($self->void_config->{urispace});
+		} else {
+			$generator->urispace($self->base_uri);
+		}
+		if ($self->namespaces_as_vocabularies) {
+			$generator->add_vocabularies(values(%{$self->namespaces}));
+		}
+		if ($self->has_endpoint) {
+			$generator->add_endpoints($self->base_uri . $endpoint_path);
+		}
+		if ($self->void_config->{licenses}) {
+			$generator->add_licenses($self->void_config->{licenses});
+		}
+		foreach my $title (@{$self->void_config->{titles}}) {
+			$generator->add_titles(literal(@{$title}));
+		}
+		if ($self->void_config->{endpoints}) {
+			$generator->add_endpoints($self->void_config->{endpoints});
+		}
+		if ($self->void_config->{vocabularies}) {
+			$generator->add_vocabularies($self->void_config->{vocabularies});
+		}
+		
+		if ($self->has_last_etag && ($self->last_etag ne $self->current_etag)) {
+			$self->_clear_voidmodel; 
+		}
+		
+		my $file_model = undef;
+		if ($self->void_config->{add_void}) {
+			$file_model = RDF::Trine::Model->temporary_model;
+			my $parser = RDF::Trine::Parser->new($self->void_config->{add_void}->{syntax});
+			$parser->parse_file_into_model($self->base_uri, $self->void_config->{add_void}->{file}, $file_model);
+		}
+		
 	   unless ($self->_has_voidmodel) {
 			$self->_voidmodel($generator->generate($file_model));
 			$self->last_etag($self->current_etag);
 		}
+		
+		# Now start serializing.
 		my ($ct, $s) = $self->_negotiate($self->request->headers);
 		return $ct if ($ct->isa('Plack::Response')); # A hack to allow for the failed conneg case
 		my $body;
