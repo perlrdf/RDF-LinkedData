@@ -102,7 +102,7 @@ my $base_uri = 'http://localhost/';
 {
 	note "Get the base_uri with the VoID";
 	my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester);
-	$mech->default_header('Accept' => 'application/xhtml+xml,text/html,application/xml;q=0.9,*/*;q=0.8');
+	$mech->default_header('Accept' => 'application/xhtml+xml;q=1.0,text/html;q=0.94,application/xml;q=0.9,*/*;q=0.8');
 	$mech->get_ok($base_uri);
 	is($mech->ct,  'application/xhtml+xml', "Correct content-type");
 	my $model = RDF::Trine::Model->temporary_model;
