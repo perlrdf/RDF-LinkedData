@@ -14,9 +14,9 @@
     "cors" : {
               "origins" : "*"
             },
-	    "endpoint" : { "foo" : "1" },
+   "endpoint" : { "foo" : "1" },
    "void": {
-        "pagetitle": "VoID Description for my dataset",
-}
+        "pagetitle": "VoID Description for my dataset"
+   }
 
 }
