@@ -269,7 +269,9 @@ sub response {
 			$response->status(200);
 			my $content = $self->_content($node, $type, $endpoint_path);
 			$response->headers->header('Vary' => join(", ", qw(Accept)));
-			$response->headers->header('ETag' => $self->current_etag);
+			if (defined($self->current_etag)) {
+				$response->headers->header('ETag' => $self->current_etag);
+			}
 			$response->headers->content_type($content->{content_type});
 			$response->body(encode_utf8($content->{body}));
 		} else {
@@ -488,8 +490,9 @@ sub _void_content {
 	if ($uri->eq($dataset_uri)) {
 
 		# First check if the model has changed, the etag will have
-		# changed, and we will have to regenerate at some point
-		if ($self->has_last_etag && ($self->last_etag ne $self->current_etag)) {
+		# changed, and we will have to regenerate at some point. If
+		# there is no current etag, we clear anyway
+		if ((! defined($self->current_etag)) || ($self->has_last_etag && ($self->last_etag ne $self->current_etag))) {
 			$self->_clear_voidmodel; 
 		}
 
