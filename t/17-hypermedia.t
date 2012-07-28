@@ -72,7 +72,8 @@ ok($model, "We have a model");
 										variable('void'),
 										iri('http://rdfs.org/ns/void#sparqlEndpoint'),
 										iri($base_uri . '/sparql'),
-									  )
+									  ),
+						  'SPARQL Endpoint is present'
 						 )
 		}
 	}
@@ -119,7 +120,8 @@ ok($model, "We have a model");
 										variable('void'),
 										iri('http://rdfs.org/ns/void#vocabulary'),
 										iri('http://purl.org/dc/terms/'),
-									  )
+									  ),
+					    'Vocabularies are present'
 						 )
 		}
 
