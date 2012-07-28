@@ -127,6 +127,7 @@ sub BUILD {
 		my $dataset_uri = (defined($self->void_config->{dataset_uri}))
 								  ? $self->void_config->{dataset_uri} 
 								  : URI->new($self->base_uri . '#dataset-0')->canonical;
+		$self->_last_extvoid_mtime(0);
 		$self->void(RDF::Generator::Void->new(inmodel => $self->model, 
 														  dataset_uri => $dataset_uri,
 														  namespaces_as_vocabularies => $self->void_config->{namespaces_as_vocabularies}));
@@ -496,17 +497,23 @@ sub _void_content {
 			$self->_clear_voidmodel; 
 		}
 
-
-		# Now really regenerate if there is no model now
-	   unless ($self->_has_voidmodel) {
-
-			# First see if we should read some static stuff from file
-			my $file_model = undef;
-			if ($self->void_config->{add_void}) {
+		# First see if we should read some static stuff from file
+		my $file_model = undef;
+		if ($self->void_config->{add_void}) {
+			$self->_current_extvoid_mtime((stat($self->void_config->{add_void}->{file}))[9]);
+			if ($self->_current_extvoid_mtime != $self->_last_extvoid_mtime) {
+				$self->_clear_voidmodel;
 				$file_model = RDF::Trine::Model->temporary_model;
 				my $parser = RDF::Trine::Parser->new($self->void_config->{add_void}->{syntax});
 				$parser->parse_file_into_model($self->base_uri, $self->void_config->{add_void}->{file}, $file_model);
+				$self->_last_extvoid_mtime((stat($self->void_config->{add_void}->{file}))[9]);
 			}
+		}
+
+
+
+		# Now really regenerate if there is no model now
+	   unless ($self->_has_voidmodel) {
 
 			# Use the methods of the generator to add stuff from config, etc
 			if ($self->void_config->{urispace}) {
@@ -567,6 +574,10 @@ sub _void_content {
 }
 
 has _voidmodel => (is => 'rw', isa => 'RDF::Trine::Model', predicate => '_has_voidmodel', clearer => '_clear_voidmodel');
+
+has _current_extvoid_mtime => (is => 'rw', isa => 'Int');
+
+has _last_extvoid_mtime => (is => 'rw', isa => 'Int');
 
 
 =back
