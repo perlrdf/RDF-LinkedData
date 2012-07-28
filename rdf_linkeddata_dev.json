@@ -16,7 +16,9 @@
             },
    "endpoint" : { "foo" : "1" },
    "void": {
-        "pagetitle": "VoID Description for my dataset"
+        "pagetitle": "VoID Description for my dataset",
+     "add_void": { "file": "t/data/add.ttl", "syntax": "turtle" }
+
    }
 
 }
