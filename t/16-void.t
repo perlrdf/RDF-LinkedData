@@ -73,6 +73,7 @@ is($ld->count, 3, "There are 3 triples in the model");
 	note "Add a statement";
 
 	is($ld->count, 3, "There are 3 triples in the model");
+	is($ld->last_etag, $ld->current_etag, 'Etags have not changed');
 	$ld->model->add_statement(statement(iri($base_uri . '/foo'), $rdfs->label, literal('DAHUT')));
 	is($ld->count, 4, "There are 4 triples in the model");
 	isnt($ld->last_etag, $ld->current_etag, 'Etags have changed');
