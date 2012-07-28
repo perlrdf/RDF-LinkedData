@@ -193,8 +193,9 @@ the distribution for example.
 
 By adding an C<add_void> config key, you can make pass a file to the
 generator so that arbitrary RDF can be added to the VoID
-description. This is a very preliminary implementation, but it solves
-many use cases as much of the VoID description cannot be simply
+description. It will check the last modification time of the file and
+only update the VoID description if it has been modified. This is
+usefil since as much of the VoID description cannot be simply
 generated. To use it, the configuration would in JSON look something
 like this:
 
@@ -203,7 +204,10 @@ like this:
 where C<file> is the full path to RDF that should be added and
 C<syntax> is needed by the parser to parse it.
 
-
+Normally, the VoID description is cached in RAM and the store ETag is
+checked on every request to see if the description must be
+regenerated. If you use the C<add_void> feature, you can force
+regeneration on the next request by touching the file.
 
 =head1 FEEDBACK WANTED
 
