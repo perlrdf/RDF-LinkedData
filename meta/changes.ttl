@@ -7,7 +7,23 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl:  <http://www.w3.org/2002/07/owl#> .
 
-my:project :release my:v_0_54 .
+my:project :release my:v_0_56 .
+
+my:v_0_56
+    a           :Version ;
+    dc:issued   "2012-07-29"^^xsd:date ;
+    rdfs:label "Bugfix release."@en ;
+    :revision   "0.56"^^xsd:string ;
+    dcs:changeset [
+      dcs:item
+        [ rdfs:label "Fix major UTF8 breakage by encoding all strings."@en ; a dcs:Bugfix ] , 
+        [ rdfs:label "Some cosmetic fixes."@en ; a dcs:Change ] , 
+        [ rdfs:label "More tests."@en ; a dcs:Addition ] , 
+        [ rdfs:label "Fix performance problems caused by regeneration of VoID descriptions for every request."@en ; a dcs:Bugfix ] , 
+        [ rdfs:label "Fix performance problems by stat-ing the external VoID-file to see if needs reloading."@en ; a dcs:Bugfix ] , 
+        [ rdfs:label "Improve the way different HTML serializations are returned."@en ; a dcs:Bugfix ] , 
+        [ rdfs:label "Skip some tests when Redland is installed, causes test-specific bugs."@en ; a dcs:Change ] 
+    ] .
 
 my:v_0_54
     a           :Version ;
