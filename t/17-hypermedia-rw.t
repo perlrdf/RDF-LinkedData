@@ -80,7 +80,7 @@ ok($model, "We have a model");
 	}
 	
 	{
-		note "Get /foo/data";
+		note "Get /foo/data, with all privs";
 		$ld->type('data');
 		my $response = $ld->response($base_uri . '/foo');
 		isa_ok($response, 'Plack::Response');
@@ -103,6 +103,58 @@ ok($model, "We have a model");
 									$hmns->mergedInto),
 					  'All three write triples'
 					 )
+	}
+
+	{
+		note "Get /foo/data, with no privs";
+		$ld->type('data');
+		$ld->clear_auth_level;
+		my $response = $ld->response($base_uri . '/foo');
+		isa_ok($response, 'Plack::Response');
+		is($response->status, 200, "Returns 200");
+		my $retmodel = return_model($response->content, $parser);
+		my $hmns = RDF::Trine::Namespace->new('http://example.org/hypermedia#');
+		my $data_iri = iri($base_uri . '/foo/data');
+
+		has_literal('This is a test', 'en', undef, $retmodel, "Test phrase in content");
+		hasnt_uri($hmns->canBe->uri_value, $retmodel, 'No rw URIs');
+	}
+
+	{
+		note "Get /foo/data, with ro privs";
+		$ld->type('data');
+		$ld->add_auth_levels('http://www.w3.org/ns/auth/acl#Read');
+		my $response = $ld->response($base_uri . '/foo');
+		isa_ok($response, 'Plack::Response');
+		is($response->status, 200, "Returns 200");
+		my $retmodel = return_model($response->content, $parser);
+		my $hmns = RDF::Trine::Namespace->new('http://example.org/hypermedia#');
+		my $data_iri = iri($base_uri . '/foo/data');
+
+		has_literal('This is a test', 'en', undef, $retmodel, "Test phrase in content");
+		hasnt_uri($hmns->canBe->uri_value, $retmodel, 'No rw URIs');
+	}
+	{
+		note "Get /foo/data, with append privs";
+		$ld->type('data');
+		$ld->add_auth_levels('http://www.w3.org/ns/auth/acl#Read','http://www.w3.org/ns/auth/acl#Append');
+		my $response = $ld->response($base_uri . '/foo');
+		isa_ok($response, 'Plack::Response');
+		is($response->status, 200, "Returns 200");
+		my $retmodel = return_model($response->content, $parser);
+		my $hmns = RDF::Trine::Namespace->new('http://example.org/hypermedia#');
+		my $data_iri = iri($base_uri . '/foo/data');
+
+		has_literal('This is a test', 'en', undef, $retmodel, "Test phrase in content");
+		hasnt_uri($hmns->deleted->uri_value, $retmodel, 'No deleted URIs');
+		hasnt_uri($hmns->replaced->uri_value, $retmodel, 'No replaced URIs');
+		pattern_target($retmodel);
+		pattern_ok(
+					  statement($data_iri,
+									$hmns->canBe,
+									$hmns->mergedInto),
+					  'MergedInto OK');
+
 	}
 }
 
