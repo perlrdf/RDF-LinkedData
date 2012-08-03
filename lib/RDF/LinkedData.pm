@@ -4,6 +4,7 @@ use namespace::autoclean;
 
 use RDF::Trine qw[iri literal blank statement];
 use RDF::Trine::Serializer;
+use RDF::Trine::Namespace;
 use Log::Log4perl qw(:easy);
 use Plack::Response;
 use RDF::Helper::Properties;
@@ -414,14 +415,15 @@ sub _content {
 																			namespaces => $self->namespaces);
 		$output{content_type} = $ctype;
 		if ($self->hypermedia) {
+			my $data_iri = iri($node->uri_value . '/data');
 			my $hmmodel = RDF::Trine::Model->temporary_model;
 			if($self->has_void) {
-				$hmmodel->add_statement(statement(iri($node->uri_value . '/data'), 
+				$hmmodel->add_statement(statement($data_iri, 
 															 iri('http://rdfs.org/ns/void#inDataset'), 
 															 $self->void->dataset_uri));
 			} else {
 				if($self->has_endpoint) {
-					$hmmodel->add_statement(statement(iri($node->uri_value . '/data'), 
+					$hmmodel->add_statement(statement($data_iri, 
 																 iri('http://rdfs.org/ns/void#inDataset'), 
 																 blank('void')));
 					$hmmodel->add_statement(statement(blank('void'), 
@@ -429,7 +431,7 @@ sub _content {
 																 iri($self->base_uri . $endpoint_path)));
 				}
 				if($self->namespaces_as_vocabularies) {
-					$hmmodel->add_statement(statement(iri($node->uri_value . '/data'), 
+					$hmmodel->add_statement(statement($data_iri, 
 																 iri('http://rdfs.org/ns/void#inDataset'), 
 																 blank('void')));
 					foreach my $nsuri (values(%{$self->namespaces})) {
@@ -439,6 +441,22 @@ sub _content {
 					}
 				}
 			}
+			my $hmns = RDF::Trine::Namespace->new('http://example.org/hypermedia#');
+			if ($self->has_auth_level('write')) {
+				$hmmodel->add_statement(statement($data_iri,
+															 $hmns->canBe,
+															 $hmns->replaced));
+				$hmmodel->add_statement(statement($data_iri,
+															 $hmns->canBe,
+															 $hmns->deleted));
+			}
+			if ($self->has_auth_level('append')) {
+				$hmmodel->add_statement(statement($data_iri,
+															 $hmns->canBe,
+															 $hmns->mergedInto));
+			}
+
+
 			$iter = $iter->concat($hmmodel->as_stream);
 		}
 		$output{body} = $s->serialize_iterator_to_string ( $iter );
