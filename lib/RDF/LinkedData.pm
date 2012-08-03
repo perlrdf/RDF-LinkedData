@@ -358,6 +358,38 @@ sub count {
 	return $self->model->count_statements( $node, undef, undef );
 }
 
+#has webid => (is => 'ro', isa => 'Web::Id', predicate => 'has_webid', clearer => 'clear_webid');
+
+has auth_uri => (
+					  is        => 'rw',
+					  isa       => 'Str',
+					  predicate => 'has_auth_uri',
+					  clearer   => 'clear_auth_uri'
+					 );
+
+has auth_level => (
+						 is       => 'rw',
+						 traits   => ['Array'],
+						 isa      => 'ArrayRef[Str]',
+						 default  => sub { ['http://www.w3.org/ns/auth/acl#Read'] },
+						 handles  => {
+										  all_auth_levels    => 'uniq',
+										  add_auth_levels    => 'push',
+										  has_no_auth_levels => 'is_empty',
+										 },
+						 clearer  => 'clear_auth_level'
+						);
+
+sub has_auth_level { # Clearly, my Moose-fu is inadequate, just hack it for now.
+	my ($self, $level) = @_;
+	return 1 if scalar(grep(/\#$level$/i, $self->all_auth_levels));
+	if (lc($level) eq 'append') { # Special case, surely write entails append?
+		return 1 if scalar(grep(/\#Write$/, $self->all_auth_levels));
+	}
+	return 0;
+}
+
+
 # =item C<< _content ( $node, $type, $endpoint_path) >>
 #
 # Private method to return the a hashref with content for this URI,
@@ -371,6 +403,7 @@ sub count {
 
 sub _content {
 	my ($self, $node, $type, $endpoint_path) = @_;
+	
 	my $model = $self->model;
 	my $iter = $model->bounded_description($node);
 	my %output;
