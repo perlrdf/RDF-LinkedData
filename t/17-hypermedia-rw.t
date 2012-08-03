@@ -123,6 +123,7 @@ ok($model, "We have a model");
 	{
 		note "Get /foo/data, with ro privs";
 		$ld->type('data');
+		$ld->clear_auth_level;
 		$ld->add_auth_levels('http://www.w3.org/ns/auth/acl#Read');
 		my $response = $ld->response($base_uri . '/foo');
 		isa_ok($response, 'Plack::Response');
@@ -137,6 +138,7 @@ ok($model, "We have a model");
 	{
 		note "Get /foo/data, with append privs";
 		$ld->type('data');
+		$ld->clear_auth_level;
 		$ld->add_auth_levels('http://www.w3.org/ns/auth/acl#Read','http://www.w3.org/ns/auth/acl#Append');
 		my $response = $ld->response($base_uri . '/foo');
 		isa_ok($response, 'Plack::Response');
