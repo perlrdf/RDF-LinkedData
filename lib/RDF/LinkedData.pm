@@ -151,6 +151,14 @@ has model => (is => 'ro', isa => 'RDF::Trine::Model', lazy => 1, builder => '_bu
 
 sub _build_model {
 	my $self = shift;
+	return $self->_load_model($self->store);
+}
+
+has acl_model => (is => 'ro', isa => 'RDF::Trine::Model', lazy => 1, builder => '_build_acl_model', 
+				  handles => { acl_etag => 'etag' });
+ 
+sub _build_acl_model {
+	my $self = shift;
 	# First, set the base if none is configured
 	my $i = 0;
 	foreach my $source (@{$self->store->{sources}}) {
@@ -160,6 +168,20 @@ sub _build_model {
 		$i++;
 	}
 	my $store = RDF::Trine::Store->new( $self->store );
+	return RDF::Trine::Model->new( $store );
+}
+
+sub _load_model {
+	my ($self, $store_config) = @_;
+	# First, set the base if none is configured
+	my $i = 0;
+	foreach my $source (@{$store_config->{sources}}) {
+		unless ($source->{base_uri}) {
+			${$store_config->{sources}}[$i]->{base_uri} = $self->base_uri;
+		}
+		$i++;
+	}
+	my $store = RDF::Trine::Store->new( $store_config );
 	return RDF::Trine::Model->new( $store );
 }
 
@@ -181,6 +203,9 @@ has endpoint_config => (is => 'rw', traits => [ qw(MooseX::UndefTolerant::Attrib
 
 has void_config => (is => 'rw', traits => [ qw(MooseX::UndefTolerant::Attribute)],
 								isa=>'HashRef', predicate => 'has_void_config');
+
+has acl_config => (is => 'rw', traits => [ qw(MooseX::UndefTolerant::Attribute)],
+								isa=>'HashRef', predicate => 'has_acl_config');
 
 
 =item C<< request ( [ $request ] ) >>
@@ -301,6 +326,26 @@ sub response {
 	$response->headers->content_type('text/plain');
 	$response->body('HTTP 500: No such functionality.');
 	return $response;
+}
+
+sub merge {
+	my $self = shift;
+	my $uri = URI->new(shift);
+	my $payloadmodel = RDF::Trine::Model->temporary_model;
+	die "Foo : " . $self->request->content_type;
+	my $payload = $self->request->content;
+	my $headers_in = $self->request->headers;
+	my $response = Plack::Response->new;
+	eval {
+		my $parser = RDF::Trine::Parser->parser_by_media_type($headers_in->content_type);
+		$parser->parse_into_model($self->base_uri, $payload, $payloadmodel);
+	};
+	if ($@) {
+		$response->status(400);
+		$response->content_type('text/plain');
+		$response->body("Couldn't parse the payload: $@");
+		return $response;
+	}
 }
 
 
