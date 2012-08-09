@@ -156,20 +156,12 @@ sub _build_model {
 
 has acl_model => (is => 'ro', isa => 'RDF::Trine::Model', lazy => 1, builder => '_build_acl_model', 
 				  handles => { acl_etag => 'etag' });
- 
+
 sub _build_acl_model {
 	my $self = shift;
-	# First, set the base if none is configured
-	my $i = 0;
-	foreach my $source (@{$self->store->{sources}}) {
-		unless ($source->{base_uri}) {
-			${$self->store->{sources}}[$i]->{base_uri} = $self->base_uri;
-		}
-		$i++;
-	}
-	my $store = RDF::Trine::Store->new( $self->store );
-	return RDF::Trine::Model->new( $store );
+	return $self->_load_model($self->acl_config->{store});
 }
+
 
 sub _load_model {
 	my ($self, $store_config) = @_;
