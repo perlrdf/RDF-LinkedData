@@ -41,12 +41,12 @@ my $base_uri = 'http://localhost/';
     $mech->get_ok("/bar/baz/bing");
     is($mech->ct, 'application/rdf+xml', "Correct content-type");
     like($mech->uri, qr|/bar/baz/bing/data$|, "Location is OK");
-    my $model = RDF::Trine::Model->temporary_model;
     is_valid_rdf($mech->content, 'rdfxml', 'Returns valid RDF/XML');
-    $rxparser->parse_into_model( $base_uri, $mech->content, $model );
+	 my $model = return_model($mech->content, $rxparser);
     has_subject($base_uri . 'bar/baz/bing', $model, "Subject URI in content");
     has_literal('Testing with longer URI.', 'en', undef, $model, "Test phrase in content");
-	 hasnt_uri('http://rdfs.org/ns/void#sparqlEndpoint', $model, 'SPARQL endpoint link in data');
+	 hasnt_uri('http://rdfs.org/ns/void#sparqlEndpoint', $model, 'No SPARQL endpoint link in data');
+	 hasnt_uri('http://example.org/new2', $model, 'Test data not there yet');
 	 my $hmns = RDF::Trine::Namespace->new('http://example.org/hypermedia#');
 	 my $data_iri = iri($base_uri . '/bar/baz/bing/data');
 	 pattern_target($model);
@@ -63,6 +63,19 @@ my $base_uri = 'http://localhost/';
 					'All three write triples'
 				  );
 	 note 'Post to  /bar/baz/bing/data';
+	 $mech->post_ok("/bar/baz/bing/data", { 'Content-Type' => 'text/turtle', 
+														 Content => "<$base_uri/foo> <http://example.org/new2> \"Merged triple\"\@en" });
+	 is($mech->status, 204, "Returns 204");
+    $mech->get_ok("/bar/baz/bing");
+    is($mech->ct, 'application/rdf+xml', "Correct content-type");
+    like($mech->uri, qr|/bar/baz/bing/data$|, "Location is OK");
+    is_valid_rdf($mech->content, 'rdfxml', 'Returns valid RDF/XML');
+	 my $model = return_model($mech->content, $rxparser);
+    has_subject($base_uri . 'bar/baz/bing', $model, "Subject URI in content");
+    has_literal('Testing with longer URI.', 'en', undef, $model, "Test phrase in content");
+	 hasnt_uri('http://rdfs.org/ns/void#sparqlEndpoint', $model, 'No SPARQL endpoint link in data');
+	 has_predicate('http://example.org/new2', $model, 'Test data now there');
+
 }
 
 
