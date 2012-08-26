@@ -99,6 +99,8 @@ Called by Moose to initialize an object.
 
 =cut
 
+# TODO look at buildargs to replace UndefTolerant
+
 sub BUILD {
 	my $self = shift;
 
