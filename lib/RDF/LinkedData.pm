@@ -4,6 +4,7 @@ use namespace::autoclean;
 
 use RDF::Trine qw[iri literal blank statement];
 use RDF::Trine::Serializer;
+use RDF::Trine::Namespace;
 use Log::Log4perl qw(:easy);
 use Plack::Response;
 use RDF::Helper::Properties;
@@ -36,11 +37,11 @@ RDF::LinkedData - A simple Linked Data implementation
 
 =head1 VERSION
 
-Version 0.56
+Version 0.59_01
 
 =cut
 
-our $VERSION = '0.56';
+our $VERSION = '0.59_01';
 
 
 =head1 SYNOPSIS
@@ -152,15 +153,29 @@ has model => (is => 'ro', isa => 'RDF::Trine::Model', lazy => 1, builder => '_bu
 
 sub _build_model {
 	my $self = shift;
+	return $self->_load_model($self->store);
+}
+
+has acl_model => (is => 'ro', isa => 'RDF::Trine::Model', lazy => 1, builder => '_build_acl_model', 
+				  handles => { acl_etag => 'etag' });
+
+sub _build_acl_model {
+	my $self = shift;
+	return $self->_load_model($self->acl_config->{store});
+}
+
+
+sub _load_model {
+	my ($self, $store_config) = @_;
 	# First, set the base if none is configured
 	my $i = 0;
-	foreach my $source (@{$self->store->{sources}}) {
+	foreach my $source (@{$store_config->{sources}}) {
 		unless ($source->{base_uri}) {
-			${$self->store->{sources}}[$i]->{base_uri} = $self->base_uri;
+			${$store_config->{sources}}[$i]->{base_uri} = $self->base_uri;
 		}
 		$i++;
 	}
-	my $store = RDF::Trine::Store->new( $self->store );
+	my $store = RDF::Trine::Store->new( $store_config );
 	return RDF::Trine::Model->new( $store );
 }
 
@@ -182,6 +197,9 @@ has endpoint_config => (is => 'rw', traits => [ qw(MooseX::UndefTolerant::Attrib
 
 has void_config => (is => 'rw', traits => [ qw(MooseX::UndefTolerant::Attribute)],
 								isa=>'HashRef', predicate => 'has_void_config');
+
+has acl_config => (is => 'rw', traits => [ qw(MooseX::UndefTolerant::Attribute)],
+								isa=>'HashRef', predicate => 'has_acl_config');
 
 
 =item C<< request ( [ $request ] ) >>
@@ -315,6 +333,27 @@ sub response {
 	return $response;
 }
 
+sub merge {
+	my $self = shift;
+	my $uri = URI->new(shift);
+#	my $payloadmodel = RDF::Trine::Model->temporary_model;
+	my $payload = $self->request->content;
+	my $headers_in = $self->request->headers;
+	my $response = Plack::Response->new;
+	eval {
+		my $parser = RDF::Trine::Parser->parser_by_media_type($headers_in->content_type);
+		$parser->parse_into_model($self->base_uri, $payload, $self->model);
+	};
+	if ($@) {
+		$response->status(400);
+		$response->content_type('text/plain');
+		$response->body("Couldn't parse the payload: $@");
+		return $response;
+	}
+	$response->status(204);
+	return $response;
+}
+
 
 =item C<< helper_properties (  ) >>
 
@@ -371,6 +410,38 @@ sub count {
 	return $self->model->count_statements( $node, undef, undef );
 }
 
+#has webid => (is => 'ro', isa => 'Web::Id', predicate => 'has_webid', clearer => 'clear_webid');
+
+has auth_uri => (
+					  is        => 'rw',
+					  isa       => 'Str',
+					  predicate => 'has_auth_uri',
+					  clearer   => 'clear_auth_uri'
+					 );
+
+has auth_level => (
+						 is       => 'rw',
+						 traits   => ['Array'],
+						 isa      => 'ArrayRef[Str]',
+						 default  => sub { ['http://www.w3.org/ns/auth/acl#Read'] },
+						 handles  => {
+										  all_auth_levels    => 'uniq',
+										  add_auth_levels    => 'push',
+										  has_no_auth_levels => 'is_empty',
+										 },
+						 clearer  => 'clear_auth_level'
+						);
+
+sub has_auth_level { # Clearly, my Moose-fu is inadequate, just hack it for now.
+	my ($self, $level) = @_;
+	return 1 if scalar(grep(/\#$level$/i, $self->all_auth_levels));
+	if (lc($level) eq 'append') { # Special case, surely write entails append?
+		return 1 if scalar(grep(/\#Write$/, $self->all_auth_levels));
+	}
+	return 0;
+}
+
+
 # =item C<< _content ( $node, $type, $endpoint_path) >>
 #
 # Private method to return the a hashref with content for this URI,
@@ -384,6 +455,7 @@ sub count {
 
 sub _content {
 	my ($self, $node, $type, $endpoint_path) = @_;
+	
 	my $model = $self->model;
 	my $iter = $model->bounded_description($node);
 	my %output;
@@ -394,14 +466,15 @@ sub _content {
 																			namespaces => $self->namespaces);
 		$output{content_type} = $ctype;
 		if ($self->hypermedia) {
+			my $data_iri = iri($node->uri_value . '/data');
 			my $hmmodel = RDF::Trine::Model->temporary_model;
 			if($self->has_void) {
-				$hmmodel->add_statement(statement(iri($node->uri_value . '/data'), 
+				$hmmodel->add_statement(statement($data_iri, 
 															 iri('http://rdfs.org/ns/void#inDataset'), 
 															 $self->void->dataset_uri));
 			} else {
 				if($self->has_endpoint) {
-					$hmmodel->add_statement(statement(iri($node->uri_value . '/data'), 
+					$hmmodel->add_statement(statement($data_iri, 
 																 iri('http://rdfs.org/ns/void#inDataset'), 
 																 blank('void')));
 					$hmmodel->add_statement(statement(blank('void'), 
@@ -409,7 +482,7 @@ sub _content {
 																 iri($self->base_uri . $endpoint_path)));
 				}
 				if($self->namespaces_as_vocabularies) {
-					$hmmodel->add_statement(statement(iri($node->uri_value . '/data'), 
+					$hmmodel->add_statement(statement($data_iri, 
 																 iri('http://rdfs.org/ns/void#inDataset'), 
 																 blank('void')));
 					foreach my $nsuri (values(%{$self->namespaces})) {
@@ -419,6 +492,22 @@ sub _content {
 					}
 				}
 			}
+			my $hmns = RDF::Trine::Namespace->new('http://example.org/hypermedia#');
+			if ($self->has_auth_level('write')) {
+				$hmmodel->add_statement(statement($data_iri,
+															 $hmns->canBe,
+															 $hmns->replaced));
+				$hmmodel->add_statement(statement($data_iri,
+															 $hmns->canBe,
+															 $hmns->deleted));
+			}
+			if ($self->has_auth_level('append')) {
+				$hmmodel->add_statement(statement($data_iri,
+															 $hmns->canBe,
+															 $hmns->mergedInto));
+			}
+
+
 			$iter = $iter->concat($hmmodel->as_stream);
 		}
 		$output{body} = $s->serialize_iterator_to_string ( $iter );

@@ -260,6 +260,7 @@ sub prepare_app {
 															 base_uri => $config->{base_uri}
 															);
 	$self->{linkeddata}->namespaces($config->{namespaces}) if ($config->{namespaces});
+#	if($config->{acl}=
 }
 
 sub call {
