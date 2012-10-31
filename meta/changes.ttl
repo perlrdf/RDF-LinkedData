@@ -317,6 +317,7 @@ my:v_0_01
 
 my:pre
     a           :Version ;
+    dc:issued   "2010-04-28"^^xsd:date ;
     rdfs:label "Code on Github by Gregory Todd Williams."@en ;
     :revision   "0.001_01"^^xsd:string .
 
