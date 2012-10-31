@@ -99,6 +99,8 @@ Called by Moose to initialize an object.
 
 =cut
 
+# TODO look at buildargs to replace UndefTolerant
+
 sub BUILD {
 	my $self = shift;
 
@@ -210,8 +212,19 @@ Gets or sets the namespaces that some serializers use for pretty-printing.
 
 =cut
 
-has 'namespaces' => (is => 'rw', isa => 'HashRef', default => sub { { rdf => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' } } );
+has 'namespaces' => (is => 'rw', 
+							isa => 'RDF::Trine::NamespaceMap', 
+							builder => '_build_namespaces',
+							lazy => 1,
+							handles => {
+											'add_namespace_mapping' => 'add_mapping',
+										  });
 
+
+sub _build_namespaces {
+  my $self = shift;
+  return RDF::Trine::NamespaceMap->new({ rdf => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' });
+}
 
 
 =item C<< response ( $uri ) >>
