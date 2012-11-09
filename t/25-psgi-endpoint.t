@@ -34,6 +34,20 @@ Log::Log4perl->easy_init( { level   => $FATAL } ) unless $ENV{TEST_VERBOSE};
     like($res->header('Location'), qr|/foo/data$|, "Location is OK");
 }
 
+{
+    note "Post /foo, no redirects";
+    my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester, requests_redirectable => []);
+    my $res = $mech->post("/foo");
+    is($mech->status, 405, "Returns 405");
+}
+
+{
+    note "Post /foo/data, no redirects";
+    my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester, requests_redirectable => []);
+    my $res = $mech->post("/foo/data");
+    is($mech->status, 405, "Returns 405");
+}
+
 
 {
     note "Get /foo, no redirects, ask for RDF/XML";
@@ -71,7 +85,7 @@ my $base_uri = 'http://localhost/';
 
 
 {
-    note "Check for SPARQL endpoint";
+    note "Check for SPARQL endpoint using get";
     my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester);
     $mech->get_ok("/sparql", "Returns 200");
     $mech->title_like(qr/SPARQL/, "Title contains the word SPARQL");
