@@ -245,6 +245,18 @@ sub _build_namespaces {
   return $ns_hash || URI::NamespaceMap->new({ rdf => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' });
 }
 
+# Just a temporary compatibility hack
+sub _namespace_hashref {
+  my $self = shift;
+  my %hash;
+  foreach my $prefix ($self->namespaces->list_prefixes) {
+	 $hash{$prefix} = $self->namespaces->namespace_uri($prefix)->as_string;
+  }
+  return \%hash;
+}
+
+  
+
 
 =item C<< response ( $uri ) >>
 
@@ -464,7 +476,7 @@ sub _content {
 		$self->{_type} = 'data';
 		my ($ctype, $s) = RDF::Trine::Serializer->negotiate('request_headers' => $self->request->headers,
 																			base => $self->base_uri,
-																			namespaces => $self->namespaces);
+																			namespaces => $self->_namespace_hashref);
 		$output{content_type} = $ctype;
 		if ($self->hypermedia) {
 			my $data_iri = iri($node->uri_value . '/data');
@@ -524,7 +536,7 @@ sub _content {
 		my $gen  = RDF::RDFa::Generator->new( style => 'HTML::Pretty',
 														  title => $preds->title( $node ),
 														  base => $self->base_uri,
-														  namespaces => $self->namespaces);
+														  namespaces => $self->_namespace_hashref);
 		my $writer = HTML::HTML5::Writer->new( charset => 'ascii', markup => 'html' );
 		$output{body} = $writer->document($gen->create_document($returnmodel));
 		$output{content_type} = 'text/html';
@@ -567,7 +579,7 @@ sub _negotiate {
 	eval {
 		($ct, $s) = RDF::Trine::Serializer->negotiate('request_headers' => $headers_in,
 																	 base_uri => $self->base_uri,
-																	 namespaces => $self->namespaces,
+																	 namespaces => $self->_namespace_hashref,
 																	 extend => {
 																					'text/html' => 'html',
 																					'application/xhtml+xml' => 'xhtml'
@@ -659,7 +671,7 @@ sub _void_content {
 			my $gen = RDF::RDFa::Generator->new( style => 'HTML::Pretty',
 															 title => $self->void_config->{pagetitle} || 'VoID Description',
 															 base => $self->base_uri,
-															 namespaces => $self->namespaces);
+															 namespaces => $self->_namespace_hashref);
 			my $markup = ($ct eq 'application/xhtml+xml') ? 'xhtml' : 'html';
 			my $writer = HTML::HTML5::Writer->new( charset => 'ascii', markup => $markup );
 			$body = $writer->document($gen->create_document($self->_voidmodel));
