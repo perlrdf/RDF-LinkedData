@@ -55,8 +55,7 @@ is($preds->title($node), 'This is a test', "Correct title");
 	 $ldh->namespaces(URI::NamespaceMap->new({ skos => 'http://www.w3.org/2004/02/skos/core#', dct => 'http://purl.org/dc/terms/' } ));
     $ldh->request($req);
     my $content = $ldh->_content($node, 'data');
-	 note Data::Dumper::Dumper($content);
-	 like($content->{body}, qr|"http://www.w3.org/2004/02/skos/core#"|, 'SKOS NS URI');
+	 like($content->{body}, qr|xmlns:skos="http://www.w3.org/2004/02/skos/core#"|, 'SKOS NS URI');
     is($content->{content_type}, 'application/rdf+xml', "RDF/XML content type");
 }
 
