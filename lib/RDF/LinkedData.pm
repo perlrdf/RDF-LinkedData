@@ -237,6 +237,7 @@ has 'namespaces' => (is => 'rw',
 							lazy => 1,
 							handles => {
 											'add_namespace_mapping' => 'add_mapping',
+											'list_namespaces' => 'list_namespaces'
 										  });
 
 
@@ -498,10 +499,10 @@ sub _content {
 					$hmmodel->add_statement(statement($data_iri, 
 																 iri('http://rdfs.org/ns/void#inDataset'), 
 																 blank('void')));
-					foreach my $nsuri (values(%{$self->namespaces})) {
+					foreach my $nsuri ($self->list_namespaces) {
 						$hmmodel->add_statement(statement(blank('void'), 
 																	 iri('http://rdfs.org/ns/void#vocabulary'),
-																	 iri($nsuri)));
+																	 iri($nsuri->uri)));
 					}
 				}
 			}
@@ -637,7 +638,7 @@ sub _void_content {
 				$generator->urispace($self->base_uri);
 			}
 			if ($self->namespaces_as_vocabularies) {
-				$generator->add_vocabularies(values(%{$self->namespaces}));
+				$generator->add_vocabularies($self->list_namespaces);
 			}
 			if ($self->has_endpoint) {
 				$generator->add_endpoints($self->base_uri . $endpoint_path);
