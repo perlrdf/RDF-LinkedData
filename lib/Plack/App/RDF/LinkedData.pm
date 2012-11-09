@@ -267,12 +267,14 @@ sub prepare_app {
 sub call {
 	my($self, $env) = @_;
 	my $req = Plack::Request->new($env);
+	my $uri = $req->uri;
 	my $ld = $self->{linkeddata};
-	unless (($req->method eq 'GET') || ($req->method eq 'HEAD')) {
+	warn "DAAAAAAAAAAAAHUT " . $ld->endpoint_config->{endpoint_path};
+	unless (($req->method eq 'GET') || ($req->method eq 'HEAD')
+			  || ($ld->has_endpoint && ($uri =~ m|/sparql$|))) {
 		return [ 405, [ 'Content-type', 'text/plain' ], [ 'Method not allowed' ] ];
 	}
 
-	my $uri = $req->uri;
 	if ($uri->as_iri =~ m!^(.+?)/?(page|data)$!) {
 		$uri = URI->new($1);
 		$ld->type($2);
