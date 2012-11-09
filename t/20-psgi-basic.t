@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 52 ;
+use Test::More tests => 56 ;
 use Test::RDF;
 use Test::WWW::Mechanize::PSGI;
 use Module::Load::Conditional qw[can_load];
@@ -146,6 +146,26 @@ my $base_uri = 'http://localhost/';
 	 $mech->content_like(qr|about=\"http://\S+?/bar/baz/bing\"|, 'Subject URI is OK in RDFa' );
 }
 
+{
+    note "Post /bar/baz/bing";
+    my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester);
+
+    $mech->post("/bar/baz/bing", { 'Content-Type' => 'text/turtle', 
+														 Content => "<$base_uri/foo> <http://example.org/new2> \"Merged triple\"\@en" });
+    is($mech->status, '405', "Method is not allowed");
+}
+
+{
+    note "Post /bar/baz/bing/data";
+    my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester);
+
+    $mech->post("/bar/baz/bing/data", { 'Content-Type' => 'text/turtle', 
+														 Content => "<$base_uri/foo> <http://example.org/new2> \"Merged triple\"\@en" });
+    is($mech->status, '405', "Method is not allowed");
+}
+
+
+
 
 {
     note "Get /bar/baz/bing, ask for RDF/XML";
@@ -176,7 +196,10 @@ TODO: {
     note "Check for SPARQL endpoint";
     my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester);
     $mech->get("/sparql");
-    isnt($mech->status, 200, "/sparql doesn't return 200");
+    isnt($mech->status, 200, "/sparql doesn't return 200 for a get");
+    $mech->post("/sparql");
+    isnt($mech->status, 200, "/sparql doesn't return 200 for a post");
+    is($mech->status, 405, "/sparql returns 405 for a post");
     $mech->get("/");
     isnt($mech->status, 200, "root doesn't return 200");
 
