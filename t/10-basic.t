@@ -67,11 +67,7 @@ is($preds->title($node), 'This is a test', "Correct title");
     is_rdf($content->{body}, 'turtle', 
 	   '@base <http://localhost/> . @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> . </foo> rdfs:label "This is a test"@en ; <http://xmlns.com/foaf/0.1/page> <http://en.wikipedia.org/wiki/Foo> .', 'turtle',
 	   '/foo return RDF is OK');
-  SKIP: {
-        skip 'Need RDF::Trine 0.127_02 for @base test, you have '. $RDF::Trine::Serializer::VERSION,
-          1 unless $RDF::Trine::Serializer::VERSION >= 0.127;
-        like($content->{body}, qr/\@base <$base_uri> ./, 'Base URI is present in serialization');
-    }
+	 like($content->{body}, qr/\@base <$base_uri> ./, 'Base URI is present in serialization');
 }
 
 my $barnode = $ld->my_node(URI->new($base_uri . '/bar/baz/bing'));
