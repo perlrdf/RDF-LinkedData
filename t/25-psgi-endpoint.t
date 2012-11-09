@@ -102,6 +102,24 @@ my $base_uri = 'http://localhost/';
 	   'turtle',  'SPARQL Query returns correct triple');
 }
 
+{
+    note "Check for SPARQL endpoint using post";
+    my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester);
+    $mech->post_ok("/sparql", "Returns 200");
+    $mech->title_like(qr/SPARQL/, "Title contains the word SPARQL");
+    $mech->submit_form_ok( {
+            form_id => 'queryform',
+            fields      => {
+            query => 'DESCRIBE <http://localhost/bar/baz/bing> WHERE {}',
+				'media-type' => 'text/turtle'
+          },
+        }, 'Submitting DESCRIBE query.'
+    );
+    is_rdf($mech->content, 'turtle', 
+	   '<http://localhost/bar/baz/bing> <http://www.w3.org/2000/01/rdf-schema#label> "Testing with longer URI."@en .',
+	   'turtle',  'SPARQL Query returns correct triple');
+}
+
 
 
 done_testing();
