@@ -3,6 +3,7 @@ use strict;
 use warnings;
 use parent qw( Plack::Component );
 use RDF::LinkedData;
+use URI::NamespaceMap;
 use Plack::Request;
 
 =head1 NAME
@@ -259,7 +260,7 @@ sub prepare_app {
 															 void_config => $config->{void},
 															 base_uri => $config->{base_uri}
 															);
-	$self->{linkeddata}->namespaces($config->{namespaces}) if ($config->{namespaces});
+	$self->{linkeddata}->namespaces(URI::NamespaceMap->new($config->{namespaces})) if ($config->{namespaces});
 #	if($config->{acl}=
 }
 
