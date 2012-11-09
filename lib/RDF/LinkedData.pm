@@ -8,6 +8,7 @@ use RDF::Trine::Namespace;
 use Log::Log4perl qw(:easy);
 use Plack::Response;
 use RDF::Helper::Properties;
+use URI::NamespaceMap;
 use URI;
 use HTTP::Headers;
 use Module::Load::Conditional qw[can_load];
@@ -231,7 +232,7 @@ Gets or sets the namespaces that some serializers use for pretty-printing.
 =cut
 
 has 'namespaces' => (is => 'rw', 
-							isa => 'RDF::Trine::NamespaceMap', 
+							isa => 'URI::NamespaceMap',
 							builder => '_build_namespaces',
 							lazy => 1,
 							handles => {
@@ -240,8 +241,8 @@ has 'namespaces' => (is => 'rw',
 
 
 sub _build_namespaces {
-  my $self = shift;
-  return RDF::Trine::NamespaceMap->new({ rdf => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' });
+  my ($self, $ns_hash) = @_;
+  return $ns_hash || URI::NamespaceMap->new({ rdf => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' });
 }
 
 
