@@ -107,10 +107,10 @@ my $base_uri = 'http://localhost/';
     my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester);
     $mech->post_ok('/sparql', {
 							query => 'DESCRIBE <http://localhost/bar/baz/bing> WHERE {}',
-							'Content-Type' => 'text/turtle'
+							'Accept' => 'application/rdf+xml'
 						  },
 						  'Submitting DESCRIBE query.');
-    is_rdf($mech->content, 'turtle', 
+    is_rdf($mech->content, 'rdfxml', 
 	   '<http://localhost/bar/baz/bing> <http://www.w3.org/2000/01/rdf-schema#label> "Testing with longer URI."@en .',
 	   'turtle',  'SPARQL Query returns correct triple');
 }
