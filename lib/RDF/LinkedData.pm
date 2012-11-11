@@ -278,9 +278,12 @@ sub response {
 
 	my $headers_in = $self->request->headers;
 
-	my $endpoint_path = $self->endpoint_config->{endpoint_path};
-	if ($self->has_endpoint && ($uri->path eq $endpoint_path)) {
-      return $self->endpoint->run( $self->request );
+	my $endpoint_path;
+	if ($self->has_endpoint) {
+	  $endpoint_path = $self->endpoint_config->{endpoint_path};
+	  if ($uri->path eq $endpoint_path) {
+		 return $self->endpoint->run( $self->request );
+	  }
 	}
 
 	if ($self->has_void) {
