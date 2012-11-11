@@ -25,6 +25,7 @@ requires 'namespace::autoclean'         => 0.12;
 requires 'HTTP::Headers'                => 0;
 requires 'RDF::Helper::Properties'      => 0.10;
 requires 'URI'                          => 1.52;
+requires 'URI::NamespaceMap'            => 0.04;
 requires 'Module::Load::Conditional'    => 0;
 requires 'Encode'                       => 0;
 requires 'RDF::RDFa::Generator'         => 0.102;
