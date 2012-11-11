@@ -117,6 +117,11 @@ sub BUILD {
 		unless (can_load( modules => { 'RDF::Endpoint' => 0.03 })) {
 			throw Error -text => "RDF::Endpoint not installed. Please install or remove its configuration.";
 		}
+
+		unless (defined($self->endpoint_config->{endpoint_path})) {
+		  $self->endpoint_config->{endpoint_path} = '/sparql';
+		}
+
 		$self->endpoint(RDF::Endpoint->new($self->model, $self->endpoint_config));
  	} else {
 		$self->logger->info('No endpoint config found');
@@ -272,11 +277,8 @@ sub response {
 	my $response = Plack::Response->new;
 
 	my $headers_in = $self->request->headers;
-	my $endpoint_path = '/sparql';
-	if ($self->has_endpoint_config && defined($self->endpoint_config->{endpoint_path})) {
-      $endpoint_path = $self->endpoint_config->{endpoint_path};
-	}
 
+	my $endpoint_path = $self->endpoint_config->{endpoint_path};
 	if ($self->has_endpoint && ($uri->path eq $endpoint_path)) {
       return $self->endpoint->run( $self->request );
 	}

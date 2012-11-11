@@ -269,9 +269,9 @@ sub call {
 	my $req = Plack::Request->new($env);
 	my $uri = $req->uri;
 	my $ld = $self->{linkeddata};
-	warn "DAAAAAAAAAAAAHUT " . $ld->endpoint_config->{endpoint_path};
+	my $endpoint_path = $ld->endpoint_config->{endpoint_path};
 	unless (($req->method eq 'GET') || ($req->method eq 'HEAD')
-			  || ($ld->has_endpoint && ($uri =~ m|/sparql$|))) {
+			  || (($req->method eq 'POST') && $ld->has_endpoint && ($uri =~ m|$endpoint_path$|))) {
 		return [ 405, [ 'Content-type', 'text/plain' ], [ 'Method not allowed' ] ];
 	}
 
