@@ -269,9 +269,12 @@ sub call {
 	my $req = Plack::Request->new($env);
 	my $uri = $req->uri;
 	my $ld = $self->{linkeddata};
-	my $endpoint_path = $ld->endpoint_config->{endpoint_path};
+	my $endpoint_path;
+	if ($ld->has_endpoint) {
+	  $endpoint_path = $ld->endpoint_config->{endpoint_path};
+	}
 	unless (($req->method eq 'GET') || ($req->method eq 'HEAD')
-			  || (($req->method eq 'POST') && $ld->has_endpoint && ($uri =~ m|$endpoint_path$|))) {
+			  || (($req->method eq 'POST') && defined($endpoint_path) && ($uri =~ m|$endpoint_path$|))) {
 		return [ 405, [ 'Content-type', 'text/plain' ], [ 'Method not allowed' ] ];
 	}
 
