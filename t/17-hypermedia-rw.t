@@ -154,8 +154,10 @@ ok($model, "We have a model");
 	}
 }
 
-note 'Now really do RW';
 
+note 'Now really do RW';
+TODO: {
+  local $TODO = 'Failing tests for TDD for RW support';
 {
 	my $ld = RDF::LinkedData->new(model => $model, base_uri=>$base_uri);
 
@@ -215,7 +217,7 @@ note 'Now really do RW';
 				  'MergedInto OK');
 	
 }
-
+}
 
 done_testing;
 
