@@ -7,7 +7,19 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl:  <http://www.w3.org/2002/07/owl#> .
 
-my:project :release my:v_0_56 .
+my:project :release my:v_0_57_1 .
+
+my:v_0_57_1
+    a           :Version ;
+    dc:issued   "2012-11-01"^^xsd:date ;
+    rdfs:label "Bugfix release."@en ;
+    :revision   "0.57_1"^^xsd:string ;
+    dcs:changeset [
+      dcs:item
+        [ rdfs:label "POST to SPARQL endpoint will not be denied."@en ; a dcs:Bugfix ] , 
+        [ rdfs:label "Use URI::NamespaceMap."@en ; a dcs:Change ] , 
+        [ rdfs:label "Add read-write hypermedia stuff, not yet working though."@en ; a dcs:Addition ]  
+    ] .
 
 my:v_0_56
     a           :Version ;
