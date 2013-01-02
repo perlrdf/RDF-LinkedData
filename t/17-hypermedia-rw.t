@@ -20,6 +20,7 @@ use_ok('RDF::LinkedData');
 
 
 my $parser     = RDF::Trine::Parser->new( 'turtle' );
+my $rxparser   = RDF::Trine::Parser->new( 'rdfxml' );
 my $model = RDF::Trine::Model->temporary_model;
 my $base_uri = 'http://localhost';
 $parser->parse_file_into_model( $base_uri, $file, $model );
@@ -79,7 +80,7 @@ ok($model, "We have a model");
 		my $response = $ld->response($base_uri . '/foo');
 		isa_ok($response, 'Plack::Response');
 		is($response->status, 200, "Returns 200");
-		my $retmodel = return_model($response->content, $parser);
+		my $retmodel = return_model($response->content, $rxparser);
 		my $hmns = RDF::Trine::Namespace->new('http://example.org/hypermedia#');
 		my $data_iri = iri($base_uri . '/foo/data');
 
@@ -106,7 +107,7 @@ ok($model, "We have a model");
 		my $response = $ld->response($base_uri . '/foo');
 		isa_ok($response, 'Plack::Response');
 		is($response->status, 200, "Returns 200");
-		my $retmodel = return_model($response->content, $parser);
+		my $retmodel = return_model($response->content, $rxparser);
 		my $hmns = RDF::Trine::Namespace->new('http://example.org/hypermedia#');
 		my $data_iri = iri($base_uri . '/foo/data');
 
@@ -122,7 +123,7 @@ ok($model, "We have a model");
 		my $response = $ld->response($base_uri . '/foo');
 		isa_ok($response, 'Plack::Response');
 		is($response->status, 200, "Returns 200");
-		my $retmodel = return_model($response->content, $parser);
+		my $retmodel = return_model($response->content, $rxparser);
 		my $hmns = RDF::Trine::Namespace->new('http://example.org/hypermedia#');
 		my $data_iri = iri($base_uri . '/foo/data');
 
@@ -137,7 +138,7 @@ ok($model, "We have a model");
 		my $response = $ld->response($base_uri . '/foo');
 		isa_ok($response, 'Plack::Response');
 		is($response->status, 200, "Returns 200");
-		my $retmodel = return_model($response->content, $parser);
+		my $retmodel = return_model($response->content, $rxparser);
 		my $hmns = RDF::Trine::Namespace->new('http://example.org/hypermedia#');
 		my $data_iri = iri($base_uri . '/foo/data');
 
@@ -189,7 +190,7 @@ TODO: {
 		my $response = $ld->response($base_uri . '/foo');
 		isa_ok($response, 'Plack::Response');
 		is($response->status, 200, "Returns 200");
-		my $retmodel = return_model($response->content, $parser);
+		my $retmodel = return_model($response->content, $rxparser);
 		cmp_ok($retmodel->size, '>', 0, "There are triples in the model");
 		hasnt_uri('http://example.org/new1', $retmodel, 'The predicate didnt go in');
 	}
@@ -201,7 +202,7 @@ TODO: {
 	my $response = $ld->response($base_uri . '/foo');
 	isa_ok($response, 'Plack::Response');
 	is($response->status, 200, "Returns 200");
-	my $retmodel = return_model($response->content, $parser);
+	my $retmodel = return_model($response->content, $rxparser);
 	my $hmns = RDF::Trine::Namespace->new('http://example.org/hypermedia#');
 	my $data_iri = iri($base_uri . '/foo/data');
 	
