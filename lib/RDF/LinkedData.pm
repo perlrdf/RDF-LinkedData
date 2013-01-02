@@ -310,7 +310,7 @@ sub response {
 			if ($headers_in->can('header') && $headers_in->header('Accept')) {
 				$self->logger->debug('Found Accept header: ' . $headers_in->header('Accept'));
 			} else {
-				$headers_in->header(HTTP::Headers->new('Accept' => 'application/rdf+xml'));
+				$headers_in->header('Accept' => 'application/rdf+xml');
 				if ($headers_in->header('Accept')) {
 					$self->logger->warn('Setting Accept header: ' . $headers_in->header('Accept'));
 				} else {
