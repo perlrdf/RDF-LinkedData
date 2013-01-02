@@ -24,6 +24,7 @@ BEGIN {
 
 
 my $parser     = RDF::Trine::Parser->new( 'turtle' );
+my $rxparser   = RDF::Trine::Parser->new( 'rdfxml' );
 my $model = RDF::Trine::Model->temporary_model;
 my $base_uri = 'http://localhost';
 $parser->parse_file_into_model( $base_uri, $file, $model );
@@ -57,7 +58,7 @@ ok($model, "We have a model");
 		my $response = $ld->response($base_uri . '/foo');
 		isa_ok($response, 'Plack::Response');
 		is($response->status, 200, "Returns 200");
-		my $retmodel = return_model($response->content, $parser);
+		my $retmodel = return_model($response->content, $rxparser);
 		has_literal('This is a test', 'en', undef, $retmodel, "Test phrase in content");
 	 SKIP: {
 			skip "No endpoint configured", 2 unless ($ld->has_endpoint);
@@ -107,7 +108,7 @@ ok($model, "We have a model");
 	   my $response = $ld->response($base_uri . '/foo');
 		isa_ok($response, 'Plack::Response');
 		is($response->status, 200, "Returns 200");
-		my $retmodel = return_model($response->content, $parser);
+		my $retmodel = return_model($response->content, $rxparser);
 		has_literal('This is a test', 'en', undef, $retmodel, "Test phrase in content");
 		has_object_uri('http://www.w3.org/2004/02/skos/core#', $retmodel, 'SKOS URI is present');
 		pattern_target($retmodel);
@@ -147,7 +148,7 @@ ok($model, "We have a model");
 	my $response = $ld->response($base_uri . '/foo');
 	isa_ok($response, 'Plack::Response');
 	is($response->status, 200, "Returns 200");
-	my $retmodel = return_model($response->content, $parser);
+	my $retmodel = return_model($response->content, $rxparser);
 	has_literal('This is a test', 'en', undef, $retmodel, "Test phrase in content");
 	hasnt_uri('http://rdfs.org/ns/void#sparqlEndpoint', $retmodel, 'No SPARQL endpoint entered');
 }
@@ -161,7 +162,7 @@ ok($model, "We have a model");
 	my $response = $ld->response($base_uri . '/foo');
 	isa_ok($response, 'Plack::Response');
 	is($response->status, 200, "Returns 200");
-	my $retmodel = return_model($response->content, $parser);
+	my $retmodel = return_model($response->content, $rxparser);
 	has_literal('This is a test', 'en', undef, $retmodel, "Test phrase in content");
 	hasnt_uri('http://rdfs.org/ns/void#vocabulary', $retmodel, 'No vocabs entered');
 }
