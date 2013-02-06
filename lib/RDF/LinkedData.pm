@@ -358,6 +358,7 @@ sub merge {
 #	my $payloadmodel = RDF::Trine::Model->temporary_model;
 	my $payload = $self->request->content;
 	my $headers_in = $self->request->headers;
+	$self->logger->debug('Will merge payload as ' . $headers_in->content_type);
 	my $response = Plack::Response->new;
 	eval {
 		my $parser = RDF::Trine::Parser->parser_by_media_type($headers_in->content_type);
