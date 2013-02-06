@@ -226,6 +226,7 @@ done_testing;
 sub return_model {
 	my ($content, $parser) = @_;
 	my $retmodel = RDF::Trine::Model->temporary_model;
+	return $retmodel unless ($content) ;
 	$parser->parse_into_model( $base_uri, $content, $retmodel );
 	return $retmodel;
 }
