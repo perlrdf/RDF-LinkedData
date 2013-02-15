@@ -1,5 +1,6 @@
 package RDF::LinkedData;
 
+use Moose;
 use namespace::autoclean;
 
 use RDF::Trine qw[iri literal blank statement];
@@ -12,7 +13,6 @@ use URI::NamespaceMap;
 use URI;
 use HTTP::Headers;
 use Module::Load::Conditional qw[can_load];
-use Moose;
 use MooseX::UndefTolerant::Attribute;
 use Encode;
 use RDF::RDFa::Generator 0.102;
