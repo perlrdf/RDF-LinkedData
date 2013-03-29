@@ -221,6 +221,16 @@ TODO: {
 	hasnt_uri($hmns->deleted->uri_value, $retmodel, 'No deleted URIs');
 	hasnt_uri($hmns->replaced->uri_value, $retmodel, 'No replaced URIs');
 	hasnt_uri($hmns->mergedInto->uri_value, $retmodel, 'No mergedInto URIs');
+	$ld->add_auth_levels('http://www.w3.org/ns/auth/acl#Read','http://www.w3.org/ns/auth/acl#Append');
+	{
+		my $mergeresponse = $ld->merge("<$base_uri/foo> " . $hmns->canBe . " " . $hmns->mergedInto . " .");
+		isa_ok($mergeresponse, 'Plack::Response');
+		is($mergeresponse->status, 204, "Returns 204");
+		my $mretmodel = return_model($mergeresponse->content, $rxparser);
+	}
+	has_uri($hmns->mergedInto->uri_value, $retmodel, 'Has mergedInto URI');
+	$ld->clear_auth_level;
+	hasnt_uri($hmns->mergedInto->uri_value, $retmodel, 'No mergedInto URIs');
 
 }
 }
