@@ -216,7 +216,12 @@ TODO: {
 								$hmns->canBe,
 								$hmns->mergedInto),
 				  'MergedInto OK');
-	
+
+	$ld->clear_auth_level;
+	hasnt_uri($hmns->deleted->uri_value, $retmodel, 'No deleted URIs');
+	hasnt_uri($hmns->replaced->uri_value, $retmodel, 'No replaced URIs');
+	hasnt_uri($hmns->mergedInto->uri_value, $retmodel, 'No mergedInto URIs');
+
 }
 }
 
