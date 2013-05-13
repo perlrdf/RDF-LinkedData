@@ -27,8 +27,7 @@ $parser->parse_file_into_model( $base_uri, $file, $model );
 
 ok($model, "We have a model");
 
-{
-	my $ld = RDF::LinkedData->new(model => $model, base_uri=>$base_uri);
+my $ld = RDF::LinkedData->new(model => $model, base_uri=>$base_uri);
 	
 	isa_ok($ld, 'RDF::LinkedData');
 	cmp_ok($ld->count, '>', 0, "There are triples in the model");
@@ -153,7 +152,6 @@ ok($model, "We have a model");
 					  'MergedInto OK');
 
 	}
-}
 
 done_testing;
 
