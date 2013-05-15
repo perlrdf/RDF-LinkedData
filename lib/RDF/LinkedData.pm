@@ -356,7 +356,7 @@ sub merge {
 	my $self = shift;
 	my $uri = URI->new(shift);
 	my $response = Plack::Response->new;
-	my $payload = $self->request->content;
+	my $payload = $self->request->content || shift;
 	if ($payload) {
 	  my $headers_in = $self->request->headers;
 	  $self->logger->debug('Will merge payload as ' . $headers_in->content_type);
