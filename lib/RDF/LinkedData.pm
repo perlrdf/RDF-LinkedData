@@ -375,6 +375,15 @@ sub merge {
 	return $response;
 }
 
+sub replace {
+	my $self = shift;
+	my $uri = URI->new(shift);
+	my $payload = $self->request->content || shift;
+	my $response = Plack::Response->new;
+	$response->status(204);
+	return $response;
+}
+
 
 
 =item C<< helper_properties (  ) >>
