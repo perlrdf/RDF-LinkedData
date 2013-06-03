@@ -114,8 +114,24 @@ TODO: {
 			has_literal('Is actually merged', 'en', undef, $mretmodel, "But test phrase is in content");
 
 		}
-		$ld->clear_auth_level;
-		hasnt_uri($hmns->mergedInto->uri_value, $retmodel, 'No mergedInto URIs');
+		{
+			$ld->clear_auth_level;
+			my $mresponse = $ld->response($base_uri . '/foo');
+			my $mretmodel = return_model($mresponse->content, $rxparser);
+			hasnt_uri($hmns->mergedInto->uri_value, $retmodel, 'No mergedInto URIs after cleared authlevel');
+		}
+	}
+
+	{
+		note "Merge stuff when not authorized";
+		$ld->add_auth_levels('http://www.w3.org/ns/auth/acl#Read');
+		my $mergeresponse = $ld->merge("<$base_uri/foo> <http://example.org/new3> \"l33t h4X0R\"\@en");
+		isa_ok($mergeresponse, 'Plack::Response');
+		is($mergeresponse->status, 401, "Returns 401");
+		my $cresponse = $ld->response($base_uri . '/foo');
+		my $cretmodel = return_model($cresponse->content, $rxparser);
+		hasnt_uri($hmns->mergedInto->uri_value, $cretmodel, 'No mergedInto URIs though we tried');
+		hasnt_uri('http://example.org/new3', $cretmodel, 'The predicate didnt go in');
 	}
 }
 
