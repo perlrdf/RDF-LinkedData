@@ -72,6 +72,7 @@ TODO: {
 	}
 	my $hmns = RDF::Trine::Namespace->new('http://example.org/hypermedia#');
 	{
+		$ld->type('data');
 		my $response = $ld->response($base_uri . '/foo');
 		isa_ok($response, 'Plack::Response');
 		is($response->status, 200, "Returns 200");
@@ -93,6 +94,7 @@ TODO: {
 
 	{
 		note "Shouldnt be able to merge hypermedia triples";
+		$ld->type('data');
 		my $response = $ld->response($base_uri . '/foo');
 		isa_ok($response, 'Plack::Response');
 		is($response->status, 200, "Returns 200");
@@ -128,11 +130,36 @@ TODO: {
 		my $mergeresponse = $ld->merge("<$base_uri/foo> <http://example.org/new3> \"l33t h4X0R\"\@en");
 		isa_ok($mergeresponse, 'Plack::Response');
 		is($mergeresponse->status, 401, "Returns 401");
+		$ld->type('data');
 		my $cresponse = $ld->response($base_uri . '/foo');
 		my $cretmodel = return_model($cresponse->content, $rxparser);
 		hasnt_uri($hmns->mergedInto->uri_value, $cretmodel, 'No mergedInto URIs though we tried');
 		hasnt_uri('http://example.org/new3', $cretmodel, 'The predicate didnt go in');
 	}
+
+	{
+		note "Merge with Write set";
+		$ld->add_auth_levels('http://www.w3.org/ns/auth/acl#Read','http://www.w3.org/ns/auth/acl#Write');
+		my $mergeresponse = $ld->merge("<$base_uri/foo> <http://example.org/new4> \"Goes in\"\@en");
+		isa_ok($mergeresponse, 'Plack::Response');
+		is($mergeresponse->status, 204, "Returns 204");
+		$ld->type('data');
+		my $cresponse = $ld->response($base_uri . '/foo');
+		warn $cresponse->content;
+		my $cretmodel = return_model($cresponse->content, $rxparser);
+		pattern_target($cretmodel);
+		my $data_iri = iri($base_uri . '/foo');
+		pattern_ok(
+					  statement($data_iri,
+									iri('http://example.org/new4'),
+									literal('Goes in', 'en')),
+					  statement($data_iri,
+									iri('http://www.w3.org/2000/01/rdf-schema#label'),
+									literal('This is a test', 'en')),
+					  'MergedInto OK after append with write');
+
+	}
+
 }
 
 
