@@ -106,7 +106,7 @@ TODO: {
 		hasnt_uri($hmns->mergedInto->uri_value, $retmodel, 'No mergedInto URIs');
 		$ld->add_auth_levels('http://www.w3.org/ns/auth/acl#Read','http://www.w3.org/ns/auth/acl#Append');
 		{
-			my $mergeresponse = $ld->merge("<$base_uri/foo> " . $hmns->canBe . " " . $hmns->deleted . " ; <http://example.org/new2> \"Is actually merged\"\@en");
+			my $mergeresponse = $ld->merge($base_uri . '/foo', "<$base_uri/foo> " . $hmns->canBe . " " . $hmns->deleted . " ; <http://example.org/new2> \"Is actually merged\"\@en");
 			isa_ok($mergeresponse, 'Plack::Response');
 			is($mergeresponse->status, 204, "Returns 204");
 			my $mretmodel = return_model($mergeresponse->content, $rxparser);
@@ -127,7 +127,7 @@ TODO: {
 	{
 		note "Merge stuff when not authorized";
 		$ld->add_auth_levels('http://www.w3.org/ns/auth/acl#Read');
-		my $mergeresponse = $ld->merge("<$base_uri/foo> <http://example.org/new3> \"l33t h4X0R\"\@en");
+		my $mergeresponse = $ld->merge($base_uri . '/foo', "<$base_uri/foo> <http://example.org/new3> \"l33t h4X0R\"\@en");
 		isa_ok($mergeresponse, 'Plack::Response');
 		is($mergeresponse->status, 401, "Returns 401");
 		$ld->type('data');
@@ -140,7 +140,7 @@ TODO: {
 	{
 		note "Merge with Write set";
 		$ld->add_auth_levels('http://www.w3.org/ns/auth/acl#Read','http://www.w3.org/ns/auth/acl#Write');
-		my $mergeresponse = $ld->merge("<$base_uri/foo> <http://example.org/new4> \"Goes in\"\@en");
+		my $mergeresponse = $ld->merge($base_uri . '/foo', "<$base_uri/foo> <http://example.org/new4> \"Goes in\"\@en");
 		isa_ok($mergeresponse, 'Plack::Response');
 		is($mergeresponse->status, 204, "Returns 204");
 		$ld->type('data');
@@ -157,6 +157,9 @@ TODO: {
 									iri('http://www.w3.org/2000/01/rdf-schema#label'),
 									literal('This is a test', 'en')),
 					  'MergedInto OK after append with write');
+
+		note "Put will replace";
+		my $putresponse = $ld->replace(
 
 	}
 
