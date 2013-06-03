@@ -114,6 +114,8 @@ TODO: {
 			has_literal('Is actually merged', 'en', undef, $mretmodel, "But test phrase is in content");
 
 		}
+		$ld->clear_auth_level;
+		hasnt_uri($hmns->mergedInto->uri_value, $retmodel, 'No mergedInto URIs');
 	}
 }
 
