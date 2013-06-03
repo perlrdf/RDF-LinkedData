@@ -376,6 +376,7 @@ sub merge {
 }
 
 
+
 =item C<< helper_properties (  ) >>
 
 Returns the L<RDF::Helper::Properties> object if it exists or sets
