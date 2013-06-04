@@ -150,6 +150,12 @@ is($ld->has_auth_level('append'), 1, 'Has append auth level ok');
 								$hmns->canBe,
 								$hmns->mergedInto),
 				  'MergedInto OK');
+	pattern_fail(
+				  statement(iri($base_uri . '/foo'),
+								$hmns->canBe,
+								variable('o')),
+				  'No canBes for the resource URI');
+
 
 }
 

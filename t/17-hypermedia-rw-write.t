@@ -88,6 +88,12 @@ TODO: {
 									$hmns->canBe,
 									$hmns->mergedInto),
 					  'MergedInto OK');
+		pattern_fail(
+						 statement(iri($base_uri . '/foo'),
+									  $hmns->canBe,
+									  variable('o')),
+						 'No canBes for the resource URI');
+
 	}
 
 
@@ -161,6 +167,12 @@ TODO: {
 										iri('http://www.w3.org/2000/01/rdf-schema#label'),
 										literal('This is a test', 'en')),
 						  'MergedInto OK after append with write');
+			pattern_fail(
+							 statement(iri($base_uri . '/foo'),
+										  $hmns->canBe,
+										  variable('o')),
+							 'No canBes for the resource URI');
+
 		}
 
 		{
@@ -181,6 +193,11 @@ TODO: {
 										literal('"Updated triple', 'en')),
 						  'MergedInto OK after put with write');
 			hasnt_uri('http://example.org/new4', $cretmodel, 'The new4 predicate has disappeared.');
+			pattern_fail(
+							 statement(iri($base_uri . '/foo'),
+										  $hmns->canBe,
+										  variable('o')),
+							 'No canBes for the resource URI');
 
 			note "Delete";
 			is($ld->replace($base_uri . '/foo/bar/baz')->status, 401, "Returns 401 for delete to other resource");
