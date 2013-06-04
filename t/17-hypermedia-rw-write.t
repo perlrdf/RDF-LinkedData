@@ -109,7 +109,11 @@ TODO: {
 			my $mergeresponse = $ld->merge($base_uri . '/foo', "<$base_uri/foo> " . $hmns->canBe . " " . $hmns->deleted . " ; <http://example.org/new2> \"Is actually merged\"\@en");
 			isa_ok($mergeresponse, 'Plack::Response');
 			is($mergeresponse->status, 204, "Returns 204");
-			my $mretmodel = return_model($mergeresponse->content, $rxparser);
+			$ld->type('data');
+			my $mresponse = $ld->response($base_uri . '/foo');
+			isa_ok($mresponse, 'Plack::Response');
+			is($mresponse->status, 200, "Returns 200");
+			my $mretmodel = return_model($response->content, $rxparser);
 			hasnt_uri($hmns->deleted->uri_value, $mretmodel, 'Still no deleted URIs');
 			hasnt_uri($hmns->replaced->uri_value, $mretmodel, 'No replaced URIs');
 			has_uri($hmns->mergedInto->uri_value, $mretmodel, 'Has mergedInto URIs');
@@ -143,23 +147,40 @@ TODO: {
 		my $mergeresponse = $ld->merge($base_uri . '/foo', "<$base_uri/foo> <http://example.org/new4> \"Goes in\"\@en");
 		isa_ok($mergeresponse, 'Plack::Response');
 		is($mergeresponse->status, 204, "Returns 204");
-		$ld->type('data');
-		my $cresponse = $ld->response($base_uri . '/foo');
-		warn $cresponse->content;
-		my $cretmodel = return_model($cresponse->content, $rxparser);
-		pattern_target($cretmodel);
 		my $data_iri = iri($base_uri . '/foo');
-		pattern_ok(
-					  statement($data_iri,
-									iri('http://example.org/new4'),
-									literal('Goes in', 'en')),
-					  statement($data_iri,
-									iri('http://www.w3.org/2000/01/rdf-schema#label'),
-									literal('This is a test', 'en')),
-					  'MergedInto OK after append with write');
+		{
+			$ld->type('data');
+			my $cresponse = $ld->response($base_uri . '/foo');
+			my $cretmodel = return_model($cresponse->content, $rxparser);
+			pattern_target($cretmodel);
+			pattern_ok(
+						  statement($data_iri,
+										iri('http://example.org/new4'),
+										literal('Goes in', 'en')),
+						  statement($data_iri,
+										iri('http://www.w3.org/2000/01/rdf-schema#label'),
+										literal('This is a test', 'en')),
+						  'MergedInto OK after append with write');
+		}
 
-		note "Put will replace";
-		my $putresponse = $ld->replace(
+		{
+			note "Put will replace";
+			my $putresponse = $ld->replace($base_uri . '/foo', "<$base_uri/foo> <http://example.org/new5> \"Goes in\"\@en ; <http://www.w3.org/2000/01/rdf-schema\#label> \"Updated triple\"\@en .");
+			$ld->type('data');
+			my $cresponse = $ld->response($base_uri . '/foo');
+			my $cretmodel = return_model($cresponse->content, $rxparser);
+			pattern_target($cretmodel);
+			pattern_ok(
+						  statement($data_iri,
+										iri('http://example.org/new5'),
+										literal('Goes in', 'en')),
+						  statement($data_iri,
+										iri('http://www.w3.org/2000/01/rdf-schema#label'),
+										literal('"Updated triple', 'en')),
+						  'MergedInto OK after put with write');
+			hasnt_uri('http://example.org/new4', $cretmodel, 'The new4 predicate has disappeared.');
+
+		}
 
 	}
 
