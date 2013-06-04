@@ -166,6 +166,8 @@ TODO: {
 		{
 			note "Put will replace";
 			my $putresponse = $ld->replace($base_uri . '/foo', "<$base_uri/foo> <http://example.org/new5> \"Goes in\"\@en ; <http://www.w3.org/2000/01/rdf-schema\#label> \"Updated triple\"\@en .");
+			isa_ok($putresponse, 'Plack::Response');
+			is($putresponse->status, 204, "Returns 204");
 			$ld->type('data');
 			my $cresponse = $ld->response($base_uri . '/foo');
 			my $cretmodel = return_model($cresponse->content, $rxparser);
@@ -179,6 +181,18 @@ TODO: {
 										literal('"Updated triple', 'en')),
 						  'MergedInto OK after put with write');
 			hasnt_uri('http://example.org/new4', $cretmodel, 'The new4 predicate has disappeared.');
+
+			note "Delete";
+			is($ld->replace($base_uri . '/foo/bar/baz')->status, 401, "Returns 401 for delete to other resource");
+			is($ld->replace($base_uri . '/foobaz')->status, 404, "Returns 404 for access to unknown");
+			my $deleteresponse = $ld->replace($base_uri . '/foo');
+			isa_ok($deleteresponse, 'Plack::Response');
+			is($deleteresponse->status, 204, "Returns 204");
+			$ld->type('data');
+			my $dresponse = $ld->response($base_uri . '/foo');
+			isa_ok($dresponse, 'Plack::Response');
+			is($dresponse->status, 404, "Returns 404 after deletion");
+
 
 		}
 
