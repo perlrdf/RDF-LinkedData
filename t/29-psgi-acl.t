@@ -11,6 +11,8 @@ use Module::Load::Conditional qw[check_install];
 use RDF::Trine::Namespace qw(rdf);
 
 
+
+
 unless (defined(check_install( module => 'RDF::ACL', version => 0.1))) {
   plan skip_all => 'You need RDF::ACL for this test'
 }
@@ -64,11 +66,21 @@ my $base_uri = 'http://localhost/';
 								 $hmns->mergedInto),
 					'All three write triples'
 				  );
+		pattern_fail(
+						 statement(iri($base_uri .'/bar/baz/bing'),
+									  $hmns->canBe,
+									  variable('o')),
+						 'No canBes for the resource URI');
+
 	 note 'Post to  /bar/baz/bing/data';
+	 $mech->post("/bar/baz/bing/data", { 'Content-Type' => 'text/turtle', 
+														 Content => "<$base_uri/foo> <http://example.org/error> \"No merged triple\"\@en" });
+	 is($mech->status, 400, "Posting /foo to /bar/baz/bing returns 400");
+
 	 $mech->post_ok("/bar/baz/bing/data", { 'Content-Type' => 'text/turtle', 
-														 Content => "<$base_uri/foo> <http://example.org/new2> \"Merged triple\"\@en" });
+														 Content => "<$base_uri/bar/baz/bing> <http://example.org/new2> \"Merged triple\"\@en" });
 	 is($mech->status, 204, "Returns 204");
-	 }
+
     $mech->get_ok("/bar/baz/bing");
     is($mech->ct, 'application/rdf+xml', "Correct content-type");
     like($mech->uri, qr|/bar/baz/bing/data$|, "Location is OK");
@@ -76,11 +88,26 @@ my $base_uri = 'http://localhost/';
 	 my $model = return_model($mech->content, $rxparser);
     has_subject($base_uri . 'bar/baz/bing', $model, "Subject URI in content");
     has_literal('Testing with longer URI.', 'en', undef, $model, "Test phrase in content");
+	 hasnt_uri('http://example.org/error', $model, 'The URI in the error subject isnt in');
 	 hasnt_uri('http://rdfs.org/ns/void#sparqlEndpoint', $model, 'No SPARQL endpoint link in data');
-  TODO: {
-		local $TODO = 'Functionality missing, TDD testing in progress'; 
 	 has_predicate('http://example.org/new2', $model, 'Test data now there');
-	 }
+
+	 note 'Write operations to /foo (not data)';
+	 $mech->post("/foo", { 'Content-Type' => 'text/turtle', 
+														 Content => "<$base_uri/foo> <http://example.org/error> \"No merged triple\"\@en" });
+		is($mech->status, 405, "Posting /foo returns 405");
+		$mech->content_contains( "Write operations should be on /data-suffixed URIs, not the resource itself", "Error message for resource posts" );
+	 $mech->put("/foo", { 'Content-Type' => 'text/turtle',
+														 Content => "<$base_uri/foo> <http://example.org/error> \"No merged triple\"\@en" });
+		is($mech->status, 405, "Putting /foo returns 405");
+		$mech->content_contains( "Write operations should be on /data-suffixed URIs, not the resource itself", "Error message for resource puts" );
+	# Seems we cannot get hold of LWP UA's delete method
+	# $mech->delete("/foo");
+	#	is($mech->status, 400, "Deleting /foo returns 400");
+	#	$mech->content_contains( "Write operations should be on /data-suffixed URIs, not the resource itself", "Error message for resource deletes" );
+	 
+
+	}
 }
 
 
