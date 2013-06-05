@@ -296,7 +296,7 @@ Kjetil Kjernsmo, C<< <kjetilk@cpan.org> >>
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2010-2012 Kjetil Kjernsmo
+Copyright 2010-2013 Kjetil Kjernsmo
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
