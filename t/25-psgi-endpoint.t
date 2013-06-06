@@ -38,14 +38,14 @@ Log::Log4perl->easy_init( { level   => $FATAL } ) unless $ENV{TEST_VERBOSE};
     note "Post /foo, no redirects";
     my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester, requests_redirectable => []);
     my $res = $mech->post("/foo");
-    is($mech->status, 405, "Returns 405");
+    is($mech->status, 401, "Returns 401");
 }
 
 {
     note "Post /foo/data, no redirects";
     my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester, requests_redirectable => []);
     my $res = $mech->post("/foo/data");
-    is($mech->status, 405, "Returns 405");
+    is($mech->status, 401, "Returns 401");
 }
 
 

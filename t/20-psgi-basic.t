@@ -152,7 +152,7 @@ my $base_uri = 'http://localhost/';
 
     $mech->post("/bar/baz/bing", { 'Content-Type' => 'text/turtle', 
 														 Content => "<$base_uri/foo> <http://example.org/new2> \"Merged triple\"\@en" });
-    is($mech->status, '405', "Method is not allowed");
+    is($mech->status, '401', "Method is not allowed");
 }
 
 {
@@ -161,7 +161,7 @@ my $base_uri = 'http://localhost/';
 
     $mech->post("/bar/baz/bing/data", { 'Content-Type' => 'text/turtle', 
 														 Content => "<$base_uri/foo> <http://example.org/new2> \"Merged triple\"\@en" });
-    is($mech->status, '405', "Method is not allowed");
+    is($mech->status, '401', "Method is not allowed");
 }
 
 
@@ -199,7 +199,7 @@ TODO: {
     isnt($mech->status, 200, "/sparql doesn't return 200 for a get");
     $mech->post("/sparql");
     isnt($mech->status, 200, "/sparql doesn't return 200 for a post");
-    is($mech->status, 405, "/sparql returns 405 for a post");
+    is($mech->status, 401, "/sparql returns 401 for a post");
     $mech->get("/");
     isnt($mech->status, 200, "root doesn't return 200");
 

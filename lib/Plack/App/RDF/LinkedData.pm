@@ -270,9 +270,6 @@ sub call {
 	my $req = Plack::Request->new($env);
 	my $uri = $req->uri;
 	my $ld = $self->{linkeddata};
-	unless ($self->is_read_operation($req)) {
-		return [ 405, [ 'Content-type', 'text/plain' ], [ 'Method not allowed' ] ];
-	}
 
 	if ($uri->as_iri =~ m!^(.+?)/?(page|data)$!) {
 		$uri = URI->new($1);
@@ -285,7 +282,7 @@ sub call {
 sub auth_required {
 	my ($self, $env) = @_;
 	my $req = Plack::Request->new($env);
-	return 0 if (! $self->is_read_operation($req));
+	return (! $self->is_read_operation($req));
 
 }
 
