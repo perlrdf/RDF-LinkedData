@@ -258,7 +258,8 @@ sub prepare_app {
 	$self->{linkeddata} = RDF::LinkedData->new(store => $config->{store},
 															 endpoint_config => $config->{endpoint},
 															 void_config => $config->{void},
-															 base_uri => $config->{base_uri}
+															 base_uri => $config->{base_uri},
+															 acl_config => $config->{acl}
 															);
 	$self->{linkeddata}->namespaces(URI::NamespaceMap->new($config->{namespaces})) if ($config->{namespaces});
 #	if($config->{acl}=
@@ -269,12 +270,7 @@ sub call {
 	my $req = Plack::Request->new($env);
 	my $uri = $req->uri;
 	my $ld = $self->{linkeddata};
-	my $endpoint_path;
-	if ($ld->has_endpoint) {
-	  $endpoint_path = $ld->endpoint_config->{endpoint_path};
-	}
-	unless (($req->method eq 'GET') || ($req->method eq 'HEAD')
-			  || (($req->method eq 'POST') && defined($endpoint_path) && ($uri =~ m|$endpoint_path$|))) {
+	unless ($self->is_read_operation($req)) {
 		return [ 405, [ 'Content-type', 'text/plain' ], [ 'Method not allowed' ] ];
 	}
 
@@ -284,6 +280,25 @@ sub call {
 	}
 	$ld->request($req);
 	return $ld->response($uri)->finalize;
+}
+
+sub auth_required {
+	my ($self, $env) = @_;
+	my $req = Plack::Request->new($env);
+	return 0 if (! $self->is_read_operation($req));
+
+}
+
+sub is_read_operation {
+	my ($self, $req) = @_;
+	my $uri = $req->uri;
+	my $endpoint_path;
+	my $ld = $self->{linkeddata}; # Might be a performance problem
+	if ($ld->has_endpoint) {
+	  $endpoint_path = $ld->endpoint_config->{endpoint_path};
+	}
+	return (($req->method eq 'GET') || ($req->method eq 'HEAD')
+			  || (($req->method eq 'POST') && defined($endpoint_path) && ($uri =~ m|$endpoint_path$|)))
 }
 
 1;
