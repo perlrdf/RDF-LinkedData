@@ -38,10 +38,16 @@ builder {
 	enable "ContentLength";
 	enable "ConditionalGET";
 	if (can_load( modules => { 'Plack::Middleware::CrossOrigin' => 0 })) { enable 'CrossOrigin' => %{$config->{cors}}};
+	enable_if { $linkeddata->auth_required($_[0]) } "Auth::Basic", authenticator => \&authen_cb;
+	# TODO: Find clever ways to support other auth modules
 	$rdf_linkeddata;
 };
 
-
+sub authen_cb {
+    my($username, $password, $env) = @_;
+	 return 1;
+    return $username eq 'admin' && $password eq 's3cr3t';
+}
 __END__
 
 
