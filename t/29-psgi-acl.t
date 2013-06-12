@@ -50,7 +50,7 @@ my $base_uri = 'http://localhost/';
 	hasnt_uri('http://rdfs.org/ns/void#sparqlEndpoint', $model, 'No SPARQL endpoint link in data');
 	hasnt_uri('http://example.org/new2', $model, 'Test data not there yet');
 	my $hmns = RDF::Trine::Namespace->new('http://example.org/hypermedia#');
-	my $data_iri = iri($base_uri . '/bar/baz/bing/data');
+	my $data_iri = iri($base_uri . 'bar/baz/bing/data');
 	pattern_target($model);
 	pattern_ok(
 				  statement($data_iri,
