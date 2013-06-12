@@ -45,8 +45,7 @@ builder {
 
 sub authen_cb {
     my($username, $password, $env) = @_;
-	 return 1;
-    return $username eq 'admin' && $password eq 's3cr3t';
+    return $username eq 'testuser' && $password eq 'sikrit';
 }
 __END__
 
