@@ -261,8 +261,8 @@ sub prepare_app {
 															 base_uri => $config->{base_uri},
 															 acl_config => $config->{acl}
 															);
+
 	$self->{linkeddata}->namespaces(URI::NamespaceMap->new($config->{namespaces})) if ($config->{namespaces});
-#	if($config->{acl}=
 }
 
 sub call {

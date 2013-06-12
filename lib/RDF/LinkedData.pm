@@ -126,6 +126,17 @@ sub BUILD {
  	} else {
 		$self->logger->info('No endpoint config found');
 	}
+ 	if ($self->has_acl_config) {
+		$self->logger->debug('ACL config found with parameters: ' . Dumper($self->acl_config) );
+
+		unless (can_load( modules => { 'RDF::ACL' => 0.100 })) {
+			throw Error -text => "RDF::ACL not installed. Please install or remove its configuration.";
+		}
+
+		$self->acl;
+ 	} else {
+		$self->logger->info('No ACL config found');
+	}
 
  	if ($self->has_void_config) {
 		$self->logger->debug('VoID config found with parameters: ' . Dumper($self->void_config) );
@@ -167,9 +178,17 @@ has acl_model => (is => 'ro', isa => 'RDF::Trine::Model', lazy => 1, builder => 
 
 sub _build_acl_model {
 	my $self = shift;
+#	warn Dumper($self->acl_config);
 	return $self->_load_model($self->acl_config->{store});
 }
 
+has acl => (is => 'ro', isa => 'RDF::ACL', builder => '_build_acl', lazy => 1,
+				handles => { check_authz => 'check' });
+
+sub _build_acl {
+	my $self = shift;
+	return RDF::ACL->new($self->acl_model);
+}
 
 sub _load_model {
 	my ($self, $store_config) = @_;
@@ -277,6 +296,7 @@ sub response {
 	my $response = Plack::Response->new;
 
 	my $headers_in = $self->request->headers;
+	$self->logger->debug( "Logged in as: " . $self->request->user);
 
 	my $endpoint_path;
 	if ($self->has_endpoint) {
@@ -317,6 +337,11 @@ sub response {
 					$self->logger->warn('No content type header can be set');
 				}
 			}
+
+			if($type eq 'data') {
+				$self->add_auth_levels($self->chech_authz);
+			}
+
 			$response->status(200);
 			my $content = $self->_content($node, $type, $endpoint_path);
 			$response->headers->header('Vary' => join(", ", qw(Accept)));
