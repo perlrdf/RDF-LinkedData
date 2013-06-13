@@ -235,7 +235,15 @@ Returns the L<Plack::Request> object if it exists or sets it if a L<Plack::Reque
 
 =cut
 
-has request => ( is => 'rw', isa => 'Plack::Request');
+has request => ( is => 'rw', isa => 'Plack::Request', handles => { user => 'user' });
+
+around user => sub {
+	my ($orig, $self) = (shift, shift);
+	my $uname = $self->$orig;
+	return "urn:X-basicauth:$uname" if ($uname);
+};
+
+sub is_logged_in { return defined $_[0]->user };
 
 
 =item C<< current_etag >>
@@ -266,16 +274,7 @@ has 'namespaces' => (is => 'rw',
 											'list_namespaces' => 'list_namespaces'
 										  });
 
-has 'user' => (is => 'rw',
-					isa => 'URI',
-					builder => '_build_user',
-					lazy => 1);
 
-sub _build_user {
-	my $self = shift;
-	# Hardcode basic for now
-	return URI->new('urn:X-basicauth:' . $self->request->user);
-}
 
 sub _build_namespaces {
   my ($self, $ns_hash) = @_;
@@ -308,7 +307,7 @@ sub response {
 	my $response = Plack::Response->new;
 
 	my $headers_in = $self->request->headers;
-	$self->logger->debug( "Logged in as: " . $self->user);
+	$self->logger->debug( "Logged in as: " . $self->user) if $self->is_logged_in;
 
 	my $endpoint_path;
 	if ($self->has_endpoint) {
@@ -350,7 +349,7 @@ sub response {
 				}
 			}
 
-			if($type eq 'data') {
+			if($type eq 'data' && $self->is_logged_in) {
 				$self->add_auth_levels($self->check_authz($self->user, $node->uri_value . '/data'));
 			}
 
