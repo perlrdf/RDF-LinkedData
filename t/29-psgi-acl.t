@@ -34,11 +34,21 @@ Log::Log4perl->easy_init( { level   => $FATAL } ) unless $ENV{TEST_VERBOSE};
 my $rxparser = RDF::Trine::Parser->new( 'rdfxml' );
 my $base_uri = 'http://localhost/';
 
+my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester);
 
 
 {
+	note 'Write operations without authentication';
+	$mech->post("/bar/baz/bing/data", { 'Content-Type' => 'text/turtle', 
+													Content => "<$base_uri/bar/baz/bing> <http://example.org/error> \"No merged triple\"\@en" });
+	is($mech->status, 401, "Posting returns 401");
+	$mech->put("/bar/baz/bing/data", { 'Content-Type' => 'text/turtle',
+												  Content => "<$base_uri/bar/baz/bing> <http://example.org/error> \"No merged triple\"\@en" });
+	is($mech->status, 401, "Putting returns 401");
+
+	ok($mech->credentials('testuser', 'sikrit' ), 'Setting credentials (cannot really fail...)');
+
 	note "Get /bar/baz/bing, ask for RDF/XML";
-	my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester);
 	$mech->default_header('Accept' => 'application/rdf+xml');
 	$mech->get_ok("/bar/baz/bing");
 	is($mech->ct, 'application/rdf+xml', "Correct content-type");
@@ -69,16 +79,6 @@ my $base_uri = 'http://localhost/';
 								  $hmns->canBe,
 								  variable('o')),
 					 'No canBes for the resource URI');
-
-	note 'Write operations without authentication';
-	$mech->post("/bar/baz/bing/data", { 'Content-Type' => 'text/turtle', 
-													Content => "<$base_uri/bar/baz/bing> <http://example.org/error> \"No merged triple\"\@en" });
-	is($mech->status, 401, "Posting returns 401");
-	$mech->put("/bar/baz/bing/data", { 'Content-Type' => 'text/turtle',
-												  Content => "<$base_uri/bar/baz/bing> <http://example.org/error> \"No merged triple\"\@en" });
-	is($mech->status, 401, "Putting returns 401");
-
-	ok($mech->credentials('testuser', 'sikrit' ), 'Setting credentials');
 
 
 	note 'Post to  /bar/baz/bing/data';

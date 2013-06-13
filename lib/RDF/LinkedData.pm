@@ -307,7 +307,11 @@ sub response {
 	my $response = Plack::Response->new;
 
 	my $headers_in = $self->request->headers;
-	$self->logger->debug( "Logged in as: " . $self->user) if $self->is_logged_in;
+	if ($self->is_logged_in) {
+		$self->logger->debug('Logged in as: ' . $self->user);
+	} else {
+		$self->logger->debug('No user is logged in');
+	}
 
 	my $endpoint_path;
 	if ($self->has_endpoint) {
