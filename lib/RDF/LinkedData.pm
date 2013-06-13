@@ -23,7 +23,9 @@ with 'MooseX::Log::Log4perl::Easy';
 
 BEGIN {
 	if ($ENV{TEST_VERBOSE}) {
-		Log::Log4perl->easy_init( { level   => $TRACE } );
+		Log::Log4perl->easy_init( { level   => $TRACE,
+											 category => 'RDF.LinkedData'
+										  } );
 	} else {
 		Log::Log4perl->easy_init( { level   => $FATAL } );
 	}
@@ -264,6 +266,16 @@ has 'namespaces' => (is => 'rw',
 											'list_namespaces' => 'list_namespaces'
 										  });
 
+has 'user' => (is => 'rw',
+					isa => 'URI',
+					builder => '_build_user',
+					lazy => 1);
+
+sub _build_user {
+	my $self = shift;
+	# Hardcode basic for now
+	return URI->new('urn:X-basicauth:' . $self->request->user);
+}
 
 sub _build_namespaces {
   my ($self, $ns_hash) = @_;
@@ -296,7 +308,7 @@ sub response {
 	my $response = Plack::Response->new;
 
 	my $headers_in = $self->request->headers;
-	$self->logger->debug( "Logged in as: " . $self->request->user);
+	$self->logger->debug( "Logged in as: " . $self->user);
 
 	my $endpoint_path;
 	if ($self->has_endpoint) {
@@ -339,7 +351,7 @@ sub response {
 			}
 
 			if($type eq 'data') {
-				$self->add_auth_levels($self->chech_authz);
+				$self->add_auth_levels($self->check_authz($self->user, $node->uri_value . '/data'));
 			}
 
 			$response->status(200);
