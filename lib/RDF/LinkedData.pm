@@ -307,6 +307,8 @@ sub response {
 	my $response = Plack::Response->new;
 
 	my $headers_in = $self->request->headers;
+	$self->logger->trace('Full headers we respond to: ' . $headers_in->as_string);
+
 	if ($self->is_logged_in) {
 		$self->logger->debug('Logged in as: ' . $self->user);
 	} else {
