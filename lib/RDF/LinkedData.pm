@@ -734,7 +734,11 @@ almost totally rewritten.
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2010 Gregory Todd Williams and ABC Startsiden AS, 2010-2012 Kjetil Kjernsmo
+Copyright 2010 Gregory Todd Williams
+
+Copyright 2010 ABC Startsiden AS
+
+Copyright 2010, 2011, 2012, 2013 Kjetil Kjernsmo
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
