@@ -162,15 +162,6 @@ sub _build_model {
 	return $self->_load_model($self->store);
 }
 
-has acl_model => (is => 'ro', isa => 'RDF::Trine::Model', lazy => 1, builder => '_build_acl_model', 
-				  handles => { acl_etag => 'etag' });
-
-sub _build_acl_model {
-	my $self = shift;
-	return $self->_load_model($self->acl_config->{store});
-}
-
-
 sub _load_model {
 	my ($self, $store_config) = @_;
 	# First, set the base if none is configured
@@ -204,8 +195,6 @@ has endpoint_config => (is => 'rw', traits => [ qw(MooseX::UndefTolerant::Attrib
 has void_config => (is => 'rw', traits => [ qw(MooseX::UndefTolerant::Attribute)],
 								isa=>'HashRef', predicate => 'has_void_config');
 
-has acl_config => (is => 'rw', traits => [ qw(MooseX::UndefTolerant::Attribute)],
-								isa=>'HashRef', predicate => 'has_acl_config');
 
 
 =item C<< request ( [ $request ] ) >>
@@ -429,37 +418,6 @@ sub count {
 	return $self->model->count_statements( $node, undef, undef );
 }
 
-#has webid => (is => 'ro', isa => 'Web::Id', predicate => 'has_webid', clearer => 'clear_webid');
-
-has auth_uri => (
-					  is        => 'rw',
-					  isa       => 'Str',
-					  predicate => 'has_auth_uri',
-					  clearer   => 'clear_auth_uri'
-					 );
-
-has auth_level => (
-						 is       => 'rw',
-						 traits   => ['Array'],
-						 isa      => 'ArrayRef[Str]',
-						 default  => sub { ['http://www.w3.org/ns/auth/acl#Read'] },
-						 handles  => {
-										  all_auth_levels    => 'uniq',
-										  add_auth_levels    => 'push',
-										  has_no_auth_levels => 'is_empty',
-										 },
-						 clearer  => 'clear_auth_level'
-						);
-
-sub has_auth_level { # Clearly, my Moose-fu is inadequate, just hack it for now.
-	my ($self, $level) = @_;
-	return 1 if scalar(grep(/\#$level$/i, $self->all_auth_levels));
-	if (lc($level) eq 'append') { # Special case, surely write entails append?
-		return 1 if scalar(grep(/\#Write$/, $self->all_auth_levels));
-	}
-	return 0;
-}
-
 
 # =item C<< _content ( $node, $type, $endpoint_path) >>
 #
@@ -511,22 +469,6 @@ sub _content {
 					}
 				}
 			}
-			my $hmns = RDF::Trine::Namespace->new('http://example.org/hypermedia#');
-			if ($self->has_auth_level('write')) {
-				$hmmodel->add_statement(statement($data_iri,
-															 $hmns->canBe,
-															 $hmns->replaced));
-				$hmmodel->add_statement(statement($data_iri,
-															 $hmns->canBe,
-															 $hmns->deleted));
-			}
-			if ($self->has_auth_level('append')) {
-				$hmmodel->add_statement(statement($data_iri,
-															 $hmns->canBe,
-															 $hmns->mergedInto));
-			}
-
-
 			$iter = $iter->concat($hmmodel->as_stream);
 		}
 		$output{body} = $s->serialize_iterator_to_string ( $iter );
