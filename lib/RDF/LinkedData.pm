@@ -38,7 +38,7 @@ BEGIN {
 
 =head1 NAME
 
-RDF::LinkedData - A simple Linked Data implementation
+RDF::LinkedData - A simple Linked Data server implementation
 
 =head1 VERSION
 
