@@ -3,6 +3,7 @@ use strict;
 use warnings;
 use parent qw( Plack::Component );
 use RDF::LinkedData;
+use URI::NamespaceMap;
 use Plack::Request;
 
 =head1 NAME
@@ -259,19 +260,24 @@ sub prepare_app {
 															 void_config => $config->{void},
 															 base_uri => $config->{base_uri}
 															);
-	$self->{linkeddata}->namespaces($config->{namespaces}) if ($config->{namespaces});
+	$self->{linkeddata}->namespaces(URI::NamespaceMap->new($config->{namespaces})) if ($config->{namespaces});
 #	if($config->{acl}=
 }
 
 sub call {
 	my($self, $env) = @_;
 	my $req = Plack::Request->new($env);
+	my $uri = $req->uri;
 	my $ld = $self->{linkeddata};
-	unless (($req->method eq 'GET') || ($req->method eq 'HEAD')) {
+	my $endpoint_path;
+	if ($ld->has_endpoint) {
+	  $endpoint_path = $ld->endpoint_config->{endpoint_path};
+	}
+	unless (($req->method eq 'GET') || ($req->method eq 'HEAD')
+			  || (($req->method eq 'POST') && defined($endpoint_path) && ($uri =~ m|$endpoint_path$|))) {
 		return [ 405, [ 'Content-type', 'text/plain' ], [ 'Method not allowed' ] ];
 	}
 
-	my $uri = $req->uri;
 	if ($uri->as_iri =~ m!^(.+?)/?(page|data)$!) {
 		$uri = URI->new($1);
 		$ld->type($2);

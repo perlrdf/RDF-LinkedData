@@ -34,6 +34,20 @@ Log::Log4perl->easy_init( { level   => $FATAL } ) unless $ENV{TEST_VERBOSE};
     like($res->header('Location'), qr|/foo/data$|, "Location is OK");
 }
 
+{
+    note "Post /foo, no redirects";
+    my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester, requests_redirectable => []);
+    my $res = $mech->post("/foo");
+    is($mech->status, 405, "Returns 405");
+}
+
+{
+    note "Post /foo/data, no redirects";
+    my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester, requests_redirectable => []);
+    my $res = $mech->post("/foo/data");
+    is($mech->status, 405, "Returns 405");
+}
+
 
 {
     note "Get /foo, no redirects, ask for RDF/XML";
@@ -71,7 +85,7 @@ my $base_uri = 'http://localhost/';
 
 
 {
-    note "Check for SPARQL endpoint";
+    note "Check for SPARQL endpoint using get";
     my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester);
     $mech->get_ok("/sparql", "Returns 200");
     $mech->title_like(qr/SPARQL/, "Title contains the word SPARQL");
@@ -84,6 +98,19 @@ my $base_uri = 'http://localhost/';
         }, 'Submitting DESCRIBE query.'
     );
     is_rdf($mech->content, 'turtle', 
+	   '<http://localhost/bar/baz/bing> <http://www.w3.org/2000/01/rdf-schema#label> "Testing with longer URI."@en .',
+	   'turtle',  'SPARQL Query returns correct triple');
+}
+
+{
+    note "Check for SPARQL endpoint using post";
+    my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester);
+    $mech->post_ok('/sparql', {
+							query => 'DESCRIBE <http://localhost/bar/baz/bing> WHERE {}',
+							'Accept' => 'application/rdf+xml'
+						  },
+						  'Submitting DESCRIBE query.');
+    is_rdf($mech->content, 'rdfxml', 
 	   '<http://localhost/bar/baz/bing> <http://www.w3.org/2000/01/rdf-schema#label> "Testing with longer URI."@en .',
 	   'turtle',  'SPARQL Query returns correct triple');
 }

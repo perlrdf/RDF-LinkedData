@@ -8,6 +8,7 @@ use RDF::Trine::Namespace;
 use Log::Log4perl qw(:easy);
 use Plack::Response;
 use RDF::Helper::Properties;
+use URI::NamespaceMap;
 use URI;
 use HTTP::Headers;
 use Module::Load::Conditional qw[can_load];
@@ -116,6 +117,11 @@ sub BUILD {
 		unless (can_load( modules => { 'RDF::Endpoint' => 0.03 })) {
 			throw Error -text => "RDF::Endpoint not installed. Please install or remove its configuration.";
 		}
+
+		unless (defined($self->endpoint_config->{endpoint_path})) {
+		  $self->endpoint_config->{endpoint_path} = '/sparql';
+		}
+
 		$self->endpoint(RDF::Endpoint->new($self->model, $self->endpoint_config));
  	} else {
 		$self->logger->info('No endpoint config found');
@@ -231,18 +237,31 @@ Gets or sets the namespaces that some serializers use for pretty-printing.
 =cut
 
 has 'namespaces' => (is => 'rw', 
-							isa => 'RDF::Trine::NamespaceMap', 
+							isa => 'URI::NamespaceMap',
 							builder => '_build_namespaces',
 							lazy => 1,
 							handles => {
 											'add_namespace_mapping' => 'add_mapping',
+											'list_namespaces' => 'list_namespaces'
 										  });
 
 
 sub _build_namespaces {
-  my $self = shift;
-  return RDF::Trine::NamespaceMap->new({ rdf => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' });
+  my ($self, $ns_hash) = @_;
+  return $ns_hash || URI::NamespaceMap->new({ rdf => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' });
 }
+
+# Just a temporary compatibility hack
+sub _namespace_hashref {
+  my $self = shift;
+  my %hash;
+  foreach my $prefix ($self->namespaces->list_prefixes) {
+	 $hash{$prefix} = $self->namespaces->namespace_uri($prefix)->as_string;
+  }
+  return \%hash;
+}
+
+  
 
 
 =item C<< response ( $uri ) >>
@@ -258,13 +277,13 @@ sub response {
 	my $response = Plack::Response->new;
 
 	my $headers_in = $self->request->headers;
-	my $endpoint_path = '/sparql';
-	if ($self->has_endpoint_config && defined($self->endpoint_config->{endpoint_path})) {
-      $endpoint_path = $self->endpoint_config->{endpoint_path};
-	}
 
-	if ($self->has_endpoint && ($uri->path eq $endpoint_path)) {
-      return $self->endpoint->run( $self->request );
+	my $endpoint_path;
+	if ($self->has_endpoint) {
+	  $endpoint_path = $self->endpoint_config->{endpoint_path};
+	  if ($uri->path eq $endpoint_path) {
+		 return $self->endpoint->run( $self->request );
+	  }
 	}
 
 	if ($self->has_void) {
@@ -463,7 +482,7 @@ sub _content {
 		$self->{_type} = 'data';
 		my ($ctype, $s) = RDF::Trine::Serializer->negotiate('request_headers' => $self->request->headers,
 																			base => $self->base_uri,
-																			namespaces => $self->namespaces);
+																			namespaces => $self->_namespace_hashref);
 		$output{content_type} = $ctype;
 		if ($self->hypermedia) {
 			my $data_iri = iri($node->uri_value . '/data');
@@ -485,10 +504,10 @@ sub _content {
 					$hmmodel->add_statement(statement($data_iri, 
 																 iri('http://rdfs.org/ns/void#inDataset'), 
 																 blank('void')));
-					foreach my $nsuri (values(%{$self->namespaces})) {
+					foreach my $nsuri ($self->list_namespaces) {
 						$hmmodel->add_statement(statement(blank('void'), 
 																	 iri('http://rdfs.org/ns/void#vocabulary'),
-																	 iri($nsuri)));
+																	 iri($nsuri->uri)));
 					}
 				}
 			}
@@ -523,7 +542,7 @@ sub _content {
 		my $gen  = RDF::RDFa::Generator->new( style => 'HTML::Pretty',
 														  title => $preds->title( $node ),
 														  base => $self->base_uri,
-														  namespaces => $self->namespaces);
+														  namespaces => $self->_namespace_hashref);
 		my $writer = HTML::HTML5::Writer->new( charset => 'ascii', markup => 'html' );
 		$output{body} = $writer->document($gen->create_document($returnmodel));
 		$output{content_type} = 'text/html';
@@ -566,7 +585,7 @@ sub _negotiate {
 	eval {
 		($ct, $s) = RDF::Trine::Serializer->negotiate('request_headers' => $headers_in,
 																	 base_uri => $self->base_uri,
-																	 namespaces => $self->namespaces,
+																	 namespaces => $self->_namespace_hashref,
 																	 extend => {
 																					'text/html' => 'html',
 																					'application/xhtml+xml' => 'xhtml'
@@ -624,7 +643,7 @@ sub _void_content {
 				$generator->urispace($self->base_uri);
 			}
 			if ($self->namespaces_as_vocabularies) {
-				$generator->add_vocabularies(values(%{$self->namespaces}));
+				$generator->add_vocabularies($self->list_namespaces);
 			}
 			if ($self->has_endpoint) {
 				$generator->add_endpoints($self->base_uri . $endpoint_path);
@@ -658,7 +677,7 @@ sub _void_content {
 			my $gen = RDF::RDFa::Generator->new( style => 'HTML::Pretty',
 															 title => $self->void_config->{pagetitle} || 'VoID Description',
 															 base => $self->base_uri,
-															 namespaces => $self->namespaces);
+															 namespaces => $self->_namespace_hashref);
 			my $markup = ($ct eq 'application/xhtml+xml') ? 'xhtml' : 'html';
 			my $writer = HTML::HTML5::Writer->new( charset => 'ascii', markup => $markup );
 			$body = $writer->document($gen->create_document($self->_voidmodel));
