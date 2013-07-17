@@ -150,6 +150,7 @@ ok($model, "We have a model");
 	my $retmodel = return_model($response->content, $parser);
 	has_literal('This is a test', 'en', undef, $retmodel, "Test phrase in content");
 	hasnt_uri('http://rdfs.org/ns/void#sparqlEndpoint', $retmodel, 'No SPARQL endpoint entered');
+	hasnt_uri('http://example.org/hypermedia#replaced', $retmodel, 'No replaced URIs');
 }
 {
 	note "Now testing no endpoint";
@@ -164,6 +165,7 @@ ok($model, "We have a model");
 	my $retmodel = return_model($response->content, $parser);
 	has_literal('This is a test', 'en', undef, $retmodel, "Test phrase in content");
 	hasnt_uri('http://rdfs.org/ns/void#vocabulary', $retmodel, 'No vocabs entered');
+	hasnt_uri('http://example.org/hypermedia#replaced', $retmodel, 'No replaced URIs');
 }
 
 
