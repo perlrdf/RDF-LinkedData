@@ -316,7 +316,9 @@ sub response {
 			my $content = $self->_content($node, $type, $endpoint_path);
 			$response->headers->header('Vary' => join(", ", qw(Accept)));
 			if (defined($self->current_etag)) {
-				$response->headers->header('ETag' => md5_hex($self->current_etag . $content->{content_type}));
+				$self->current_etag =~ m|(^W/)|; # If the ETag is declared as weak, preserve that
+				my $weak = defined($1) ? $1 : '';
+				$response->headers->header('ETag' => $weak . md5_hex($self->current_etag . $content->{content_type}));
 			}
 			$response->headers->content_type($content->{content_type});
 			$response->body(encode_utf8($content->{body}));
@@ -616,7 +618,9 @@ sub _void_content {
 		$etag = $self->_last_extvoid_mtime if ($self->void_config->{add_void});
 		$etag .= $self->last_etag if (defined($self->last_etag));
 		if ($etag) {
-			$response->headers->header('ETag' => md5_hex($etag . $ct));
+			$etag =~ m|(^W/)|; # If the ETag is declared as weak, preserve that
+			my $weak = defined($1) ? $1 : '';
+			$response->headers->header('ETag' => $weak . md5_hex($etag . $ct));
 		}
 		$response->headers->content_type($ct);
 		$response->body(encode_utf8($body));
