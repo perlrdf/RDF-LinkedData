@@ -23,9 +23,13 @@ with 'MooseX::Log::Log4perl::Easy';
 
 BEGIN {
 	if ($ENV{TEST_VERBOSE}) {
-		Log::Log4perl->easy_init( { level   => $TRACE } );
+		Log::Log4perl->easy_init( { level   => $TRACE,
+											 category => 'RDF.LinkedData' 
+										  } );
 	} else {
-		Log::Log4perl->easy_init( { level   => $FATAL } );
+		Log::Log4perl->easy_init( { level   => $FATAL,
+											 category => 'RDF.LinkedData' 
+										  } );
 	}
 }
 
