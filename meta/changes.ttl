@@ -7,7 +7,22 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl:  <http://www.w3.org/2002/07/owl#> .
 
-my:project :release my:v_0_56 .
+my:project :release my:v_0-57_04, my:v_0_56 .
+
+my:v_0-57_04
+    a           :Version ;
+    dc:issued   "2013-07-17"^^xsd:date ;
+    rdfs:label "Stability and modernization release."@en ;
+    :revision   "0.57_04"^^xsd:string ;
+    dcs:changeset [
+      dcs:item
+        [ rdfs:label "Fix newline bug causing problems."@en ; a dcs:Bugfix ] , 
+        [ rdfs:label "Allow POST requests to the endpoint."@en ; a dcs:Bugfix ] , 
+        [ rdfs:label "Use URI::NamespaceMap for namespaces."@en ; a dcs:Update ] , 
+        [ rdfs:label "Change packaging to use Module::Package::RDF."@en ; a dcs:Change ] , 
+        [ rdfs:label "Improved tests."@en ; a dcs:Change ] , 
+        [ rdfs:label "Remove write_sqlite script."@en ; a dcs:Removal ] 
+    ] .
 
 my:v_0_56
     a           :Version ;
