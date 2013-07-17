@@ -18,6 +18,8 @@ use Encode;
 use RDF::RDFa::Generator 0.102;
 use HTML::HTML5::Writer qw(DOCTYPE_XHTML_RDFA);
 use Data::Dumper;
+use Digest::MD5 ('md5_hex');
+
 
 with 'MooseX::Log::Log4perl::Easy';
 
@@ -46,7 +48,7 @@ Version 0.57_04
 
 =cut
 
-our $VERSION = '0.57_04';
+ our $VERSION = '0.57_04';
 
 
 =head1 SYNOPSIS
@@ -314,7 +316,7 @@ sub response {
 			my $content = $self->_content($node, $type, $endpoint_path);
 			$response->headers->header('Vary' => join(", ", qw(Accept)));
 			if (defined($self->current_etag)) {
-				$response->headers->header('ETag' => $self->current_etag);
+				$response->headers->header('ETag' => md5_hex($self->current_etag . $content->{content_type}));
 			}
 			$response->headers->content_type($content->{content_type});
 			$response->body(encode_utf8($content->{body}));
@@ -614,7 +616,7 @@ sub _void_content {
 		$etag = $self->_last_extvoid_mtime if ($self->void_config->{add_void});
 		$etag .= $self->last_etag if (defined($self->last_etag));
 		if ($etag) {
-			$response->headers->header('ETag' => $etag);
+			$response->headers->header('ETag' => md5_hex($etag . $ct));
 		}
 		$response->headers->content_type($ct);
 		$response->body(encode_utf8($body));
