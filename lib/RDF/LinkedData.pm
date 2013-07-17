@@ -151,7 +151,7 @@ sub BUILD {
 	}
 }
 
-has store => (is => 'rw', isa => 'HashRef' );
+has store => (is => 'rw', isa => 'HashRef | Str' );
 
 
 =item C<< model >>
@@ -172,11 +172,13 @@ sub _load_model {
 	my ($self, $store_config) = @_;
 	# First, set the base if none is configured
 	my $i = 0;
-	foreach my $source (@{$store_config->{sources}}) {
-		unless ($source->{base_uri}) {
-			${$store_config->{sources}}[$i]->{base_uri} = $self->base_uri;
+	if (ref($store_config) eq 'HASH') {
+		foreach my $source (@{$store_config->{sources}}) {
+			unless ($source->{base_uri}) {
+				${$store_config->{sources}}[$i]->{base_uri} = $self->base_uri;
+			}
+			$i++;
 		}
-		$i++;
 	}
 	my $store = RDF::Trine::Store->new( $store_config );
 	return RDF::Trine::Model->new( $store );
