@@ -345,27 +345,6 @@ sub response {
 	return $response;
 }
 
-sub merge {
-	my $self = shift;
-	my $uri = URI->new(shift);
-#	my $payloadmodel = RDF::Trine::Model->temporary_model;
-	my $payload = $self->request->content;
-	my $headers_in = $self->request->headers;
-	my $response = Plack::Response->new;
-	eval {
-		my $parser = RDF::Trine::Parser->parser_by_media_type($headers_in->content_type);
-		$parser->parse_into_model($self->base_uri, $payload, $self->model);
-	};
-	if ($@) {
-		$response->status(400);
-		$response->content_type('text/plain');
-		$response->body("Couldn't parse the payload: $@");
-		return $response;
-	}
-	$response->status(204);
-	return $response;
-}
-
 
 =item C<< helper_properties (  ) >>
 
