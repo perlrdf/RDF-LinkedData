@@ -14,6 +14,7 @@ my:v_0-57_05
     dc:issued   "2013-07-18"^^xsd:date ;
     rdfs:label "Stability and modernization release."@en ;
     :revision   "0.57_05"^^xsd:string ;
+#    owl:sameAs <http://packages.qa.debian.org/librdf-linkeddata-perl#upstreamsrc_0.58> ;
     dcs:changeset [
       dcs:item
         [ rdfs:label "Fix newline bug causing problems."@en ; a dcs:Bugfix ] , 
