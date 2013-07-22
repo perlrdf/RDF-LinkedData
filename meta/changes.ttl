@@ -7,16 +7,17 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl:  <http://www.w3.org/2002/07/owl#> .
 
-my:project :release my:v_0-57_07, my:v_0_56 .
+my:project :release my:v_0-58, my:v_0_56 .
 
-my:v_0-57_07
+my:v_0-58
     a           :Version ;
-    dc:issued   "2013-07-18"^^xsd:date ;
+    dc:issued   "2013-07-23"^^xsd:date ;
     rdfs:label "Stability and modernization release."@en ;
-    :revision   "0.57_07"^^xsd:string ;
-#    owl:sameAs <http://packages.qa.debian.org/librdf-linkeddata-perl#upstreamsrc_0.58> ;
+    :revision   "0.58"^^xsd:string ;
+    owl:sameAs <http://packages.qa.debian.org/librdf-linkeddata-perl#upstreamsrc_0.58> ;
     dcs:changeset [
       dcs:item
+        [ rdfs:label "Simplify setting headers by removing call to HTTP::Headers."@en ; a dcs:Bugfix ] , 
         [ rdfs:label "Fix newline bug causing problems."@en ; a dcs:Bugfix ] , 
         [ rdfs:label "Allow POST requests to the endpoint."@en ; a dcs:Bugfix ] , 
         [ rdfs:label "Add the use of content type to Etag to work around some bugs."@en ; a dcs:Bugfix ] , 
