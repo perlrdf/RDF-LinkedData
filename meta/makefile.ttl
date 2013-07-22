@@ -12,7 +12,7 @@
     		   "Test::Exception", "Config::JFDI", "Test::JSON", "RDF::RDFa::Parser" ;
     :requires "Moose", "MooseX::UndefTolerant", "MooseX::Log::Log4perl::Easy", "Log::Log4perl", 
     	      "RDF::Trine 0.133", "Scalar::Util", "Plack 0.9939", "namespace::autoclean 0.12",
-    	      "HTTP::Headers", "RDF::Helper::Properties 0.10", "URI 1.52", 
+    	      "HTTP::Headers", "RDF::Helper::Properties 0.10", "URI 1.52", "URI::NamespaceMap",
 	      "Module::Load::Conditional", "Encode", "RDF::RDFa::Generator 0.102", 
 	      "HTML::HTML5::Writer", "Digest::MD5" ;
     :recommends 
