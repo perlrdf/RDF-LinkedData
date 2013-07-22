@@ -7,13 +7,13 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl:  <http://www.w3.org/2002/07/owl#> .
 
-my:project :release my:v_0-57_05, my:v_0_56 .
+my:project :release my:v_0-57_06, my:v_0_56 .
 
-my:v_0-57_05
+my:v_0-57_06
     a           :Version ;
     dc:issued   "2013-07-18"^^xsd:date ;
     rdfs:label "Stability and modernization release."@en ;
-    :revision   "0.57_05"^^xsd:string ;
+    :revision   "0.57_06"^^xsd:string ;
 #    owl:sameAs <http://packages.qa.debian.org/librdf-linkeddata-perl#upstreamsrc_0.58> ;
     dcs:changeset [
       dcs:item
