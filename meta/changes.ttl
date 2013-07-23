@@ -7,7 +7,18 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl:  <http://www.w3.org/2002/07/owl#> .
 
-my:project :release my:v_0-58, my:v_0_56 .
+my:project :release my:v_0-60, my:v_0-58, my:v_0_56 .
+
+my:v_0-60
+    a           :Version ;
+    dc:issued   "2013-07-23"^^xsd:date ;
+    rdfs:label "Install script."@en ;
+    :revision   "0.60"^^xsd:string ;
+    owl:sameAs <http://packages.qa.debian.org/librdf-linkeddata-perl#upstreamsrc_0.60> ;
+    dcs:changeset [
+      dcs:item
+        [ rdfs:label "The PSGI script wasn't installed."@en ; a dcs:Bugfix ] 
+    ] .
 
 my:v_0-58
     a           :Version ;
