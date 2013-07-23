@@ -2,6 +2,7 @@
 # This file provides instructions for packaging.
 
 @prefix : <http://purl.org/NET/cpan-uri/terms#> .
+@prefix nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>
 @base <http://purl.org/NET/cpan-uri/dist/RDF-LinkedData/> .
 
 <project>
@@ -24,4 +25,4 @@
 
 # TODO: install_script?
 
-<project#main> <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#fileName> "lib/RDF/LinkedData.pm" .
+<project#main> nfo:fileName "lib/RDF/LinkedData.pm" .
