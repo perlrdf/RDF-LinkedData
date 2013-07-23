@@ -25,8 +25,8 @@ See L<Plack::App::RDF::LinkedData> for instructions on how to use this.
 my $config;
 BEGIN {
 	unless ($config = Config::JFDI->open(
-													 name => "RDF::LinkedData"
-													)) {
+                                        name => "RDF::LinkedData"
+                                       )) {
 		if ($ENV{'PERLRDF_STORE'}) {
 			$config->{store} = $ENV{'PERLRDF_STORE'};
 			$config->{base_uri} = 'http://localhost:5000';
