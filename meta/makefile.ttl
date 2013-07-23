@@ -9,6 +9,7 @@
     :version_from <project#main> ;
     :all_from <project#main> ;
     :readme_from <project#main> ;
+    :install_script [ nfo:fileName "script/linked_data.psgi" ]
     :test_requires "Test::More 0.88", "Test::RDF 0.26", "FindBin", "Test::WWW::Mechanize::PSGI", 
     		   "Test::Exception", "Config::JFDI", "Test::JSON", "RDF::RDFa::Parser" ;
     :requires "Moose", "MooseX::UndefTolerant", "MooseX::Log::Log4perl::Easy", "Log::Log4perl", 
@@ -22,7 +23,5 @@
 		"RDF::Endpoint 0.03",             # If you plan to use the Plack script with a SPARQL Endpoint
  		"Plack::Middleware::CrossOrigin", # If you'd like to add CORS headers
  		"RDF::Generator::Void 0.04" . 	  # If you'd like a VoID description	      
-
-# TODO: install_script?
 
 <project#main> nfo:fileName "lib/RDF/LinkedData.pm" .
