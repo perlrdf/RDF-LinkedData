@@ -24,6 +24,10 @@ my:project
     :download-page  <https://metacpan.org/release/RDF-LinkedData> ;
     :bug-database <https://github.com/kjetilk/RDF-LinkedData/issues> ;
     :license        <http://dev.perl.org/licenses/> ;
+    :repository [ 
+    		  a :GitRepository ; 
+		  :browse <https://github.com/kjetilk/RDF-LinkedData/>  
+		] ;
     :category   <http://dbpedia.org/resource/Category:Semantic_Web> ;
     owl:sameAs <http://packages.qa.debian.org/librdf-linkeddata-perl#upstream> ;
     rdfs:seeAlso <http://packages.qa.debian.org/libr/librdf-linkeddata-perl.ttl> ;
