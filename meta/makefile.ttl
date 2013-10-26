@@ -2,19 +2,21 @@
 # This file provides instructions for packaging.
 
 @prefix : <http://purl.org/NET/cpan-uri/terms#> .
+@prefix nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#> .
 @base <http://purl.org/NET/cpan-uri/dist/RDF-LinkedData/> .
 
 <project>
     :version_from <project#main> ;
     :all_from <project#main> ;
     :readme_from <project#main> ;
+    :install_script [ nfo:fileName "script/linked_data.psgi" ] ;
     :test_requires "Test::More 0.88", "Test::RDF 0.26", "FindBin", "Test::WWW::Mechanize::PSGI", 
     		   "Test::Exception", "Config::JFDI", "Test::JSON", "RDF::RDFa::Parser" ;
     :requires "Moose", "MooseX::UndefTolerant", "MooseX::Log::Log4perl::Easy", "Log::Log4perl", 
     	      "RDF::Trine 0.133", "Scalar::Util", "Plack 0.9939", "namespace::autoclean 0.12",
-    	      "HTTP::Headers", "RDF::Helper::Properties 0.10", "URI 1.52", 
+    	      "HTTP::Headers", "RDF::Helper::Properties 0.10", "URI 1.52", "URI::NamespaceMap",
 	      "Module::Load::Conditional", "Encode", "RDF::RDFa::Generator 0.102", 
-	      "HTML::HTML5::Writer" ;
+	      "HTML::HTML5::Writer", "Digest::MD5" ;
     :recommends 
     		"Config::JFDI",		          # If you plan to use the Plack script
 		"JSON",                           # If you plan to use the Plack script
@@ -22,6 +24,4 @@
  		"Plack::Middleware::CrossOrigin", # If you'd like to add CORS headers
  		"RDF::Generator::Void 0.04" . 	  # If you'd like a VoID description	      
 
-# TODO: install_script?
-
-<project#main> <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#fileName> "lib/RDF/LinkedData.pm" .
+<project#main> nfo:fileName "lib/RDF/LinkedData.pm" .

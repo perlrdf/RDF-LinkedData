@@ -20,8 +20,19 @@ my:project
     :programming-language "Perl" ;
     :maintainer <http://www.kjetil.kjernsmo.net/foaf#me> ;
     :developer <http://kasei.us/about/foaf.xrdf#greg> ;
+    :homepage       <https://metacpan.org/release/RDF-LinkedData> ;
+    :download-page  <https://metacpan.org/release/RDF-LinkedData> ;
     :bug-database <https://github.com/kjetilk/RDF-LinkedData/issues> ;
+    :license        <http://dev.perl.org/licenses/> ;
+    :repository [ 
+    		  a :GitRepository ; 
+		  :browse <https://github.com/kjetilk/RDF-LinkedData/>  
+		] ;
+    :category   <http://dbpedia.org/resource/Category:Semantic_Web> ;
+    owl:sameAs <http://packages.qa.debian.org/librdf-linkeddata-perl#upstream> ;
+    rdfs:seeAlso <http://packages.qa.debian.org/libr/librdf-linkeddata-perl.ttl> ;
     :release    my:v_0_56, my:v_0_54, my:v_0_52, my:v_0_50, my:v_0_44, my:v_0_42, my:v_0_40 ; 
     :release    my:v_0_30, my:v_0_20, my:v_0_18, my:v_0_16, my:v_0_14, my:v_0_12, my:v_0_10 ;
     :release    my:v_0_09_1, my:v_0_08, my:v_0_06, my:v_0_05, my:v_0_03, my:v_0_02, my:v_0_01, my:pre .
 
+<http://dbpedia.org/resource/Category:Semantic_Web> rdfs:label "Semantic Web"@en .
