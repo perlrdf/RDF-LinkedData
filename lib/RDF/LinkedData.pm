@@ -272,9 +272,7 @@ sub response {
 	my $headers_in = $self->request->headers;
 
 	my $server = "RDF::LinkedData/$VERSION";
-	if ($headers_in->can('header') && $headers_in->header('Server')) {
-	  $server .= " " . $headers_in->header('Server');
-	}
+	$server .= " " . $response->headers->header('Server') if ($response->headers->header('Server'));
 	$response->headers->header('Server' => $server);
 
 	my $endpoint_path;
