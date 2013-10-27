@@ -276,7 +276,7 @@ sub response {
 	my $headers_in = $self->request->headers;
 
 	my $server = "RDF::LinkedData/$VERSION";
-	$server .= " " . $response->headers->header('Server') if ($response->headers->header('Server'));
+	$server .= " " . $response->headers->header('Server') if defined($response->headers->header('Server'));
 	$response->headers->header('Server' => $server);
 
 	my $endpoint_path;
