@@ -17,7 +17,7 @@ my:v_0-62
     owl:sameAs <http://packages.qa.debian.org/librdf-linkeddata-perl#upstreamsrc_0.62> ;
     dcs:changeset [
       dcs:item
-        [ rdfs:label "Add a Server header."@en ; a dcs:Bugfix ] 
+        [ rdfs:label "Add a Server header."@en ; a dcs:Addition ] 
     ] .
 
 my:v_0-60
