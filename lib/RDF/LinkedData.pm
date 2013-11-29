@@ -525,16 +525,16 @@ sub _negotiate {
 																					'text/html' => 'html',
 																					'application/xhtml+xml' => 'xhtml'
 																				  }
-																	)
-	};
-	$self->logger->debug("Got $ct content type");
-	if ($@) {
+																	);
+		$self->logger->debug("Got $ct content type");
+		1;
+	} or do {
 		my $response = Plack::Response->new;
 		$response->status(406);
 		$response->headers->content_type('text/plain');
 		$response->body('HTTP 406: No serialization available any specified content type');
 		return $response;
-	}
+	};
 	return ($ct, $s)
 }
 
