@@ -20,7 +20,7 @@
     :recommends 
     		"Config::JFDI",		          # If you plan to use the Plack script
 		"JSON",                           # If you plan to use the Plack script
-		"RDF::Endpoint 0.03",             # If you plan to use the Plack script with a SPARQL Endpoint
+		"RDF::Endpoint 0.05",             # If you plan to use the Plack script with a SPARQL Endpoint
  		"Plack::Middleware::CrossOrigin", # If you'd like to add CORS headers
  		"RDF::Generator::Void 0.04" . 	  # If you'd like a VoID description	      
 
