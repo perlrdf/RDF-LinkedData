@@ -72,14 +72,17 @@ my $base_uri = 'http://localhost/';
 	is($mech->ct, 'application/rdf+xml', "Correct content-type");
 	my $model = RDF::Trine::Model->temporary_model;
 	is_valid_rdf($mech->content, 'rdfxml', 'Returns valid RDF/XML');
+	my $void = RDF::Trine::Namespace->new('http://rdfs.org/ns/void#');
+	my $xsd  = RDF::Trine::Namespace->new('http://www.w3.org/2001/XMLSchema#');
+	unlike($mech->content, qr/URI::Namespace=HASH/, 'We should have real URIs as vocabs');
 	$rxparser->parse_into_model( $base_uri, $mech->content, $model );
 	has_subject($base_uri . '#dataset-0', $model, "Subject URI in content");
 	has_literal("This is a title", "en", undef, $model, "Correct English title");
 	has_literal("Dette er en tittel", "no", undef, $model, "Correct Norwegian title");
 	has_literal("This is a test too", "en", undef, $model, "Correct English label from addon data");
+	has_predicate('http://rdfs.org/ns/void#vocabulary', $model, 'Vocabularies are in');
+	has_object_uri('http://www.w3.org/2000/01/rdf-schema#', $model, 'RDFS namespace as vocab OK');
 	pattern_target($model);
-	my $void = RDF::Trine::Namespace->new('http://rdfs.org/ns/void#');
-	my $xsd  = RDF::Trine::Namespace->new('http://www.w3.org/2001/XMLSchema#');
 	pattern_ok(
 				  statement(
 								iri($base_uri . '#dataset-0'),
