@@ -108,6 +108,7 @@ ok($model, "We have a model");
 	   my $response = $ld->response($base_uri . '/foo');
 		isa_ok($response, 'Plack::Response');
 		is($response->status, 200, "Returns 200");
+		unlike($response->content, qr/URI::Namespace=HASH/, 'We should have real URIs as vocabs');
 		my $retmodel = return_model($response->content, $rxparser);
 		has_literal('This is a test', 'en', undef, $retmodel, "Test phrase in content");
 		has_object_uri('http://www.w3.org/2004/02/skos/core#', $retmodel, 'SKOS URI is present');
