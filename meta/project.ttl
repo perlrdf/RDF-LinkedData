@@ -6,6 +6,8 @@
 @prefix dcs:  <http://ontologi.es/doap-changeset#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#>.
+
 
 <>
     dc:title     "DOAP for RDF-LinkedData"@en ;
@@ -26,7 +28,8 @@ my:project
     :license        <http://dev.perl.org/licenses/> ;
     :repository [ 
     		  a :GitRepository ; 
-		  :browse <https://github.com/kjetilk/RDF-LinkedData/>  
+		  :browse <https://github.com/kjetilk/RDF-LinkedData/> ;
+		  prov:has_provenance <http://git2prov.org/git2prov?giturl=https%3A%2F%2Fgithub.com%2Fkjetilk%2FRDF-LinkedData&serialization=PROV-O#> .
 		] ;
     :category   <http://dbpedia.org/resource/Category:Semantic_Web> ;
     owl:sameAs <http://packages.qa.debian.org/librdf-linkeddata-perl#upstream> ;
