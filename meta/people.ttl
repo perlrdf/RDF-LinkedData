@@ -1,9 +1,10 @@
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix result: <http://git2prov.org/git2prov?giturl=https%3A%2F%2Fgithub.com%2Fkjetilk%2FRDF-LinkedData&serialization=PROV-O#> .
 
 <http://www.kjetil.kjernsmo.net/foaf#me>
     a           foaf:Person ;
-    owl:sameAs  <http://purl.org/NET/cpan-uri/person/kjetilk> ;
+    owl:sameAs  <http://purl.org/NET/cpan-uri/person/kjetilk> , result:user-Kjetil-Kjernsmo ;
     foaf:name   "Kjetil Kjernsmo" ;
     foaf:mbox   <mailto:kjetilk@cpan.org> .
 
