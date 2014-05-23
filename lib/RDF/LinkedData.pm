@@ -578,7 +578,9 @@ sub _void_content {
 				$generator->urispace($self->base_uri);
 			}
 			if ($self->namespaces_as_vocabularies) {
-				$generator->add_vocabularies($self->list_namespaces);
+			  foreach my $nsuri ($self->list_namespaces) {
+				 $generator->add_vocabularies($nsuri->as_string); # TODO: Should be fixed in RDF::Generator::Void, but we fix it here for now
+			  }
 			}
 			if ($self->has_endpoint) {
 				$generator->add_endpoints($self->base_uri . $endpoint_path);
