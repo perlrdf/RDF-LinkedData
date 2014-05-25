@@ -50,22 +50,37 @@ TODO: {
 				  statement(iri($base_uri . '/foo'),
 								iri('http://xmlns.com/foaf/0.1/page'),
 								iri('http://en.wikipedia.org/wiki/Foo'))
+				  , 'Both triples present',
 				 );
 
-	my $response = $ld->response($base_uri . '/fragments?predicate=http://xmlns.com/foaf/0.1/page');
-	isa_ok($response, 'Plack::Response');
-	is($response->status, 200, "Returns 200");
-	my $retmodel = return_model($response->content, $rxparser);
-	has_object_uri('http://en.wikipedia.org/wiki/Foo', $retmodel, 'Object is correct');
-	has_subject($base_uri . '/foo', $retmodel, 'Subject is correct');
-	hasnt_literal('This is a test', 'en', undef, $retmodel, "Test phrase isn't in content");
+	pattern_ok(
+				  statement(iri($base_uri . '/fragments?subject=http://localhost/foo'),
+								iri('http://rdfs.org/ns/void#triples'),
+								literal("2", undef, "http://www.w3.org/2001/XMLSchema#integer")),
+				  statement(iri($base_uri . '/fragments?subject=http://localhost/foo'),
+								iri('http://www.w3.org/ns/hydra/core#totalItems'),
+								literal("2", undef, "http://www.w3.org/2001/XMLSchema#integer")),
+				  , 'Triple count is correct',
+				 );
+
 
 	my $response = $ld->response($base_uri . '/fragments?predicate=http://www.w3.org/2000/01/rdf-schema#label&object="Testing with longer URI."@en');
 	isa_ok($response, 'Plack::Response');
 	is($response->status, 200, "Returns 200");
 	my $retmodel = return_model($response->content, $rxparser);
 	has_literal('Testing with longer URI.', 'en', undef, $retmodel, "Longer test phrase is in content");
+	has_literal("1", undef, "http://www.w3.org/2001/XMLSchema#integer");
 	hasnt_literal('This is a test', 'en', undef, $retmodel, "Test phrase isn't in content");
+
+	my $response = $ld->response($base_uri . '/fragments?predicate=http://www.w3.org/2000/01/rdf-schema#label&subject=');
+	isa_ok($response, 'Plack::Response');
+	is($response->status, 200, "Returns 200");
+	my $retmodel = return_model($response->content, $rxparser);
+	has_subject($base_uri . '/foo', $retmodel, 'Subject 1 is correct');
+	has_subject($base_uri . '/bar/baz/bing', $retmodel, 'Subject 2 is correct');
+	has_literal("2", undef, "http://www.w3.org/2001/XMLSchema#integer");
+	hasnt_literal('This is a test', 'en', undef, $retmodel, "Test phrase isn't in content");
+
 
 	my $response = $ld->response($base_uri . '/fragments?subject=&predicate=&object=');	
 	isa_ok($response, 'Plack::Response');
