@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 56 ;
+use Test::More tests => 58 ;
 use Test::RDF;
 use Test::WWW::Mechanize::PSGI;
 use Module::Load::Conditional qw[can_load];
@@ -22,6 +22,7 @@ Log::Log4perl->easy_init( { level   => $FATAL } ) unless $ENV{TEST_VERBOSE};
     my $res = $mech->get("/foo");
     is($mech->status, 303, "Returns 303");
     like($res->header('Location'), qr|/foo/data$|, "Location is OK");
+	 like($res->header('Server'), qr|RDF::LinkedData/$RDF::LinkedData::VERSION|, 'Server header is there' );
 }
 
 
@@ -131,6 +132,7 @@ my $base_uri = 'http://localhost/';
 			skip 'CrossOrigin not installed', 1 unless can_load( modules => { 'Plack::Middleware::CrossOrigin' => 0 });
 			is($res->header('Access-Control-Allow-Origin'), '*', 'CORS header OK');
 		}
+	 like($mech->response->header('Server'), qr|RDF::LinkedData/$RDF::LinkedData::VERSION|, 'Server header is there' );
 }
 
 

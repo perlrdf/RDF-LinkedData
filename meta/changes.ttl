@@ -7,18 +7,59 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl:  <http://www.w3.org/2002/07/owl#> .
 
-my:project :release my:v_0_57_1 .
+my:project :release my:v_0-64, my:v_0-62, my:v_0-60, my:v_0-58, my:v_0_56 .
 
-my:v_0_57_1
+my:v_0-64
     a           :Version ;
-    dc:issued   "2012-11-01"^^xsd:date ;
-    rdfs:label "Bugfix release."@en ;
-    :revision   "0.57_1"^^xsd:string ;
+    dc:issued   "2014-05-26"^^xsd:date ;
+    rdfs:label "Fix bug in vocabulary URIs."@en ;
+    :revision   "0.64"^^xsd:string ;
+    owl:sameAs <http://packages.qa.debian.org/librdf-linkeddata-perl#upstreamsrc_0.64> ;
+    dcs:changeset [
+      dcs:item        
+        [ rdfs:label "Fix a bug that caused some vocabularies to show up as URI::Namespace-strings."@en ; a dcs:Bugfix ] ,
+        [ rdfs:label "Add git2prov links to the meta information, so there's a linked data chain from Github."@en ; a dcs:Addition ] 
+    ] .
+
+my:v_0-62
+    a           :Version ;
+    dc:issued   "2013-10-27"^^xsd:date ;
+    rdfs:label "Add Server header."@en ;
+    :revision   "0.62"^^xsd:string ;
+    owl:sameAs <http://packages.qa.debian.org/librdf-linkeddata-perl#upstreamsrc_0.62> ;
     dcs:changeset [
       dcs:item
-        [ rdfs:label "POST to SPARQL endpoint will not be denied."@en ; a dcs:Bugfix ] , 
-        [ rdfs:label "Use URI::NamespaceMap."@en ; a dcs:Change ] , 
-        [ rdfs:label "Add read-write hypermedia stuff, not yet working though."@en ; a dcs:Addition ]  
+        [ rdfs:label "Add a Server header."@en ; a dcs:Addition ] 
+    ] .
+
+my:v_0-60
+    a           :Version ;
+    dc:issued   "2013-07-23"^^xsd:date ;
+    rdfs:label "Install script."@en ;
+    :revision   "0.60"^^xsd:string ;
+    owl:sameAs <http://packages.qa.debian.org/librdf-linkeddata-perl#upstreamsrc_0.60> ;
+    dcs:changeset [
+      dcs:item
+        [ rdfs:label "The PSGI script wasn't installed."@en ; a dcs:Bugfix ] 
+    ] .
+
+my:v_0-58
+    a           :Version ;
+    dc:issued   "2013-07-23"^^xsd:date ;
+    rdfs:label "Stability and modernization release."@en ;
+    :revision   "0.58"^^xsd:string ;
+    owl:sameAs <http://packages.qa.debian.org/librdf-linkeddata-perl#upstreamsrc_0.58> ;
+    dcs:changeset [
+      dcs:item
+        [ rdfs:label "Simplify setting headers by removing call to HTTP::Headers."@en ; a dcs:Bugfix ] , 
+        [ rdfs:label "Fix newline bug causing problems."@en ; a dcs:Bugfix ] , 
+        [ rdfs:label "Allow POST requests to the endpoint."@en ; a dcs:Bugfix ] , 
+        [ rdfs:label "Add the use of content type to Etag to work around some bugs."@en ; a dcs:Bugfix ] , 
+        [ rdfs:label "Use URI::NamespaceMap for namespaces."@en ; a dcs:Update ] , 
+        [ rdfs:label "Change packaging to use Module::Package::RDF."@en ; a dcs:Change ] , 
+        [ rdfs:label "Improved tests."@en ; a dcs:Change ] , 
+        [ rdfs:label "Enable optional use of environment for config."@en ; a dcs:Addition ] , 
+        [ rdfs:label "Remove write_sqlite script."@en ; a dcs:Removal ] 
     ] .
 
 my:v_0_56

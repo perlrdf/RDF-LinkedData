@@ -4,6 +4,7 @@ use Test::Perl::Critic(-exclude => ['RequireFinalReturn',
 											  'RequireExtendedFormatting',
 											  'ProhibitExcessComplexity',
 											  'RequireBlockGrep',
-												'RequireCheckingReturnValueOfEval'],
+												'ProhibitCaptureWithoutTest',
+											  ],
 							  -severity => 3);
 all_critic_ok();
