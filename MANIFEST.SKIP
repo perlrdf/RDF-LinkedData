@@ -96,16 +96,13 @@
 \.pmc$
 ^pkg/
 ^inc/.*\.pod
-^inc/Module/Install/Admin/Copyright.pm$
-^inc/Module/Install/Admin/Credits.pm$
 ^inc/Module/Install/Admin/StandardDocuments.pm$
 ^inc/Module/Install/AuthorRequires.pm$
 ^inc/Module/Install/AutoLicense.pm$
-^inc/Module/Install/Copyright.pm$
-^inc/Module/Install/Credits.pm$
 ^inc/Module/Install/DOAP.pm$
 ^inc/Module/Install/DOAPChangeSets.pm$
 ^inc/Module/Install/ManifestSkip.pm$
 ^inc/Module/Install/RDF.pm$
 ^inc/Module/Install/ReadmeFromPod.pm$
+^inc/Module/Install/Repository.pm$
 ^inc/Module/Install/StandardDocuments.pm$
