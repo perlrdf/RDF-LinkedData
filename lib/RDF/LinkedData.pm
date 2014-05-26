@@ -203,6 +203,9 @@ has endpoint_config => (is => 'rw', traits => [ qw(MooseX::UndefTolerant::Attrib
 has void_config => (is => 'rw', traits => [ qw(MooseX::UndefTolerant::Attribute)],
 								isa=>'HashRef', predicate => 'has_void_config');
 
+has fragments_config => (is => 'rw', traits => [ qw(MooseX::UndefTolerant::Attribute)],
+								isa=>'HashRef', predicate => 'has_fragments');
+
 
 
 =item C<< request ( [ $request ] ) >>
@@ -285,6 +288,9 @@ sub response {
 	  if ($uri->path eq $endpoint_path) {
 		 return $self->endpoint->run( $self->request );
 	  }
+	}
+
+	if ($self->has_fragments) {
 	}
 
 	if ($self->has_void) {
@@ -644,6 +650,49 @@ has _current_extvoid_mtime => (is => 'rw', isa => 'Int');
 
 has _last_extvoid_mtime => (is => 'rw', isa => 'Int');
 
+sub _common_fragments_control {
+	my $self = shift;
+	my $model = RDF::Trine::Model->temporary_model;
+	my $void = RDF::Trine::Namespace->new('http://rdfs.org/ns/void#');
+	my $xsd  = RDF::Trine::Namespace->new('http://www.w3.org/2001/XMLSchema#');
+	my $hydra = RDF::Trine::Namespace->new('http://www.w3.org/ns/hydra/core#');
+	my $rdf = RDF::Trine::Namespace->new('http://www.w3.org/1999/02/22-rdf-syntax-ns#');
+	$model->begin_bulk_ops;
+	$model->add_statement($void_subject,
+								 $rdf->type,
+								 $hydra->Collection);
+	$model->add_statement($void_subject,
+								 $hydra->search,
+								 blank('template'));
+	$model->add_statement($void_subject
+								 $void->uriLookupEndpoint,
+								 literal($base_uri . $self->fragments_config->{fragments_path}
+											. '{?subject,predicate,object}'));
+	$model->add_statement(blank('template'),
+								 $hydra->template,
+								 literal($base_uri . $self->fragments_config->{fragments_path}
+											. '{?subject,predicate,object}'));
+	$model->add_statement(blank('template'),
+								 $hydra->property,
+								 $rdf->subject);
+	$model->add_statement(blank('template'),
+								 $hydra->variable,
+								 literal('subject'));
+	$model->add_statement(blank('template'),
+								 $hydra->property,
+								 $rdf->predicate);
+	$model->add_statement(blank('template'),
+								 $hydra->variable,
+								 literal('predicate'));
+	$model->add_statement(blank('template'),
+								 $hydra->property,
+								 $rdf->object);
+	$model->add_statement(blank('template'),
+								 $hydra->variable,
+								 literal('object'));
+	$model->end_bulk_ops;
+	return $model;
+}
 
 =back
 
