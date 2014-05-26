@@ -2,7 +2,7 @@ NAME
     RDF::LinkedData - A simple Linked Data server implementation
 
 VERSION
-    Version 0.62
+    Version 0.63_1
 
 SYNOPSIS
     For just setting this up and get it to run, you would just use the
