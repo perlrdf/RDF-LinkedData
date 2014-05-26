@@ -8,8 +8,8 @@ use Test::More;# tests => 37;
 use Test::RDF;
 use RDF::Trine qw[iri literal blank variable statement];
 use Log::Log4perl qw(:easy);
-use Module::Load::Conditional qw[can_load];
 use RDF::Trine::Namespace qw(rdf rdfs foaf);
+use Module::Load::Conditional qw[can_load];
 
 Log::Log4perl->easy_init( { level   => $FATAL } ) unless $ENV{TEST_VERBOSE};
 
@@ -35,10 +35,16 @@ $parser->parse_file_into_model( $base_uri, $file, $model );
 
 ok($model, "We have a model");
 
+my $ec;
+$ec = {fragments_path => '/fragments'} ;
+
+my $void_subject = iri($base_uri . '/#dataset-0');
+
+
 TODO: {
 	local $TODO = "Implementing Linked Data Fragments";
-	my $ec;
-	$ec = {fragments_path => '/fragments'} ;
+
+	note 'Testing the query interface itself';
 
 	my $ld = RDF::LinkedData->new(model => $model, base_uri=>$base_uri, fragments_config => $ec);
 	my $response = $ld->response($base_uri . '/fragments?subject=http://localhost/foo');
@@ -67,15 +73,14 @@ TODO: {
 				  , 'Triple count is correct',
 				 );
 
-	my $subject_dataset = iri($base_uri . '/#dataset-0');
 
-	has_subject($subject_dataset->as_string, $retmodel, "Void Subject URI in content");
+	has_subject($void_subject->uri_value, $retmodel, "Void Subject URI in content");
 
 	pattern_ok(
-				  statement($subject_dataset,
+				  statement($void_subject,
 								$rdf->type,
 								$hydra->Collection),
-				  statement($subject_dataset,
+				  statement($void_subject,
 								$hydra->search,
 								blank('template')),
 				  statement(blank('template'),
@@ -132,6 +137,69 @@ TODO: {
 	my $response = $ld->response($base_uri . '/fragments?predicate=&object=');	
 	isa_ok($response, 'Plack::Response');
 	is($response->status, 400, "Returns 400 with subject missing other parameters empty");
+}
+
+
+TODO: {
+	local $TODO = "Implementing Linked Data Fragments";
+
+	SKIP: {
+		  skip 'You need RDF::Generator::Void for this test', 6 unless can_load( module => 'RDF::Generator::Void', version => 0.02);
+
+		  note 'Testing the Void for fragments';
+		  
+		  my $ld = RDF::LinkedData->new(model => $model, base_uri=>$base_uri, 
+												  fragments_config => $ec, 
+												  void_config => { urispace => 'http://localhost' });
+		  my $response = $ld->response($base_uri . '/');
+		  isa_ok($response, 'Plack::Response');
+		  is($response->status, 200, "Returns 200");
+		  my $retmodel = return_model($response->content, $rxparser);
+		  has_subject($void_subject, $retmodel, "Subject URI in content");
+		  has_predicate($hydra->search->uri_value, $retmodel, 'Hydra search predicate');
+		  pattern_target($retmodel);
+		  pattern_ok(
+						 statement(
+									  $void_subject,
+									  $void->triples,
+									  literal(3, undef, $xsd->integer)
+									 ),
+						 statement(
+									  $void_subject,
+									  $rdf->type,
+									  $void->Dataset
+									 ),
+						 'VoID-specific statements');
+		  pattern_ok(
+						 statement($void_subject,
+									  $rdf->type,
+									  $hydra->Collection),
+						 statement($void_subject,
+									  $hydra->search,
+									  blank('template')),
+						 statement(blank('template'),
+									  $hydra->template,
+									  literal($base_uri . '/fragments{?subject,predicate,object}')),
+						 statement(blank('template'),
+									  $hydra->property,
+									  $rdf->subject),
+						 statement(blank('template'),
+									  $hydra->variable,
+									  literal('subject')),
+						 statement(blank('template'),
+									  $hydra->property,
+									  $rdf->predicate),
+						 statement(blank('template'),
+									  $hydra->variable,
+									  literal('predicate')),
+						 statement(blank('template'),
+									  $hydra->property,
+									  $rdf->object),
+						 statement(blank('template'),
+									  $hydra->variable,
+									  literal('object')),
+						 "Control statements OK");
+	  }
 }
 
 done_testing;
