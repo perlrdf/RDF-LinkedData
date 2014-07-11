@@ -324,7 +324,7 @@ sub response {
 			if (defined($self->current_etag)) {
 				$self->current_etag =~ m|(^W/)|; # If the ETag is declared as weak, preserve that
 				my $weak = defined($1) ? $1 : '';
-				$response->headers->header('ETag' => $weak . md5_hex($self->current_etag . $content->{content_type}));
+				$response->headers->header('ETag' => '"' . $weak . md5_hex($self->current_etag . $content->{content_type}) . '"');
 			}
 			$response->headers->content_type($content->{content_type});
 			$response->body(encode_utf8($content->{body}));
@@ -628,7 +628,7 @@ sub _void_content {
 		if ($etag) {
 			$etag =~ m|(^W/)|; # If the ETag is declared as weak, preserve that
 			my $weak = defined($1) ? $1 : '';
-			$response->headers->header('ETag' => $weak . md5_hex($etag . $ct));
+			$response->headers->header('ETag' => '"' . $weak . md5_hex($etag . $ct) . '"');
 		}
 		$response->headers->content_type($ct);
 		$response->body(encode_utf8($body));
