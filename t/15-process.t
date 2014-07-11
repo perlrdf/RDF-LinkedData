@@ -4,7 +4,7 @@ use FindBin qw($Bin);
 use Plack::Request;
 
 use strict;
-use Test::More tests => 38;
+use Test::More tests => 39;
 use Test::RDF;
 use Log::Log4perl qw(:easy);
 use Module::Load::Conditional qw[can_load];
@@ -140,6 +140,7 @@ cmp_ok($ld->count, '>', 0, "There are triples in the model");
     my $response = $ld->response($base_uri . '/foo');
     isa_ok($response, 'Plack::Response');
     is($response->status, 200, "Returns 200");
+	 like($response->header("ETag"), qr/^\"\w+\"$/, 'Returns a suitable, quoted ETag');
     my $model = RDF::Trine::Model->temporary_model;
     my $parser = RDF::Trine::Parser->new( 'rdfxml' );
     $parser->parse_into_model( $base_uri, $response->body, $model );

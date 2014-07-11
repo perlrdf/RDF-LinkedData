@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 58 ;
+use Test::More tests => 60 ;
 use Test::RDF;
 use Test::WWW::Mechanize::PSGI;
 use Module::Load::Conditional qw[can_load];
@@ -176,6 +176,8 @@ my $base_uri = 'http://localhost/';
     $mech->get_ok("/bar/baz/bing");
     is($mech->ct, 'application/rdf+xml', "Correct content-type");
     like($mech->uri, qr|/bar/baz/bing/data$|, "Location is OK");
+	 unlike($mech->response->header("ETag"), qr/^\"?http/, 'Etag should not start with http');
+	 like($mech->response->header("ETag"), qr/^\"\w+\"$/, 'Returns a suitable, quoted ETag');
     my $model = RDF::Trine::Model->temporary_model;
     is_valid_rdf($mech->content, 'rdfxml', 'Returns valid RDF/XML');
     $rxparser->parse_into_model( $base_uri, $mech->content, $model );
