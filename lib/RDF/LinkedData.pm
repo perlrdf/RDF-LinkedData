@@ -18,7 +18,7 @@ use Encode;
 use RDF::RDFa::Generator 0.102;
 use HTML::HTML5::Writer qw(DOCTYPE_XHTML_RDFA);
 use Data::Dumper;
-use Digest::MD5 ('md5_hex');
+use Digest::MD5 ('md5_base64');
 
 
 with 'MooseX::Log::Log4perl::Easy';
@@ -326,7 +326,7 @@ sub response {
 			  if ($self->current_etag =~ m|^W/|) { # If the ETag is declared as weak, preserve that
 				 $weak = 'W/';
 			  }
-			  $response->headers->header('ETag' => '"' . $weak . md5_hex($self->current_etag . $content->{content_type}) . '"');
+			  $response->headers->header('ETag' => '"' . $weak . md5_base64($self->current_etag . $content->{content_type}) . '"');
 			}
 			$response->headers->content_type($content->{content_type});
 			$response->body(encode_utf8($content->{body}));
@@ -632,7 +632,7 @@ sub _void_content {
 		  if($etag =~ m|^W/|) { # If the ETag is declared as weak, preserve that
 			 $weak = 'W/';
 		  }
-		  $response->headers->header('ETag' => '"' . $weak . md5_hex($etag . $ct) . '"');
+		  $response->headers->header('ETag' => '"' . $weak . md5_base64($etag . $ct) . '"');
 		}
 		$response->headers->content_type($ct);
 		$response->body(encode_utf8($body));
