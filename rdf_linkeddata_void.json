@@ -14,6 +14,8 @@
 	}
     },
 
+    "fragments" : { "fragments_path" : "/fragments" },
+
     "namespaces" : { "rdfs" : "http://www.w3.org/2000/01/rdf-schema#", 
 	             "dct" : "http://purl.org/dc/terms/" },
     "void": {
