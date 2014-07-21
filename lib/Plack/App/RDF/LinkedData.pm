@@ -56,7 +56,8 @@ server with the default config running:
 
 =head2 Configuration
 
-Create a configuration file C<rdf_linkeddata.json> that looks something like:
+To configure the system for production use, create a configuration
+file C<rdf_linkeddata.json> that looks something like:
 
   {
         "base_uri"  : "http://localhost:3000/",
