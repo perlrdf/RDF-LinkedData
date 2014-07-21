@@ -19,7 +19,7 @@ use RDF::RDFa::Generator 0.102;
 use HTML::HTML5::Writer qw(DOCTYPE_XHTML_RDFA);
 use Data::Dumper;
 use Digest::MD5 ('md5_base64');
-
+use Try::Tiny;
 
 with 'MooseX::Log::Log4perl::Easy';
 
@@ -515,7 +515,7 @@ has void => (is => 'rw', isa => 'RDF::Generator::Void', predicate => 'has_void')
 sub _negotiate {
 	my ($self, $headers_in) = @_;
 	my ($ct, $s);
-	eval {
+	try {
 		($ct, $s) = RDF::Trine::Serializer->negotiate('request_headers' => $headers_in,
 																	 base_uri => $self->base_uri,
 																	 namespaces => $self->_namespace_hashref,
@@ -526,7 +526,7 @@ sub _negotiate {
 																	);
 		$self->logger->debug("Got $ct content type");
 		1;
-	} or do {
+	} catch {
 		my $response = Plack::Response->new;
 		$response->status(406);
 		$response->headers->content_type('text/plain');
