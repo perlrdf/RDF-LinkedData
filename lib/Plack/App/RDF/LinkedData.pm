@@ -31,6 +31,29 @@ follow best practices for doing so.
 
 =head1 MAKE IT RUN
 
+=head2 Quick setup for a demo
+
+=head3 One-liner
+
+It is possible to make it run with a single command line, e.g.:
+
+  PERLRDF_STORE="Memory;path/to/some/data.ttl" plackup -host localhost script/linked_data.psgi
+
+This will start a server with the default config on localhost on port
+5000, so the URIs you're going serve from the file data.ttl will have
+to have a base URI C<http://localhost:5000/>.
+
+=head3 Using perlrdf command line tool
+
+A slightly longer example requires L<App::perlrdf>, but sets up a
+persistent SQLite-based triple store, parses a file and gets the
+server with the default config running:
+
+  export PERLRDF_STORE="DBI;mymodel;DBI:SQLite:database=rdf.db"
+  perlrdf make_store
+  perlrdf store_load path/to/some/data.ttl
+  plackup -host localhost script/linked_data.psgi
+
 =head2 Configuration
 
 Create a configuration file C<rdf_linkeddata.json> that looks something like:
