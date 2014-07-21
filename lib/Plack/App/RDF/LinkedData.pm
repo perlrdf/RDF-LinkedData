@@ -97,10 +97,11 @@ the L<RDF::Endpoint> module, which is recommended by this module. To
 use it, it needs to have some config, but will use defaults.
 
 The last, C<cors>-part of the config enables Cross-Origin Resource
-Sharing, which is a W3C draft for relaxing security constraints to
-allow data to be shared across domains. In most cases, this is what
-you want when you are serving open data, but in some cases, notably
-intranets, this should be turned off by removing this part.
+Sharing, which is a W3C Recommendation for relaxing security
+constraints to allow data to be shared across domains. In most cases,
+this is what you want when you are serving open data, but in some
+cases, notably intranets, this should be turned off by removing this
+part.
 
 =head2 Details of the implementation
 
