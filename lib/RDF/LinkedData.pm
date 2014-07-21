@@ -290,7 +290,11 @@ sub response {
 	  }
 	}
 
-	if ($self->has_fragments) {
+	if ($self->has_fragments && ($uri->path eq $self->fragments_config->{fragments_path})) {
+#	  my $iter = 
+	  die Data::Dumper::Dumper($uri->query_form);
+	  my $output_model = $self->_common_fragments_control;
+	  
 	}
 
 	if ($self->has_void) {
@@ -660,7 +664,7 @@ sub _common_fragments_control {
 	$model->add_statement($void_subject,
 								 $hydra->search,
 								 blank('template'));
-	$model->add_statement($void_subject
+	$model->add_statement($void_subject,
 								 $void->uriLookupEndpoint,
 								 literal($base_uri . $self->fragments_config->{fragments_path}
 											. '{?subject,predicate,object}'));
