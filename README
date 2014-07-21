@@ -2,7 +2,7 @@ NAME
     RDF::LinkedData - A simple Linked Data server implementation
 
 VERSION
-    Version 0.66
+    Version 0.67_02
 
 SYNOPSIS
     For just setting this up and get it to run, you would just use the
@@ -134,8 +134,6 @@ TODO
         frameworks, such as Magpie.
 
     *   Make it read-write hypermedia.
-
-    *   Use a environment variable for config on the command line?
 
     *   Make the result graph configurable.
 
