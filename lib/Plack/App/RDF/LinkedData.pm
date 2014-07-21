@@ -109,11 +109,11 @@ This server is a minimal Plack-script that should be sufficient for
 most linked data usages, and serve as a an example for most others.
 
 A minimal example of the required config file is provided above. There
-is a long example in the distribtion, which is used to run tests. In
-the config file, there is a C<store> parameter, which must contain the
-L<RDF::Trine::Store> config hashref. It may also have a C<base_uri> URI
-and a C<namespace> hashref which may contain prefix - URI mappings to
-be used in serializations.
+is are longer examples in the distribtion, which is used to run
+tests. In the config file, there is a C<store> parameter, which must
+contain the L<RDF::Trine::Store> config hashref. It may also have a
+C<base_uri> URI and a C<namespace> hashref which may contain prefix -
+URI mappings to be used in serializations.
 
 Note that this is a server that can only serve URIs of hosts you
 control, it is not a general purpose Linked Data manipulation tool,
