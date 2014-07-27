@@ -18,8 +18,8 @@ use Encode;
 use RDF::RDFa::Generator 0.102;
 use HTML::HTML5::Writer qw(DOCTYPE_XHTML_RDFA);
 use Data::Dumper;
-use Digest::MD5 ('md5_hex');
-
+use Digest::MD5 ('md5_base64');
+use Try::Tiny;
 
 with 'MooseX::Log::Log4perl::Easy';
 
@@ -44,11 +44,11 @@ RDF::LinkedData - A simple Linked Data server implementation
 
 =head1 VERSION
 
-Version 0.64
+Version 0.68
 
 =cut
 
- our $VERSION = '0.64';
+ our $VERSION = '0.68';
 
 
 =head1 SYNOPSIS
@@ -328,9 +328,7 @@ sub response {
 			my $content = $self->_content($node, $type, $endpoint_path);
 			$response->headers->header('Vary' => join(", ", qw(Accept)));
 			if (defined($self->current_etag)) {
-				$self->current_etag =~ m|(^W/)|; # If the ETag is declared as weak, preserve that
-				my $weak = defined($1) ? $1 : '';
-				$response->headers->header('ETag' => $weak . md5_hex($self->current_etag . $content->{content_type}));
+			  $response->headers->header('ETag' => '"' . md5_base64($self->current_etag . $content->{content_type}) . '"');
 			}
 			$response->headers->content_type($content->{content_type});
 			$response->body(encode_utf8($content->{body}));
@@ -523,7 +521,7 @@ has void => (is => 'rw', isa => 'RDF::Generator::Void', predicate => 'has_void')
 sub _negotiate {
 	my ($self, $headers_in) = @_;
 	my ($ct, $s);
-	eval {
+	try {
 		($ct, $s) = RDF::Trine::Serializer->negotiate('request_headers' => $headers_in,
 																	 base_uri => $self->base_uri,
 																	 namespaces => $self->_namespace_hashref,
@@ -534,7 +532,7 @@ sub _negotiate {
 																	);
 		$self->logger->debug("Got $ct content type");
 		1;
-	} or do {
+	} catch {
 		my $response = Plack::Response->new;
 		$response->status(406);
 		$response->headers->content_type('text/plain');
@@ -632,9 +630,7 @@ sub _void_content {
 		$etag = $self->_last_extvoid_mtime if ($self->void_config->{add_void});
 		$etag .= $self->last_etag if (defined($self->last_etag));
 		if ($etag) {
-			$etag =~ m|(^W/)|; # If the ETag is declared as weak, preserve that
-			my $weak = defined($1) ? $1 : '';
-			$response->headers->header('ETag' => $weak . md5_hex($etag . $ct));
+		  $response->headers->header('ETag' => '"' . md5_base64($etag . $ct) . '"');
 		}
 		$response->headers->content_type($ct);
 		$response->body(encode_utf8($body));
@@ -726,8 +722,6 @@ L<http://lists.perlrdf.org/listinfo/dev>
 
 =item * Make it read-write hypermedia.
 
-=item * Use a environment variable for config on the command line?
-
 =item * Make the result graph configurable.
 
 =back
@@ -745,7 +739,7 @@ Copyright 2010 Gregory Todd Williams
 
 Copyright 2010 ABC Startsiden AS
 
-Copyright 2010, 2011, 2012, 2013 Kjetil Kjernsmo
+Copyright 2010, 2011, 2012, 2013, 2014 Kjetil Kjernsmo
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.

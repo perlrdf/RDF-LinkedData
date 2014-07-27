@@ -31,9 +31,33 @@ follow best practices for doing so.
 
 =head1 MAKE IT RUN
 
+=head2 Quick setup for a demo
+
+=head3 One-liner
+
+It is possible to make it run with a single command line, e.g.:
+
+  PERLRDF_STORE="Memory;path/to/some/data.ttl" plackup -host localhost script/linked_data.psgi
+
+This will start a server with the default config on localhost on port
+5000, so the URIs you're going serve from the file data.ttl will have
+to have a base URI C<http://localhost:5000/>.
+
+=head3 Using perlrdf command line tool
+
+A slightly longer example requires L<App::perlrdf>, but sets up a
+persistent SQLite-based triple store, parses a file and gets the
+server with the default config running:
+
+  export PERLRDF_STORE="DBI;mymodel;DBI:SQLite:database=rdf.db"
+  perlrdf make_store
+  perlrdf store_load path/to/some/data.ttl
+  plackup -host localhost script/linked_data.psgi
+
 =head2 Configuration
 
-Create a configuration file C<rdf_linkeddata.json> that looks something like:
+To configure the system for production use, create a configuration
+file C<rdf_linkeddata.json> that looks something like:
 
   {
         "base_uri"  : "http://localhost:3000/",
@@ -73,10 +97,11 @@ the L<RDF::Endpoint> module, which is recommended by this module. To
 use it, it needs to have some config, but will use defaults.
 
 The last, C<cors>-part of the config enables Cross-Origin Resource
-Sharing, which is a W3C draft for relaxing security constraints to
-allow data to be shared across domains. In most cases, this is what
-you want when you are serving open data, but in some cases, notably
-intranets, this should be turned off by removing this part.
+Sharing, which is a W3C Recommendation for relaxing security
+constraints to allow data to be shared across domains. In most cases,
+this is what you want when you are serving open data, but in some
+cases, notably intranets, this should be turned off by removing this
+part.
 
 =head2 Details of the implementation
 
@@ -84,11 +109,11 @@ This server is a minimal Plack-script that should be sufficient for
 most linked data usages, and serve as a an example for most others.
 
 A minimal example of the required config file is provided above. There
-is a long example in the distribtion, which is used to run tests. In
-the config file, there is a C<store> parameter, which must contain the
-L<RDF::Trine::Store> config hashref. It may also have a C<base_uri> URI
-and a C<namespace> hashref which may contain prefix - URI mappings to
-be used in serializations.
+is are longer examples in the distribtion, which is used to run
+tests. In the config file, there is a C<store> parameter, which must
+contain the L<RDF::Trine::Store> config hashref. It may also have a
+C<base_uri> URI and a C<namespace> hashref which may contain prefix -
+URI mappings to be used in serializations.
 
 Note that this is a server that can only serve URIs of hosts you
 control, it is not a general purpose Linked Data manipulation tool,
@@ -295,7 +320,7 @@ Kjetil Kjernsmo, C<< <kjetilk@cpan.org> >>
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2010-2013 Kjetil Kjernsmo
+Copyright 2010,2011,2012,2013,2014 Kjetil Kjernsmo
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
