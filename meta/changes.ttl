@@ -14,6 +14,7 @@ my:v_0-68
     dc:issued   "2014-07-22"^^xsd:date ;
     rdfs:label "Documentation updates and small fixes."@en ;
     :revision   "0.68"^^xsd:string ;
+    owl:sameAs <http://packages.qa.debian.org/librdf-linkeddata-perl#upstreamsrc_0.68> ;
     dcs:changeset [
       dcs:item        
         [ rdfs:label "Use Try::Tiny instead of eval."@en ; a dcs:Change ] ,
