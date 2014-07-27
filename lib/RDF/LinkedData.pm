@@ -19,7 +19,7 @@ use RDF::RDFa::Generator 0.102;
 use HTML::HTML5::Writer qw(DOCTYPE_XHTML_RDFA);
 use Data::Dumper;
 use Digest::MD5 ('md5_base64');
-use Try::Tiny;
+
 
 with 'MooseX::Log::Log4perl::Easy';
 
@@ -44,11 +44,11 @@ RDF::LinkedData - A simple Linked Data server implementation
 
 =head1 VERSION
 
-Version 0.68
+Version 0.69_01
 
 =cut
 
- our $VERSION = '0.68';
+ our $VERSION = '0.69_01';
 
 
 =head1 SYNOPSIS
@@ -290,7 +290,11 @@ sub response {
 	  }
 	}
 
-	if ($self->has_fragments) {
+	if ($self->has_fragments && ($uri->path eq $self->fragments_config->{fragments_path})) {
+#	  my $iter = 
+	  die Data::Dumper::Dumper($uri->query_form);
+	  my $output_model = $self->_common_fragments_control;
+	  
 	}
 
 	if ($self->has_void) {
@@ -521,7 +525,7 @@ has void => (is => 'rw', isa => 'RDF::Generator::Void', predicate => 'has_void')
 sub _negotiate {
 	my ($self, $headers_in) = @_;
 	my ($ct, $s);
-	try {
+	eval {
 		($ct, $s) = RDF::Trine::Serializer->negotiate('request_headers' => $headers_in,
 																	 base_uri => $self->base_uri,
 																	 namespaces => $self->_namespace_hashref,
@@ -532,7 +536,7 @@ sub _negotiate {
 																	);
 		$self->logger->debug("Got $ct content type");
 		1;
-	} catch {
+	} or do {
 		my $response = Plack::Response->new;
 		$response->status(406);
 		$response->headers->content_type('text/plain');
@@ -660,7 +664,7 @@ sub _common_fragments_control {
 	$model->add_statement($void_subject,
 								 $hydra->search,
 								 blank('template'));
-	$model->add_statement($void_subject
+	$model->add_statement($void_subject,
 								 $void->uriLookupEndpoint,
 								 literal($base_uri . $self->fragments_config->{fragments_path}
 											. '{?subject,predicate,object}'));
@@ -721,6 +725,8 @@ L<http://lists.perlrdf.org/listinfo/dev>
 =item * Figure out what needs to be done to use this code in other frameworks, such as Magpie.
 
 =item * Make it read-write hypermedia.
+
+=item * Use a environment variable for config on the command line?
 
 =item * Make the result graph configurable.
 
