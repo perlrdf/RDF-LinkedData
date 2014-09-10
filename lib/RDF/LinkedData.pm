@@ -149,6 +149,12 @@ sub BUILD {
 	}
 }
 
+around BUILDARGS { 
+	my ($next,$self)=(shift,shift);
+	my $params = $self->$next(@_);
+	!defined($params->{$_})&&delete($params->{$_}) for keys %$params; $params 
+};
+
 has store => (is => 'rw', isa => HashRef | Str );
 
 
