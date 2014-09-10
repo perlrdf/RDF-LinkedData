@@ -1,113 +1,135 @@
-NAME
-    RDF::LinkedData - A simple Linked Data server implementation
-
-VERSION
-    Version 0.68
-
-SYNOPSIS
-    For just setting this up and get it to run, you would just use the
-    "linked_data.psgi" script in this distribution. The usage of that is
-    documented in Plack::App::RDF::LinkedData. If you want to try and use
-    this directly, you'd do stuff like:
-
-            my $ld = RDF::LinkedData->new(store => $config->{store},
-                                     endpoint_config => $config->{endpoint},
-                                     base_uri => $config->{base_uri}
-                                    );
-            $ld->namespaces($config->{namespaces}) if ($config->{namespaces});
-            $ld->request($req);
-            return $ld->response($uri)->finalize;
-
-    See Plack::App::RDF::LinkedData for a complete example.
+RDF::LinkedData - A simple Linked Data server implementation
 
 DESCRIPTION
-    This module is used to create a minimal Linked Data server that can
-    serve RDF data out of an RDF::Trine::Model. It will look up URIs in the
-    model and do the right thing (known as the 303 dance) and mint URLs for
-    that, as well as content negotiation. Thus, you can concentrate on URIs
-    for your things, you need not be concerned about minting URLs for the
-    pages to serve it.
 
-METHODS
-    "new ( store => $store, model => $model, base_uri => $base_uri,
-    hypermedia => 1, namespaces_as_vocabularies => 1, request => $request,
-    endpoint_config => $endpoint_config, void_config => $void_config )"
-        Creates a new handler object based on named parameters, given a
-        store config (recommended usage is to pass a hashref of the type
-        that can be passed to RDF::Trine::Store->new_with_config, but a
-        simple string can also be used) or model and a base URI. Optionally,
-        you may pass a Plack::Request object (must be passed before you call
-        "content") and an "endpoint_config" hashref if you want to have a
-        SPARQL Endpoint running using the recommended module RDF::Endpoint.
+This module is used to create a minimal Linked Data server that can
+serve RDF data out of an RDF::Trine::Model. It will look up URIs in
+the model and do the right thing (known as the 303 dance) and mint
+URLs for that, as well as content negotiation. Thus, you can
+concentrate on URIs for your things, you need not be concerned about
+minting URLs for the pages to serve it.
 
-        This module can also provide additional triples to turn the respons
-        into a hypermedia type. If you don't want this, set the "hypermedia"
-        argument to false. Currently this entails setting the SPARQL
-        endpoint and vocabularies used using the VoID vocabulary
-        <http://vocab.deri.ie/void>. The latter is very limited at present,
-        all it'll do is use the namespaces if you have
-        "namespaces_as_vocabularies" enabled, which it is by default.
+INSTALLATION
 
-    "BUILD"
-        Called by Moose to initialize an object.
+On Debian and derivatives, such as Ubuntu, this module can be
+installed with all its dependencies using
 
-    "model"
-        Returns the RDF::Trine::Model object.
+  apt-get install librdf-linkeddata-perl
 
-    "base_uri"
-        Returns or sets the base URI for this handler.
+as root or using sudo. 
 
-    "request ( [ $request ] )"
-        Returns the Plack::Request object if it exists or sets it if a
-        Plack::Request object is given as parameter.
+To install the most recent module, it is likely that you already have
+the cpan tool installed. Then just run it on the command line. If you
+don't have it, see http://www.cpan.org/modules/INSTALL.html
 
-    "current_etag"
-        Returns the current Etag of the model suitable for use in a HTTP
-        header. This is a read-only attribute.
+Then, in the cpan tool, type
 
-    "last_etag", "has_last_etag"
-        Returns or sets the last Etag of so that changes to the model can be
-        detected.
+install RDF::LinkedData
 
-    namespaces ( { skos => 'http://www.w3.org/2004/02/skos/core#', dct =>
-    'http://purl.org/dc/terms/' } )
-        Gets or sets the namespaces that some serializers use for
-        pretty-printing.
+The relevant scripts and modules will be install to different paths
+depending on your system. To use it, you need to find the script
+linked_data.psgi, e.g. using locate.
 
-    "response ( $uri )"
-        Will look up what to do with the given URI object and populate the
-        response object.
+CONFIGURATION
 
-    "helper_properties ( )"
-        Returns the RDF::Helper::Properties object if it exists or sets it
-        if a RDF::Helper::Properties object is given as parameter.
+*Quick setup for a demo*
+ 
+One-liner
+ 
+It is possible to make it run with a single command line, e.g.:
+ 
+  PERLRDF_STORE="Memory;path/to/some/data.ttl" plackup -host localhost script/linked_data.psgi
+ 
+This will start a server with the default config on localhost on port
+5000, so the URIs you're going serve from the file data.ttl will have
+to have a base URI http://localhost:5000/.
+ 
+Using perlrdf command line tool
+ 
+A slightly longer example requires App::perlrdf, but sets up a
+persistent SQLite-based triple store, parses a file and gets the
+server with the default config running:
+ 
+  export PERLRDF_STORE="DBI;mymodel;DBI:SQLite:database=rdf.db"
+  perlrdf make_store
+  perlrdf store_load path/to/some/data.ttl
+  plackup -host localhost script/linked_data.psgi
+ 
+*Configuration*
+ 
+To configure the system for production use, create a configuration
+file rdf_linkeddata.json that looks something like:
+ 
+  {
+        "base_uri"  : "http://localhost:5000/",
+        "store" : {
+                   "storetype"  : "Memory",
+                   "sources" : [ {
+                                "file" : "/path/to/your/data.ttl",
+                                "syntax" : "turtle"
+                               } ]
+ 
+                   },
+        "endpoint": {
+                "html": {
+                         "resource_links": true
+                        }
+                    },
+        "cors": {
+                  "origins": "*"
+                },
+        "void": {
+                  "pagetitle": "VoID Description for my dataset"
+                }
+  }
+ 
+In your shell set
+ 
+  export RDF_LINKEDDATA_CONFIG=/to/where/you/put/rdf_linkeddata.json
+ 
+If the linked_data.psgi script was installed in /usr/local/bin, go:
+ 
+  plackup /usr/local/bin/linked_data.psgi --host localhost --port 5000
+ 
+The endpoint-part of the config sets up a SPARQL Endpoint. This requires
+the RDF::Endpoint module, which is recommended by this module. To
+use it, it needs to have some config, but will use defaults.
+ 
+The last, cors-part of the config enables Cross-Origin Resource
+Sharing, which is a W3C Recommendation for relaxing security
+constraints to allow data to be shared across domains. In most cases,
+this is what you want when you are serving open data, but in some
+cases, notably intranets, this should be turned off by removing this
+part.
 
-    "type"
-        Returns or sets the type of result to return, i.e. "page", in the
-        case of a human-intended page or "data" for machine consumption, or
-        an empty string if it is an actual resource URI that should be
-        redirected.
+*Production server setup*
 
-    "my_node"
-        A node for the requested URI. This node is typically used as the
-        subject to find which statements to return as data. This expects to
-        get a URI object containing the full URI of the node.
+In addition to the configuration above, a production system should set
+up a real Web server to run the Plack script. There are many ways to
+do this (as Plack provides an elegant separation of concerns between
+developers and system administrators). 
 
-    "count ( $node)"
-        Returns the number of statements that has the $node as subject, or
-        all if $node is undef.
+To set this up under Apache, put this in the host configuration:
 
-    "endpoint ( [ $endpoint ] )"
-        Returns the RDF::Endpoint object if it exists or sets it if a
-        RDF::Endpoint object is given as parameter. In most cases, it will
-        be created for you if you pass a "endpoint_config" hashref to the
-        constructor, so you would most likely not use this method.
+  <Location />
+    SetHandler perl-script
+    PerlResponseHandler Plack::Handler::Apache2
+    SetEnv RDF_LINKEDDATA_CONFIG /to/where/you/put/rdf_linkeddata.json
+    PerlSetVar psgi_app /usr/local/bin/linked_data.psgi
+  </Location>
 
-    "void ( [ $voidg ] )"
-        Returns the RDF::Generator::Void object if it exists or sets it if a
-        RDF::Generator::Void object is given as parameter. Like "endpoint",
-        it will be created for you if you pass a "void_config" hashref to
-        the constructor, so you would most likely not use this method.
+  <Perl>
+    use Plack::Handler::Apache2;
+    $ENV{RDF_LINKEDDATA_CONFIG}='/to/where/you/put/rdf_linkeddata.json';
+    Plack::Handler::Apache2->preload("/usr/local/bin/linked_data.psgi");
+  </Perl>
+
+  <Location ~ "^/(dumps|js/|css/|favicon.ico)">
+    SetHandler default-handler
+  </Location>
+
+
+
 
 AUTHOR
     Kjetil Kjernsmo, "<kjetilk@cpan.org>"
@@ -125,17 +147,6 @@ SUPPORT
     this module:
 
     <http://lists.perlrdf.org/listinfo/dev>
-
-TODO
-    *   Use IO::Handle streams when they become available from the
-        serializers.
-
-    *   Figure out what needs to be done to use this code in other
-        frameworks, such as Magpie.
-
-    *   Make it read-write hypermedia.
-
-    *   Make the result graph configurable.
 
 ACKNOWLEDGEMENTS
     This module was started by Gregory Todd Williams "<gwilliams@cpan.org>"
