@@ -2,7 +2,7 @@ package RDF::LinkedData;
 
 use Moo;
 use namespace::autoclean;
-use Types::Standard;
+use Types::Standard qw(InstanceOf Str Bool Maybe Int HashRef);
 
 use RDF::Trine qw[iri literal blank statement];
 use RDF::Trine::Serializer;
@@ -158,7 +158,7 @@ Returns the RDF::Trine::Model object.
 
 =cut
 
-has model => (is => 'ro', isa => 'RDF::Trine::Model', lazy => 1, builder => '_build_model', 
+has model => (is => 'ro', isa => InstanceOf[RDF::Trine::Model], lazy => 1, builder => '_build_model', 
 				  handles => { current_etag => 'etag' });
 
 sub _build_model {
@@ -189,11 +189,11 @@ Returns or sets the base URI for this handler.
 
 =cut
 
-has base_uri => (is => 'rw', isa => 'Str', default => '' );
+has base_uri => (is => 'rw', isa => Str, default => '' );
 
-has hypermedia => (is => 'ro', isa => 'Bool', default => 1);
+has hypermedia => (is => 'ro', isa => Bool, default => 1);
 
-has namespaces_as_vocabularies => (is => 'ro', isa => 'Bool', default => 1);
+has namespaces_as_vocabularies => (is => 'ro', isa => Bool, default => 1);
 
 has endpoint_config => (is => 'rw',	isa=>Maybe[HashRef], predicate => 'has_endpoint_config');
 
@@ -207,7 +207,7 @@ Returns the L<Plack::Request> object if it exists or sets it if a L<Plack::Reque
 
 =cut
 
-has request => ( is => 'rw', isa => 'Plack::Request');
+has request => ( is => 'rw', isa => InstanceOf[Plack::Request]);
 
 
 =item C<< current_etag >>
@@ -220,7 +220,7 @@ Returns or sets the last Etag of so that changes to the model can be detected.
 
 =cut
 
-has last_etag => ( is => 'rw', isa => 'Str', predicate => 'has_last_etag');
+has last_etag => ( is => 'rw', isa => Str, predicate => 'has_last_etag');
 
 
 =item namespaces ( { skos => 'http://www.w3.org/2004/02/skos/core#', dct => 'http://purl.org/dc/terms/' } )
@@ -230,7 +230,7 @@ Gets or sets the namespaces that some serializers use for pretty-printing.
 =cut
 
 has 'namespaces' => (is => 'rw', 
-							isa => 'URI::NamespaceMap',
+							isa => InstanceOf[URI::NamespaceMap],
 							builder => '_build_namespaces',
 							lazy => 1,
 							handles => {
@@ -357,7 +357,7 @@ it if a L<RDF::Helper::Properties> object is given as parameter.
 
 =cut
 
-has helper_properties => ( is => 'rw', isa => 'RDF::Helper::Properties', lazy => 1, builder => '_build_helper_properties');
+has helper_properties => ( is => 'rw', isa => InstanceOf[RDF::Helper::Properties], lazy => 1, builder => '_build_helper_properties');
 
 sub _build_helper_properties {
 	my $self = shift;
@@ -372,7 +372,7 @@ Returns or sets the type of result to return, i.e. C<page>, in the case of a hum
 
 =cut
 
-has 'type' => (is => 'rw', isa => 'Str', default => ''); 
+has 'type' => (is => 'rw', isa => Str, default => ''); 
 
 
 =item C<< my_node >>
@@ -491,7 +491,7 @@ constructor, so you would most likely not use this method.
 =cut
 
 
-has endpoint => (is => 'rw', isa => 'RDF::Endpoint', predicate => 'has_endpoint');
+has endpoint => (is => 'rw', isa => InstanceOf[RDF::Endpoint], predicate => 'has_endpoint');
 
 
 =item C<< void ( [ $voidg ] ) >>
@@ -505,7 +505,7 @@ method.
 =cut
 
 
-has void => (is => 'rw', isa => 'RDF::Generator::Void', predicate => 'has_void');
+has void => (is => 'rw', isa => InstanceOf[RDF::Generator::Void], predicate => 'has_void');
 
 
 sub _negotiate {
@@ -630,11 +630,11 @@ sub _void_content {
 	}
 }
 
-has _voidmodel => (is => 'rw', isa => 'RDF::Trine::Model', predicate => '_has_voidmodel', clearer => '_clear_voidmodel');
+has _voidmodel => (is => 'rw', isa => InstanceOf[RDF::Trine::Model], predicate => '_has_voidmodel', clearer => '_clear_voidmodel');
 
-has _current_extvoid_mtime => (is => 'rw', isa => 'Int');
+has _current_extvoid_mtime => (is => 'rw', isa => Int);
 
-has _last_extvoid_mtime => (is => 'rw', isa => 'Int');
+has _last_extvoid_mtime => (is => 'rw', isa => Int);
 
 
 =back
