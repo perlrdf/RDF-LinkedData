@@ -1,7 +1,8 @@
 package RDF::LinkedData;
 
-use Moose;
+use Moo;
 use namespace::autoclean;
+use Types::Standard;
 
 use RDF::Trine qw[iri literal blank statement];
 use RDF::Trine::Serializer;
@@ -13,7 +14,6 @@ use URI::NamespaceMap;
 use URI;
 use HTTP::Headers;
 use Module::Load::Conditional qw[can_load];
-use MooseX::UndefTolerant::Attribute;
 use Encode;
 use RDF::RDFa::Generator 0.102;
 use HTML::HTML5::Writer qw(DOCTYPE_XHTML_RDFA);
@@ -21,7 +21,7 @@ use Data::Dumper;
 use Digest::MD5 ('md5_base64');
 use Try::Tiny;
 
-with 'MooseX::Log::Log4perl::Easy';
+with 'MooX::Log::Log4perl::Easy';
 
 BEGIN {
 	if ($ENV{TEST_VERBOSE}) {
@@ -103,11 +103,9 @@ if you have C<namespaces_as_vocabularies> enabled, which it is by default.
 
 =item C<< BUILD >>
 
-Called by Moose to initialize an object.
+Called by Moo to initialize an object.
 
 =cut
-
-# TODO look at buildargs to replace UndefTolerant
 
 sub BUILD {
 	my $self = shift;
@@ -197,11 +195,9 @@ has hypermedia => (is => 'ro', isa => 'Bool', default => 1);
 
 has namespaces_as_vocabularies => (is => 'ro', isa => 'Bool', default => 1);
 
-has endpoint_config => (is => 'rw', traits => [ qw(MooseX::UndefTolerant::Attribute)],
-								isa=>'HashRef', predicate => 'has_endpoint_config');
+has endpoint_config => (is => 'rw',	isa=>Maybe[HashRef], predicate => 'has_endpoint_config');
 
-has void_config => (is => 'rw', traits => [ qw(MooseX::UndefTolerant::Attribute)],
-								isa=>'HashRef', predicate => 'has_void_config');
+has void_config => (is => 'rw', isa=>Maybe[HashRef], predicate => 'has_void_config');
 
 
 
