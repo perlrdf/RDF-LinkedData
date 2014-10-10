@@ -666,11 +666,11 @@ sub _common_fragments_control {
 								 blank('template'));
 	$model->add_statement($void_subject,
 								 $void->uriLookupEndpoint,
-								 literal($base_uri . $self->fragments_config->{fragments_path}
+								 literal($self->base_uri . $self->fragments_config->{fragments_path}
 											. '{?subject,predicate,object}'));
 	$model->add_statement(blank('template'),
 								 $hydra->template,
-								 literal($base_uri . $self->fragments_config->{fragments_path}
+								 literal($self->base_uri . $self->fragments_config->{fragments_path}
 											. '{?subject,predicate,object}'));
 	$model->add_statement(blank('template'),
 								 $hydra->property,
