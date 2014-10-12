@@ -17,9 +17,6 @@ my $file = $Bin . '/data/basic.ttl';
 
 BEGIN {
     use_ok('RDF::LinkedData');
-    use_ok('RDF::Helper::Properties');
-    use_ok('RDF::Trine::Parser');
-    use_ok('RDF::Trine::Model');
 }
 
 
@@ -35,8 +32,7 @@ $parser->parse_file_into_model( $base_uri, $file, $model );
 
 ok($model, "We have a model");
 
-my $ec;
-$ec = {fragments_path => '/fragments'} ;
+my $ec = {fragments_path => '/fragments'} ;
 
 my $void_subject = iri($base_uri . '/#dataset-0');
 
@@ -46,7 +42,15 @@ TODO: {
 
 	note 'Testing the query interface itself';
 
-	my $ld = RDF::LinkedData->new(model => $model, base_uri=>$base_uri, fragments_config => $ec);
+my $ld = RDF::LinkedData->new(model => $model,
+										base_uri => $base_uri, 
+										namespaces_as_vocabularies => 1, 
+										void_config => { urispace => 'http://localhost' }, 
+										fragments_config => $ec
+									  );
+
+	isa_ok($ld, 'RDF::LinkedData');
+
 	my $response = $ld->response($base_uri . '/fragments?subject=http://localhost/foo');
 	isa_ok($response, 'Plack::Response');
 	is($response->status, 200, "Returns 200");

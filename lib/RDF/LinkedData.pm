@@ -19,6 +19,7 @@ use RDF::RDFa::Generator 0.102;
 use HTML::HTML5::Writer qw(DOCTYPE_XHTML_RDFA);
 use Data::Dumper;
 use Digest::MD5 ('md5_base64');
+use Carp;
 
 
 with 'MooseX::Log::Log4perl::Easy';
@@ -146,6 +147,9 @@ sub BUILD {
 		$self->void(RDF::Generator::Void->new(inmodel => $self->model, 
 														  dataset_uri => $dataset_uri,
 														  namespaces_as_vocabularies => $self->void_config->{namespaces_as_vocabularies}));
+		if ($self->has_fragments) {
+			$self->logger->debug('Triple Pattern Fragments config found with parameters: ' . Dumper($self->fragments_config) );
+		}
  	} else {
 		$self->logger->info('No VoID config found');
 	}
@@ -291,9 +295,9 @@ sub response {
 	}
 
 	if ($self->has_fragments && ($uri->path eq $self->fragments_config->{fragments_path})) {
-#	  my $iter = 
-	  die Data::Dumper::Dumper($uri->query_form);
-	  my $output_model = $self->_common_fragments_control;
+		croak 'A VoID description is needed when using Triple Pattern Fragments' unless ($self->has_void);
+		die Data::Dumper::Dumper($uri->query_form);
+		my $output_model = $self->_common_fragments_control;
 	  
 	}
 
@@ -658,6 +662,7 @@ sub _common_fragments_control {
 	my $hydra = RDF::Trine::Namespace->new('http://www.w3.org/ns/hydra/core#');
 	my $rdf = RDF::Trine::Namespace->new('http://www.w3.org/1999/02/22-rdf-syntax-ns#');
 	$model->begin_bulk_ops;
+	my $void_subject = $self->void->dataset_uri;
 	$model->add_statement($void_subject,
 								 $rdf->type,
 								 $hydra->Collection);

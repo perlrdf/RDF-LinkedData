@@ -1,0 +1,8 @@
+language: perl
+perl:
+  - "5.18"
+before_install:
+  - "cpanm --quiet --installdeps --notest Module::Package::RDF"
+install:
+  - "cpanm --quiet --installdeps --notest RDF::LinkedData"
+

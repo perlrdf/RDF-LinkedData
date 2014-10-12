@@ -8,7 +8,6 @@
 <project>
     :version_from <project#main> ;
     :all_from <project#main> ;
-    :readme_from <project#main> ;
     :install_script [ nfo:fileName "script/linked_data.psgi" ] ;
     :test_requires "Test::More 0.88", "Test::RDF 0.26", "FindBin", "Test::WWW::Mechanize::PSGI", 
     		   "Test::Exception", "Config::JFDI", "Test::JSON", "RDF::RDFa::Parser" ;
