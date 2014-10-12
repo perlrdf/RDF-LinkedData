@@ -51,6 +51,8 @@ my $ld = RDF::LinkedData->new(model => $model,
 
 	isa_ok($ld, 'RDF::LinkedData');
 
+	$ld->request(Plack::Request->new({}));
+
 	my $response = $ld->response($base_uri . '/fragments?subject=http://localhost/foo');
 	isa_ok($response, 'Plack::Response');
 	is($response->status, 200, "Returns 200");
@@ -205,5 +207,13 @@ TODO: {
 						 "Control statements OK");
 	  }
 }
+
+sub return_model {
+	my ($content, $parser) = @_;
+	my $retmodel = RDF::Trine::Model->temporary_model;
+	$parser->parse_into_model( $base_uri, $content, $retmodel );
+	return $retmodel;
+}
+
 
 done_testing;
