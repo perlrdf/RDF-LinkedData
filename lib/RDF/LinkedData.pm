@@ -329,10 +329,11 @@ sub response {
 		$self->logger->debug('Getting fragment with this selector ' . Dumper(\%statement));
 		return _client_error('Returning the whole database not allowed') unless any { defined } values(%statement);
 		my $output_model = $self->_common_fragments_control;
-		my $data = $self->model->get_statements($statement{subject}, $statement{predicate}, $statement{object});
+
+		my $iterator = $self->model->get_statements($statement{subject}, $statement{predicate}, $statement{object});
 		$output_model->begin_bulk_ops;
 		my $counter = 0;
-		while (my $st = $data->next) {
+		while (my $st = $iterator->next) {
 			$counter++;
 			$output_model->add_statement($st);
 		}
@@ -710,38 +711,38 @@ sub _common_fragments_control {
 	my $rdf = RDF::Trine::Namespace->new('http://www.w3.org/1999/02/22-rdf-syntax-ns#');
 	$model->begin_bulk_ops;
 	my $void_subject = $self->void->dataset_uri;
-	$model->add_statement($void_subject,
-								 $rdf->type,
-								 $hydra->Collection);
-	$model->add_statement($void_subject,
-								 $hydra->search,
-								 blank('template'));
-	$model->add_statement($void_subject,
+	$model->add_statement(statement($void_subject,
+											  $rdf->type,
+											  $hydra->Collection));
+	$model->add_statement(statement($void_subject,
+											  $hydra->search,
+											  blank('template')));
+	$model->add_statement(statement($void_subject,
 								 $void->uriLookupEndpoint,
 								 literal($self->base_uri . $self->fragments_config->{fragments_path}
-											. '{?subject,predicate,object}'));
-	$model->add_statement(blank('template'),
+											. '{?subject,predicate,object}')));
+	$model->add_statement(statement(blank('template'),
 								 $hydra->template,
 								 literal($self->base_uri . $self->fragments_config->{fragments_path}
-											. '{?subject,predicate,object}'));
-	$model->add_statement(blank('template'),
+											. '{?subject,predicate,object}')));
+	$model->add_statement(statement(blank('template'),
 								 $hydra->property,
-								 $rdf->subject);
-	$model->add_statement(blank('template'),
+								 $rdf->subject));
+	$model->add_statement(statement(blank('template'),
 								 $hydra->variable,
-								 literal('subject'));
-	$model->add_statement(blank('template'),
+								 literal('subject')));
+	$model->add_statement(statement(blank('template'),
 								 $hydra->property,
-								 $rdf->predicate);
-	$model->add_statement(blank('template'),
+								 $rdf->predicate));
+	$model->add_statement(statement(blank('template'),
 								 $hydra->variable,
-								 literal('predicate'));
-	$model->add_statement(blank('template'),
+								 literal('predicate')));
+	$model->add_statement(statement(blank('template'),
 								 $hydra->property,
-								 $rdf->object);
-	$model->add_statement(blank('template'),
+								 $rdf->object));
+	$model->add_statement(statement(blank('template'),
 								 $hydra->variable,
-								 literal('object'));
+								 literal('object')));
 	$model->end_bulk_ops;
 	return $model;
 }
