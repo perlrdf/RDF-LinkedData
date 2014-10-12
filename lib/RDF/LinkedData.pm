@@ -3,7 +3,7 @@ package RDF::LinkedData;
 use Moose;
 use namespace::autoclean;
 
-use RDF::Trine qw[iri literal blank statement];
+use RDF::Trine qw[iri literal blank statement variable];
 use RDF::Trine::Serializer;
 use RDF::Trine::Namespace;
 use Log::Log4perl qw(:easy);
@@ -20,6 +20,8 @@ use HTML::HTML5::Writer qw(DOCTYPE_XHTML_RDFA);
 use Data::Dumper;
 use Digest::MD5 ('md5_base64');
 use Carp;
+use Try::Tiny;
+use List::Util qw(any);
 
 
 with 'MooseX::Log::Log4perl::Easy';
@@ -296,9 +298,45 @@ sub response {
 
 	if ($self->has_fragments && ($uri->path eq $self->fragments_config->{fragments_path})) {
 		croak 'A VoID description is needed when using Triple Pattern Fragments' unless ($self->has_void);
-		die Data::Dumper::Dumper($uri->query_form);
+		my %params = $uri->query_form;
+		my %statement = (subject => undef,
+							  predicate => undef,
+							  object => undef);
+		foreach my $term (keys(%statement)) {
+			my $value = $params{$term};
+			next unless defined($value);
+			return _client_error($response, "$term is invalid") if ref($value);
+			if ($value =~ m/^\?(\S+)$/) {
+				$statement{$term} = variable($1);
+			} elsif (($term eq 'object') && ($value =~ m/^\"(.+)\"((\@|\^\^)(\S+))?$/)) {
+				my $string = $1;
+				my $lang_or_datatype = $3;
+				my $rest = $4;
+				if ($lang_or_datatype eq '@') {
+					$statement{$term} = literal($string, $rest);
+				} else {
+					$statement{$term} = literal($string, undef, $rest);
+				}
+			} else {
+				try {
+					$statement{$term} = iri($value);
+				} catch {
+					return _client_error($response, 'Was not able to parse subject as a IRI');
+				}
+			}
+		}
+
+		$self->logger->debug('Getting fragment with this selector ' . Dumper(\%statement));
+		return _client_error('Returning the whole database not allowed') unless any { defined } values(%statement);
 		my $output_model = $self->_common_fragments_control;
-	  
+		my $data = $self->model->get_statements($statement{subject}, $statement{predicate}, $statement{object});
+		$output_model->begin_bulk_ops;
+		my $counter = 0;
+		while (my $st = $data->next) {
+			$counter++;
+			$output_model->add_statement($st);
+		}
+		$output_model->end_bulk_ops;
 	}
 
 	if ($self->has_void) {
@@ -366,6 +404,15 @@ sub response {
 	$response->body('HTTP 500: No such functionality.');
 	return $response;
 }
+
+sub _client_error {
+	my ($response, $msg) = @_;
+	$response->status(400);
+	$response->headers->content_type('text/plain');
+	$response->body("HTTP 400: $msg");
+	return $response;
+}
+
 
 
 =item C<< helper_properties (  ) >>
