@@ -121,6 +121,14 @@ my $ld = RDF::LinkedData->new(model => $model,
 	has_literal("1", undef, $xsd->integer, $retmodel, 'Triple count is correct');
 	hasnt_literal('This is a test', 'en', undef, $retmodel, "Test phrase isn't in content");
 
+	my $response = $ld->response($base_uri . '/fragments?object=' . uri_escape_utf8('"42"^^http://www.w3.org/2001/XMLSchema#integer'));
+	isa_ok($response, 'Plack::Response');
+	is($response->status, 200, "Returns 200");
+	my $retmodel = return_model($response->content, $parser);
+	has_literal('42', undef, $xsd->integer, $retmodel, "The Answer is in the content");
+	has_literal("1", undef, $xsd->integer, $retmodel, 'Triple count is correct');
+	hasnt_literal('This is a test', 'en', undef, $retmodel, "Test phrase isn't in content");
+
 	my $response = $ld->response($base_uri . '/fragments?predicate=' . uri_escape_utf8('http://www.w3.org/2000/01/rdf-schema#label') . '&object=' . uri_escape_utf8('"Nothing here."'));
 	isa_ok($response, 'Plack::Response');
 	is($response->status, 200, "Returns 200");
