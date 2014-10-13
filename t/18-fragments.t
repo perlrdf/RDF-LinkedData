@@ -155,10 +155,13 @@ my $ld = RDF::LinkedData->new(model => $model,
 		  my $ld = RDF::LinkedData->new(model => $model, base_uri=>$base_uri, 
 												  fragments_config => $ec, 
 												  void_config => { urispace => 'http://localhost' });
+		  isa_ok($ld, 'RDF::LinkedData');
+
+		  $ld->request(Plack::Request->new({}));
 		  my $response = $ld->response($base_uri . '/');
 		  isa_ok($response, 'Plack::Response');
 		  is($response->status, 200, "Returns 200");
-		  my $retmodel = return_model($response->content, $rxparser);
+		  my $retmodel = return_model($response->content, $parser);
 		  has_subject($void_subject, $retmodel, "Subject URI in content");
 		  has_predicate($hydra->search->uri_value, $retmodel, 'Hydra search predicate');
 		  pattern_target($retmodel);
