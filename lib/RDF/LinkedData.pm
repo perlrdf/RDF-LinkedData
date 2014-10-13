@@ -353,8 +353,10 @@ sub response {
 		if (defined($self->last_etag)) {
 		  $response->headers->header('ETag' => '"' . $self->last_etag . '"');
 		}
+		my $body = $s->serialize_model_to_string($output_model);
+		$self->logger->trace("Fragment message body is $body");
 		$response->headers->content_type($ct);
-		$response->body(encode_utf8($s->serialize_model_to_string($output_model)));
+		$response->body(encode_utf8($body));
 		return $response;
 	}
 
