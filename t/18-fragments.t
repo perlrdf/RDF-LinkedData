@@ -37,9 +37,7 @@ my $ec = {fragments_path => '/fragments'} ;
 my $void_subject = iri($base_uri . '/#dataset-0');
 
 
-TODO: {
-	local $TODO = "Implementing Linked Data Fragments";
-
+{
 	note 'Testing the query interface itself';
 
 my $ld = RDF::LinkedData->new(model => $model,
@@ -146,8 +144,7 @@ my $ld = RDF::LinkedData->new(model => $model,
 }
 
 
-TODO: {
-	local $TODO = "Implementing Linked Data Fragments";
+{
 
 	SKIP: {
 		  skip 'You need RDF::Generator::Void for this test', 6 unless can_load( module => 'RDF::Generator::Void', version => 0.02);
