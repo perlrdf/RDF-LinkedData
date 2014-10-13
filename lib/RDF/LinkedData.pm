@@ -762,9 +762,6 @@ sub _common_fragments_control {
 											  $rdf->type,
 											  $void->Dataset));
 	$model->add_statement(statement($void_subject,
-											  $rdf->type,
-											  $void->DataSet));
-	$model->add_statement(statement($void_subject,
 											  $hydra->search,
 											  blank('template')));
 	$model->add_statement(statement($void_subject,
