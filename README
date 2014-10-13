@@ -108,6 +108,11 @@ dataset, using RDF::Generator::Void. It is strongly recommended to
 install and run that, but it can take some time to generate, so you
 may have to set the detail level.
 
+Finally, fragments add support for Triple Pattern Fragments, a
+work-in-progress, initiated by http://linkeddatafragments.org/ 
+It is a more lightweight but less powerful way to query RDF data than
+SPARQL. If you have this, it is recommended to have CORS enabled and
+required to have at least a minimal VoID setup.
 
 *Production server setup*
 
