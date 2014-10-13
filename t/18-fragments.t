@@ -14,7 +14,7 @@ use URI::Escape;
 
 Log::Log4perl->easy_init( { level   => $FATAL } ) unless $ENV{TEST_VERBOSE};
 
-my $file = $Bin . '/data/basic.ttl';
+my $file = $Bin . '/data/fragments.ttl';
 
 BEGIN {
     use_ok('RDF::LinkedData');
@@ -121,6 +121,13 @@ my $ld = RDF::LinkedData->new(model => $model,
 	has_literal("1", undef, $xsd->integer, $retmodel, 'Triple count is correct');
 	hasnt_literal('This is a test', 'en', undef, $retmodel, "Test phrase isn't in content");
 
+	my $response = $ld->response($base_uri . '/fragments?predicate=' . uri_escape_utf8('http://www.w3.org/2000/01/rdf-schema#label') . '&object=' . uri_escape_utf8('"Nothing here."'));
+	isa_ok($response, 'Plack::Response');
+	is($response->status, 200, "Returns 200");
+	my $retmodel = return_model($response->content, $parser);
+	hasnt_literal('Testing with longer URI.', 'en', undef, $retmodel, "Longer test phrase is in content");
+	has_literal("0", undef, $xsd->integer, $retmodel, 'Triple count is correct');
+
 	my $response = $ld->response($base_uri . '/fragments?predicate=' . uri_escape_utf8('http://www.w3.org/2000/01/rdf-schema#label') . '&subject=');
 	isa_ok($response, 'Plack::Response');
 	is($response->status, 200, "Returns 200");
@@ -169,7 +176,7 @@ my $ld = RDF::LinkedData->new(model => $model,
 						 statement(
 									  $void_subject,
 									  $void->triples,
-									  literal(3, undef, $xsd->integer)
+									  literal(4, undef, $xsd->integer)
 									 ),
 						 statement(
 									  $void_subject,
