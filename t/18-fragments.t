@@ -56,7 +56,7 @@ my $ld = RDF::LinkedData->new(model => $model,
 	my $response = $ld->response($base_uri . '/fragments?subject=http://localhost/foo');
 	isa_ok($response, 'Plack::Response');
 	is($response->status, 200, "Returns 200");
-	my $retmodel = return_model($response->content, $rxparser);
+	my $retmodel = return_model($response->content, $parser);
 	has_literal('This is a test', 'en', undef, $retmodel, "Test phrase in content");
 	pattern_target($retmodel);
 	pattern_ok(

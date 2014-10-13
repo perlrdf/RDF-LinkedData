@@ -335,9 +335,20 @@ sub response {
 		my $counter = 0;
 		while (my $st = $iterator->next) {
 			$counter++;
+			# TODO: Paging goes here
 			$output_model->add_statement($st);
 		}
 		$output_model->end_bulk_ops;
+		my ($ct, $s) = $self->_negotiate($self->request->headers);
+		return $ct if ($ct->isa('Plack::Response')); # A hack to allow for the failed conneg case
+		$response->status(200);
+		$response->headers->header('Vary' => join(", ", qw(Accept)));
+		if (defined($self->last_etag)) {
+		  $response->headers->header('ETag' => '"' . $self->last_etag . '"');
+		}
+		$response->headers->content_type($ct);
+		$response->body(encode_utf8($s->serialize_model_to_string($output_model)));
+		return $response;
 	}
 
 	if ($self->has_void) {
