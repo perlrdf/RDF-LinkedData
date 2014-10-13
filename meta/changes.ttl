@@ -7,7 +7,19 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl:  <http://www.w3.org/2002/07/owl#> .
 
-my:project :release my:v_0-68, my:v_0-66, my:v_0-64, my:v_0-62, my:v_0-60, my:v_0-58, my:v_0_56 .
+my:project :release my:v_0-69-01, my:v_0-68, my:v_0-66, my:v_0-64, my:v_0-62, my:v_0-60, my:v_0-58, my:v_0_56 .
+
+my:v_0-69-01
+    a           :Version ;
+    dc:issued   "2014-10-13"^^xsd:date ;
+    rdfs:label "Triple Pattern Fragments support."@en ;
+    :revision   "0.69_01"^^xsd:string ;
+#    owl:sameAs <http://packages.qa.debian.org/librdf-linkeddata-perl#upstreamsrc_0.68> ;
+    dcs:changeset [
+      dcs:item        
+        [ rdfs:label "Triple Pattern Fragments support."@en ; a dcs:Addition ] ,
+        [ rdfs:label "Hand-maintain README."@en ; a dcs:Change ] 
+    ] .
 
 my:v_0-68
     a           :Version ;
