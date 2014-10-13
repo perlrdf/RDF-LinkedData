@@ -338,6 +338,8 @@ sub response {
 			# TODO: Paging goes here
 			$output_model->add_statement($st);
 		}
+		$self->add_namespace_mapping(void => 'http://rdfs.org/ns/void#');
+		$self->add_namespace_mapping(hydra => 'http://www.w3.org/ns/hydra/core#');
 		my $cl = literal($counter, undef, 'http://www.w3.org/2001/XMLSchema#integer');
 		$output_model->add_statement(statement(iri($uri), 
 															iri('http://rdfs.org/ns/void#triples'),
