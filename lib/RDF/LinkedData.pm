@@ -338,6 +338,13 @@ sub response {
 			# TODO: Paging goes here
 			$output_model->add_statement($st);
 		}
+		my $cl = literal($counter, undef, 'http://www.w3.org/2001/XMLSchema#integer');
+		$output_model->add_statement(statement(iri($uri), 
+															iri('http://rdfs.org/ns/void#triples'),
+															$cl));
+		$output_model->add_statement(statement(iri($uri), 
+															iri('http://www.w3.org/ns/hydra/core#totalItems'),
+															$cl));
 		$output_model->end_bulk_ops;
 		my ($ct, $s) = $self->_negotiate($self->request->headers);
 		return $ct if ($ct->isa('Plack::Response')); # A hack to allow for the failed conneg case
