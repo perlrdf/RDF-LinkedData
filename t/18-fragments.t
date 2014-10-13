@@ -170,7 +170,7 @@ my $ld = RDF::LinkedData->new(model => $model,
 {
 
 	SKIP: {
-		  skip 'You need RDF::Generator::Void for this test', 6 unless can_load( module => 'RDF::Generator::Void', version => 0.02);
+		  skip 'You need RDF::Generator::Void for this test', 6 unless can_load( modules => {'RDF::Generator::Void' => '0.02' });
 
 		  note 'Testing the Void for fragments';
 		  

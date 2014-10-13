@@ -316,7 +316,7 @@ sub response {
 				my $string = $1;
 				my $lang_or_datatype = $3;
 				my $rest = $4;
-				if ($lang_or_datatype eq '@') {
+				if (defined($lang_or_datatype) && ($lang_or_datatype eq '@')) {
 					$statement{$term} = literal($string, $rest);
 				} else {
 					$statement{$term} = literal($string, undef, $rest);
