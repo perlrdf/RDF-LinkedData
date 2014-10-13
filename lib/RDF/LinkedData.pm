@@ -97,12 +97,16 @@ L<Plack::Request> object (must be passed before you call C<content>)
 and an C<endpoint_config> hashref if you want to have a SPARQL
 Endpoint running using the recommended module L<RDF::Endpoint>.
 
-This module can also provide additional triples to turn the respons
+This module can also provide additional triples to turn the response
 into a hypermedia type. If you don't want this, set the C<hypermedia>
 argument to false. Currently this entails setting the SPARQL endpoint
 and vocabularies used using the L<VoID vocabulary|http://vocab.deri.ie/void>.
 The latter is very limited at present, all it'll do is use the namespaces
 if you have C<namespaces_as_vocabularies> enabled, which it is by default.
+
+Finally, it can provide experimental L<Triple Pattern
+Fragments|http://www.hydra-cg.com/spec/latest/triple-pattern-fragments/>
+support.
 
 =item C<< BUILD >>
 
