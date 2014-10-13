@@ -328,7 +328,7 @@ sub response {
 
 		$self->logger->debug('Getting fragment with this selector ' . Dumper(\%statement));
 		return _client_error('Returning the whole database not allowed') unless any { defined } values(%statement);
-		my $output_model = $self->_common_fragments_control;
+		my $output_model = $self->_common_fragments_control($uri);
 
 		my $iterator = $self->model->get_statements($statement{subject}, $statement{predicate}, $statement{object});
 		$output_model->begin_bulk_ops;
@@ -721,7 +721,7 @@ has _current_extvoid_mtime => (is => 'rw', isa => 'Int');
 has _last_extvoid_mtime => (is => 'rw', isa => 'Int');
 
 sub _common_fragments_control {
-	my $self = shift;
+	my ($self, $uri) = @_;
 	my $model = RDF::Trine::Model->temporary_model;
 	my $void = RDF::Trine::Namespace->new('http://rdfs.org/ns/void#');
 	my $xsd  = RDF::Trine::Namespace->new('http://www.w3.org/2001/XMLSchema#');
@@ -732,6 +732,18 @@ sub _common_fragments_control {
 	$model->add_statement(statement($void_subject,
 											  $rdf->type,
 											  $hydra->Collection));
+	$model->add_statement(statement($void_subject,
+											  $rdf->type,
+											  $void->Dataset));
+	$model->add_statement(statement(iri($uri),
+											  $rdf->type,
+											  $void->Dataset));
+	$model->add_statement(statement($void_subject,
+											  $void->subset,
+											  iri($uri)));
+	$model->add_statement(statement($void_subject,
+											  $rdf->type,
+											  $void->DataSet));
 	$model->add_statement(statement($void_subject,
 											  $hydra->search,
 											  blank('template')));
