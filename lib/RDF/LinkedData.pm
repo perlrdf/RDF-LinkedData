@@ -702,6 +702,13 @@ sub _void_content {
 			$self->last_etag($self->current_etag);
 		}
 
+		if ($self->has_fragments) {
+			$self->add_namespace_mapping(hydra => 'http://www.w3.org/ns/hydra/core#');
+			$self->_common_fragments_control($self->_voidmodel);
+		}
+
+
+
 		# Now start serializing.
 		my ($ct, $s) = $self->_negotiate($self->request->headers);
 		return $ct if ($ct->isa('Plack::Response')); # A hack to allow for the failed conneg case
@@ -743,7 +750,7 @@ has _last_extvoid_mtime => (is => 'rw', isa => 'Int');
 
 sub _common_fragments_control {
 	my $self = shift;
-	my $model = RDF::Trine::Model->temporary_model;
+	my $model = shift || RDF::Trine::Model->temporary_model;
 	my $void = RDF::Trine::Namespace->new('http://rdfs.org/ns/void#');
 	my $xsd  = RDF::Trine::Namespace->new('http://www.w3.org/2001/XMLSchema#');
 	my $hydra = RDF::Trine::Namespace->new('http://www.w3.org/ns/hydra/core#');
