@@ -346,8 +346,18 @@ sub response {
 															iri('http://www.w3.org/ns/hydra/core#totalItems'),
 															$cl));
 		$output_model->end_bulk_ops;
-		my ($ct, $s) = $self->_negotiate($self->request->headers);
-		return $ct if ($ct->isa('Plack::Response')); # A hack to allow for the failed conneg case
+		my ($ct, $s);
+		try {
+			($ct, $s) = RDF::Trine::Serializer->negotiate('request_headers' => $headers_in,
+																		 base_uri => $self->base_uri,
+																		 namespaces => $self->_namespace_hashref);
+		} catch {
+			$response->status(406);
+			$response->headers->content_type('text/plain');
+			$response->body('HTTP 406: No serialization available any specified content type');
+			return $response;
+		};
+
 		$response->status(200);
 		$response->headers->header('Vary' => join(", ", qw(Accept)));
 		if (defined($self->last_etag)) {
