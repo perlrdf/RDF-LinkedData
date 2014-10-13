@@ -128,7 +128,7 @@ my $ld = RDF::LinkedData->new(model => $model,
 	has_subject($base_uri . '/foo', $retmodel, 'Subject 1 is correct');
 	has_subject($base_uri . '/bar/baz/bing', $retmodel, 'Subject 2 is correct');
 	has_literal("2", undef, $xsd->integer, $retmodel, 'Triple count is correct');
-	hasnt_literal('This is a test', 'en', undef, $retmodel, "Test phrase isn't in content");
+	has_literal('This is a test', 'en', undef, $retmodel, "Test phrase is in content");
 
 
 	my $response = $ld->response($base_uri . '/fragments?subject=&predicate=&object=');	
