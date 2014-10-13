@@ -327,8 +327,8 @@ sub response {
 		}
 
 		$self->logger->debug('Getting fragment with this selector ' . Dumper(\%statement));
-		return _client_error('Returning the whole database not allowed') unless any { defined } values(%statement);
-		my $output_model = $self->_common_fragments_control($uri);
+		return _client_error($response, 'Returning the whole database not allowed') unless any { defined } values(%statement);
+		my $output_model = $self->_common_fragments_control;
 
 		my $iterator = $self->model->get_statements($statement{subject}, $statement{predicate}, $statement{object});
 		$output_model->begin_bulk_ops;
@@ -341,12 +341,19 @@ sub response {
 		$self->add_namespace_mapping(void => 'http://rdfs.org/ns/void#');
 		$self->add_namespace_mapping(hydra => 'http://www.w3.org/ns/hydra/core#');
 		my $cl = literal($counter, undef, 'http://www.w3.org/2001/XMLSchema#integer');
+		my $void = RDF::Trine::Namespace->new('http://rdfs.org/ns/void#');
 		$output_model->add_statement(statement(iri($uri), 
-															iri('http://rdfs.org/ns/void#triples'),
+															$void->triples,
 															$cl));
 		$output_model->add_statement(statement(iri($uri), 
 															iri('http://www.w3.org/ns/hydra/core#totalItems'),
 															$cl));
+		$output_model->add_statement(statement(iri($uri),
+															iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
+															$void->Dataset));
+		$output_model->add_statement(statement($self->void->dataset_uri,
+															$void->subset,
+															iri($uri)));
 		$output_model->end_bulk_ops;
 		my ($ct, $s);
 		try {
@@ -735,7 +742,7 @@ has _current_extvoid_mtime => (is => 'rw', isa => 'Int');
 has _last_extvoid_mtime => (is => 'rw', isa => 'Int');
 
 sub _common_fragments_control {
-	my ($self, $uri) = @_;
+	my $self = shift;
 	my $model = RDF::Trine::Model->temporary_model;
 	my $void = RDF::Trine::Namespace->new('http://rdfs.org/ns/void#');
 	my $xsd  = RDF::Trine::Namespace->new('http://www.w3.org/2001/XMLSchema#');
@@ -749,12 +756,6 @@ sub _common_fragments_control {
 	$model->add_statement(statement($void_subject,
 											  $rdf->type,
 											  $void->Dataset));
-	$model->add_statement(statement(iri($uri),
-											  $rdf->type,
-											  $void->Dataset));
-	$model->add_statement(statement($void_subject,
-											  $void->subset,
-											  iri($uri)));
 	$model->add_statement(statement($void_subject,
 											  $rdf->type,
 											  $void->DataSet));
