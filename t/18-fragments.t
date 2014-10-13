@@ -115,7 +115,7 @@ my $ld = RDF::LinkedData->new(model => $model,
 	my $response = $ld->response($base_uri . '/fragments?predicate=http://www.w3.org/2000/01/rdf-schema#label&object="Testing with longer URI."@en');
 	isa_ok($response, 'Plack::Response');
 	is($response->status, 200, "Returns 200");
-	my $retmodel = return_model($response->content, $rxparser);
+	my $retmodel = return_model($response->content, $parser);
 	has_literal('Testing with longer URI.', 'en', undef, $retmodel, "Longer test phrase is in content");
 	has_literal("1", undef, $xsd->integer);
 	hasnt_literal('This is a test', 'en', undef, $retmodel, "Test phrase isn't in content");
@@ -123,7 +123,7 @@ my $ld = RDF::LinkedData->new(model => $model,
 	my $response = $ld->response($base_uri . '/fragments?predicate=http://www.w3.org/2000/01/rdf-schema#label&subject=');
 	isa_ok($response, 'Plack::Response');
 	is($response->status, 200, "Returns 200");
-	my $retmodel = return_model($response->content, $rxparser);
+	my $retmodel = return_model($response->content, $parser);
 	has_subject($base_uri . '/foo', $retmodel, 'Subject 1 is correct');
 	has_subject($base_uri . '/bar/baz/bing', $retmodel, 'Subject 2 is correct');
 	has_literal("2", undef, $xsd->integer);
