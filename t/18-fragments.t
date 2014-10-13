@@ -52,111 +52,118 @@ my $ld = RDF::LinkedData->new(model => $model,
 
 	$ld->request(Plack::Request->new({}));
 
-	my $response = $ld->response($base_uri . '/fragments?subject=' . uri_escape_utf8('http://localhost/foo'));
-	isa_ok($response, 'Plack::Response');
-	is($response->status, 200, "Returns 200");
-	my $retmodel = return_model($response->content, $parser);
-	has_literal('This is a test', 'en', undef, $retmodel, "Test phrase in content");
-	pattern_target($retmodel);
-	pattern_ok(
-				  statement(iri($base_uri . '/foo'),
-								$rdfs->label,
-								literal("This is a test", 'en')),
-				  statement(iri($base_uri . '/foo'),
-								$foaf->page,
-								iri('http://en.wikipedia.org/wiki/Foo'))
-				  , 'Both triples present',
-				 );
-
-	pattern_ok(
-				  statement(iri($base_uri . '/fragments?subject=' . uri_escape_utf8('http://localhost/foo')),
-								$void->triples,
-								literal("2", undef, $xsd->integer)),
-				  statement(iri($base_uri . '/fragments?subject=' . uri_escape_utf8('http://localhost/foo')),
-								$hydra->totalItems,
-								literal("2", undef, $xsd->integer)),
-				  , 'Triple count is correct',
-				 );
-
-
-	has_subject($void_subject->uri_value, $retmodel, "Void Subject URI in content");
-
-	pattern_ok(
-				  statement($void_subject,
-								$rdf->type,
-								$hydra->Collection),
-				  statement($void_subject,
-								$hydra->search,
-								blank('template')),
-				  statement(blank('template'),
-								$hydra->template,
-								literal($base_uri . '/fragments{?subject,predicate,object}')),
-				  statement(blank('template'),
-								$hydra->property,
-								$rdf->subject),
-				  statement(blank('template'),
-								$hydra->variable,
-								literal('subject')),
-				  statement(blank('template'),
-								$hydra->property,
-								$rdf->predicate),
-				  statement(blank('template'),
-								$hydra->variable,
-								literal('predicate')),
-				  statement(blank('template'),
-								$hydra->property,
-								$rdf->object),
-				  statement(blank('template'),
-								$hydra->variable,
-								literal('object')),
-				  "Control statements OK");
-
-
-
-	my $response = $ld->response($base_uri . '/fragments?predicate=' . uri_escape_utf8('http://www.w3.org/2000/01/rdf-schema#label') . '&object=' . uri_escape_utf8('"Testing with longer URI."@en'));
-	isa_ok($response, 'Plack::Response');
-	is($response->status, 200, "Returns 200");
-	my $retmodel = return_model($response->content, $parser);
-	has_literal('Testing with longer URI.', 'en', undef, $retmodel, "Longer test phrase is in content");
-	has_literal("1", undef, $xsd->integer, $retmodel, 'Triple count is correct');
-	hasnt_literal('This is a test', 'en', undef, $retmodel, "Test phrase isn't in content");
-
-	my $response = $ld->response($base_uri . '/fragments?object=' . uri_escape_utf8('"42"^^http://www.w3.org/2001/XMLSchema#integer'));
-	isa_ok($response, 'Plack::Response');
-	is($response->status, 200, "Returns 200");
-	my $retmodel = return_model($response->content, $parser);
-	has_literal('42', undef, $xsd->integer, $retmodel, "The Answer is in the content");
-	has_literal("1", undef, $xsd->integer, $retmodel, 'Triple count is correct');
-	hasnt_literal('This is a test', 'en', undef, $retmodel, "Test phrase isn't in content");
-
-	my $response = $ld->response($base_uri . '/fragments?predicate=' . uri_escape_utf8('http://www.w3.org/2000/01/rdf-schema#label') . '&object=' . uri_escape_utf8('"Nothing here."'));
-	isa_ok($response, 'Plack::Response');
-	is($response->status, 200, "Returns 200");
-	my $retmodel = return_model($response->content, $parser);
-	hasnt_literal('Testing with longer URI.', 'en', undef, $retmodel, "Longer test phrase is in content");
-	has_literal("0", undef, $xsd->integer, $retmodel, 'Triple count is correct');
-
-	my $response = $ld->response($base_uri . '/fragments?predicate=' . uri_escape_utf8('http://www.w3.org/2000/01/rdf-schema#label') . '&subject=');
-	isa_ok($response, 'Plack::Response');
-	is($response->status, 200, "Returns 200");
-	my $retmodel = return_model($response->content, $parser);
-	has_subject($base_uri . '/foo', $retmodel, 'Subject 1 is correct');
-	has_subject($base_uri . '/bar/baz/bing', $retmodel, 'Subject 2 is correct');
-	has_literal("2", undef, $xsd->integer, $retmodel, 'Triple count is correct');
-	has_literal('This is a test', 'en', undef, $retmodel, "Test phrase is in content");
-
-
-	my $response = $ld->response($base_uri . '/fragments?subject=&predicate=&object=');	
-	isa_ok($response, 'Plack::Response');
-	is($response->status, 400, "Returns 400 with all parameters empty");
-
-	my $response = $ld->response($base_uri . '/fragments');	
-	isa_ok($response, 'Plack::Response');
-	is($response->status, 400, "Returns 400 with all parameters missing");
-
-	my $response = $ld->response($base_uri . '/fragments?predicate=&object=');	
-	isa_ok($response, 'Plack::Response');
-	is($response->status, 400, "Returns 400 with subject missing other parameters empty");
+	{
+		my $response = $ld->response($base_uri . '/fragments?subject=' . uri_escape_utf8('http://localhost/foo'));
+		isa_ok($response, 'Plack::Response');
+		is($response->status, 200, "Returns 200");
+		my $retmodel = return_model($response->content, $parser);
+		has_literal('This is a test', 'en', undef, $retmodel, "Test phrase in content");
+		pattern_target($retmodel);
+		pattern_ok(
+					  statement(iri($base_uri . '/foo'),
+									$rdfs->label,
+									literal("This is a test", 'en')),
+					  statement(iri($base_uri . '/foo'),
+									$foaf->page,
+									iri('http://en.wikipedia.org/wiki/Foo'))
+					  , 'Both triples present',
+					 );
+		
+		pattern_ok(
+					  statement(iri($base_uri . '/fragments?subject=' . uri_escape_utf8('http://localhost/foo')),
+									$void->triples,
+									literal("2", undef, $xsd->integer)),
+					  statement(iri($base_uri . '/fragments?subject=' . uri_escape_utf8('http://localhost/foo')),
+									$hydra->totalItems,
+									literal("2", undef, $xsd->integer)),
+					  , 'Triple count is correct',
+					 );
+		
+		
+		has_subject($void_subject->uri_value, $retmodel, "Void Subject URI in content");
+		
+		pattern_ok(
+					  statement($void_subject,
+									$rdf->type,
+									$hydra->Collection),
+					  statement($void_subject,
+									$hydra->search,
+									blank('template')),
+					  statement(blank('template'),
+									$hydra->template,
+									literal($base_uri . '/fragments{?subject,predicate,object}')),
+					  statement(blank('template'),
+									$hydra->property,
+									$rdf->subject),
+					  statement(blank('template'),
+									$hydra->variable,
+									literal('subject')),
+					  statement(blank('template'),
+									$hydra->property,
+									$rdf->predicate),
+					  statement(blank('template'),
+									$hydra->variable,
+									literal('predicate')),
+					  statement(blank('template'),
+									$hydra->property,
+									$rdf->object),
+					  statement(blank('template'),
+									$hydra->variable,
+									literal('object')),
+					  "Control statements OK");
+   }
+	
+	{
+		my $response = $ld->response($base_uri . '/fragments?predicate=' . uri_escape_utf8('http://www.w3.org/2000/01/rdf-schema#label') . '&object=' . uri_escape_utf8('"Testing with longer URI."@en'));
+		isa_ok($response, 'Plack::Response');
+		is($response->status, 200, "Returns 200");
+		my $retmodel = return_model($response->content, $parser);
+		has_literal('Testing with longer URI.', 'en', undef, $retmodel, "Longer test phrase is in content");
+		has_literal("1", undef, $xsd->integer, $retmodel, 'Triple count is correct');
+		hasnt_literal('This is a test', 'en', undef, $retmodel, "Test phrase isn't in content");
+	}
+	{
+		my $response = $ld->response($base_uri . '/fragments?object=' . uri_escape_utf8('"42"^^http://www.w3.org/2001/XMLSchema#integer'));
+		isa_ok($response, 'Plack::Response');
+		is($response->status, 200, "Returns 200");
+		my $retmodel = return_model($response->content, $parser);
+		has_literal('42', undef, $xsd->integer, $retmodel, "The Answer is in the content");
+		has_literal("1", undef, $xsd->integer, $retmodel, 'Triple count is correct');
+		hasnt_literal('This is a test', 'en', undef, $retmodel, "Test phrase isn't in content");
+	}
+	{
+		my $response = $ld->response($base_uri . '/fragments?predicate=' . uri_escape_utf8('http://www.w3.org/2000/01/rdf-schema#label') . '&object=' . uri_escape_utf8('"Nothing here."'));
+		isa_ok($response, 'Plack::Response');
+		is($response->status, 200, "Returns 200");
+		my $retmodel = return_model($response->content, $parser);
+		hasnt_literal('Testing with longer URI.', 'en', undef, $retmodel, "Longer test phrase is in content");
+		has_literal("0", undef, $xsd->integer, $retmodel, 'Triple count is correct');
+	}
+	{
+		my $response = $ld->response($base_uri . '/fragments?predicate=' . uri_escape_utf8('http://www.w3.org/2000/01/rdf-schema#label') . '&subject=');
+		isa_ok($response, 'Plack::Response');
+		is($response->status, 200, "Returns 200");
+		my $retmodel = return_model($response->content, $parser);
+		has_subject($base_uri . '/foo', $retmodel, 'Subject 1 is correct');
+		has_subject($base_uri . '/bar/baz/bing', $retmodel, 'Subject 2 is correct');
+		has_literal("2", undef, $xsd->integer, $retmodel, 'Triple count is correct');
+		has_literal('This is a test', 'en', undef, $retmodel, "Test phrase is in content");
+	}
+	{
+		my $response = $ld->response($base_uri . '/fragments?subject=&predicate=&object=');	
+		isa_ok($response, 'Plack::Response');
+		is($response->status, 400, "Returns 400 with all parameters empty");
+	}
+	{
+		my $response = $ld->response($base_uri . '/fragments');	
+		isa_ok($response, 'Plack::Response');
+		is($response->status, 400, "Returns 400 with all parameters missing");
+	}
+	{
+		my $response = $ld->response($base_uri . '/fragments?predicate=&object=');	
+		isa_ok($response, 'Plack::Response');
+		is($response->status, 400, "Returns 400 with subject missing other parameters empty");
+	}
 }
 
 
