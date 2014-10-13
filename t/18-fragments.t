@@ -162,7 +162,7 @@ my $ld = RDF::LinkedData->new(model => $model,
 		  isa_ok($response, 'Plack::Response');
 		  is($response->status, 200, "Returns 200");
 		  my $retmodel = return_model($response->content, $parser);
-		  has_subject($void_subject, $retmodel, "Subject URI in content");
+		  has_subject($void_subject->uri_value, $retmodel, "Subject URI in content");
 		  has_predicate($hydra->search->uri_value, $retmodel, 'Hydra search predicate');
 		  pattern_target($retmodel);
 		  pattern_ok(

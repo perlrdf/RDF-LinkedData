@@ -707,8 +707,6 @@ sub _void_content {
 			$self->_common_fragments_control($self->_voidmodel);
 		}
 
-
-
 		# Now start serializing.
 		my ($ct, $s) = $self->_negotiate($self->request->headers);
 		return $ct if ($ct->isa('Plack::Response')); # A hack to allow for the failed conneg case
