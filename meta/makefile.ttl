@@ -15,7 +15,7 @@
     	      "RDF::Trine 0.133", "Scalar::Util", "Plack 0.9939", "namespace::autoclean 0.12",
     	      "HTTP::Headers", "RDF::Helper::Properties 0.10", "URI 1.52", "URI::NamespaceMap",
 	      "Module::Load::Conditional", "Encode", "RDF::RDFa::Generator 0.102", 
-	      "HTML::HTML5::Writer", "Digest::MD5", "Try::Tiny" ;
+	      "HTML::HTML5::Writer", "Digest::MD5", "Try::Tiny", "List::Util 1.33" ;
     :recommends 
     		"Config::JFDI",		          # If you plan to use the Plack script
 		"JSON",                           # If you plan to use the Plack script
