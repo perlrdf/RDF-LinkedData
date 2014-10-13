@@ -304,7 +304,7 @@ sub response {
 							  object => undef);
 		foreach my $term (keys(%statement)) {
 			my $value = $params{$term};
-			next unless defined($value);
+			next unless $value;
 			return _client_error($response, "$term is invalid") if ref($value);
 			if ($value =~ m/^\?(\S+)$/) {
 				$statement{$term} = variable($1);
