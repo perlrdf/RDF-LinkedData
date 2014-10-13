@@ -10,6 +10,7 @@ use RDF::Trine qw[iri literal blank variable statement];
 use Log::Log4perl qw(:easy);
 use RDF::Trine::Namespace qw(rdf rdfs foaf);
 use Module::Load::Conditional qw[can_load];
+use URI::Escape;
 
 Log::Log4perl->easy_init( { level   => $FATAL } ) unless $ENV{TEST_VERBOSE};
 
@@ -51,7 +52,7 @@ my $ld = RDF::LinkedData->new(model => $model,
 
 	$ld->request(Plack::Request->new({}));
 
-	my $response = $ld->response($base_uri . '/fragments?subject=http://localhost/foo');
+	my $response = $ld->response($base_uri . '/fragments?subject=' . uri_escape_utf8('http://localhost/foo'));
 	isa_ok($response, 'Plack::Response');
 	is($response->status, 200, "Returns 200");
 	my $retmodel = return_model($response->content, $parser);
@@ -68,10 +69,10 @@ my $ld = RDF::LinkedData->new(model => $model,
 				 );
 
 	pattern_ok(
-				  statement(iri($base_uri . '/fragments?subject=http://localhost/foo'),
+				  statement(iri($base_uri . '/fragments?subject=' . uri_escape_utf8('http://localhost/foo')),
 								$void->triples,
 								literal("2", undef, $xsd->integer)),
-				  statement(iri($base_uri . '/fragments?subject=http://localhost/foo'),
+				  statement(iri($base_uri . '/fragments?subject=' . uri_escape_utf8('http://localhost/foo')),
 								$hydra->totalItems,
 								literal("2", undef, $xsd->integer)),
 				  , 'Triple count is correct',
@@ -112,7 +113,7 @@ my $ld = RDF::LinkedData->new(model => $model,
 
 
 
-	my $response = $ld->response($base_uri . '/fragments?predicate=http://www.w3.org/2000/01/rdf-schema#label&object="Testing with longer URI."@en');
+	my $response = $ld->response($base_uri . '/fragments?predicate=' . uri_escape_utf8('http://www.w3.org/2000/01/rdf-schema#label') . '&object=' . uri_escape_utf8('"Testing with longer URI."@en'));
 	isa_ok($response, 'Plack::Response');
 	is($response->status, 200, "Returns 200");
 	my $retmodel = return_model($response->content, $parser);
@@ -120,7 +121,7 @@ my $ld = RDF::LinkedData->new(model => $model,
 	has_literal("1", undef, $xsd->integer);
 	hasnt_literal('This is a test', 'en', undef, $retmodel, "Test phrase isn't in content");
 
-	my $response = $ld->response($base_uri . '/fragments?predicate=http://www.w3.org/2000/01/rdf-schema#label&subject=');
+	my $response = $ld->response($base_uri . '/fragments?predicate=' . uri_escape_utf8('http://www.w3.org/2000/01/rdf-schema#label') . '&subject=');
 	isa_ok($response, 'Plack::Response');
 	is($response->status, 200, "Returns 200");
 	my $retmodel = return_model($response->content, $parser);
