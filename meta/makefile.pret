@@ -33,7 +33,7 @@
 	deps:runtime-requirement         [ deps:on "Digest::MD5"^^deps:CpanId ];
 	deps:runtime-requirement         [ deps:on "Try::Tiny"^^deps:CpanId ];
 	deps:test-requirement            [ deps:on "Test::More 0.88"^^deps:CpanId ];
-	deps:test-requirement            [ deps:on "Test::RDF 0.26"^^deps:CpanId ];
+	deps:test-requirement            [ deps:on "Test::RDF 1.16"^^deps:CpanId ];
 	deps:test-requirement            [ deps:on "FindBin"^^deps:CpanId ];
 	deps:test-requirement            [
 		deps:on "Test::WWW::Mechanize::PSGI"^^deps:CpanId;
