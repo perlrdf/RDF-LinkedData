@@ -45,12 +45,12 @@ my $void_subject = iri($base_uri . '/#dataset-0');
 {
 	note 'Testing the query interface itself';
 
-my $ld = RDF::LinkedData->new(model => $model,
-										base_uri => $base_uri, 
-										namespaces_as_vocabularies => 1, 
-										void_config => { urispace => 'http://localhost' }, 
-										fragments_config => $ec
-									  );
+	my $ld = RDF::LinkedData->new(model => $model,
+											base_uri => $base_uri, 
+											namespaces_as_vocabularies => 1, 
+											void_config => { urispace => 'http://localhost' }, 
+											fragments_config => $ec
+										  );
 
 	isa_ok($ld, 'RDF::LinkedData');
 
@@ -172,63 +172,62 @@ my $ld = RDF::LinkedData->new(model => $model,
 
 
 {
-		  note 'Testing the Void for fragments';
-		  
-		  my $ld = RDF::LinkedData->new(model => $model, base_uri=>$base_uri, 
-												  fragments_config => $ec, 
-												  void_config => { urispace => 'http://localhost' });
-		  isa_ok($ld, 'RDF::LinkedData');
-
-		  $ld->request(Plack::Request->new({}));
-		  my $response = $ld->response($base_uri . '/');
-		  isa_ok($response, 'Plack::Response');
-		  is($response->status, 200, "Returns 200");
-		  my $retmodel = return_model($response->content, $parser);
-		  has_subject($void_subject->uri_value, $retmodel, "Subject URI in content");
-		  has_predicate($hydra->search->uri_value, $retmodel, 'Hydra search predicate');
-		  pattern_target($retmodel);
-		  pattern_ok(
-						 statement(
-									  $void_subject,
-									  $void->triples,
-									  literal(4, undef, $xsd->integer)
-									 ),
-						 statement(
-									  $void_subject,
-									  $rdf->type,
-									  $void->Dataset
-									 ),
-						 'VoID-specific statements');
-		  pattern_ok(
-						 statement($void_subject,
-									  $rdf->type,
-									  $hydra->Collection),
-						 statement($void_subject,
-									  $hydra->search,
-									  blank('template')),
-						 statement(blank('template'),
-									  $hydra->template,
-									  literal($base_uri . '/fragments{?subject,predicate,object}')),
-						 statement(blank('template'),
-									  $hydra->property,
-									  $rdf->subject),
-						 statement(blank('template'),
-									  $hydra->variable,
-									  literal('subject')),
-						 statement(blank('template'),
-									  $hydra->property,
-									  $rdf->predicate),
-						 statement(blank('template'),
-									  $hydra->variable,
-									  literal('predicate')),
-						 statement(blank('template'),
-									  $hydra->property,
-									  $rdf->object),
-						 statement(blank('template'),
-									  $hydra->variable,
-									  literal('object')),
-						 "Control statements OK");
-
+	note 'Testing the Void for fragments';
+	
+	my $ld = RDF::LinkedData->new(model => $model, base_uri=>$base_uri, 
+											fragments_config => $ec, 
+											void_config => { urispace => 'http://localhost' });
+	isa_ok($ld, 'RDF::LinkedData');
+	
+	$ld->request(Plack::Request->new({}));
+	my $response = $ld->response($base_uri . '/');
+	isa_ok($response, 'Plack::Response');
+	is($response->status, 200, "Returns 200");
+	my $retmodel = return_model($response->content, $parser);
+	has_subject($void_subject->uri_value, $retmodel, "Subject URI in content");
+	has_predicate($hydra->search->uri_value, $retmodel, 'Hydra search predicate');
+	pattern_target($retmodel);
+	pattern_ok(
+				  statement(
+								$void_subject,
+								$void->triples,
+								literal(4, undef, $xsd->integer)
+							  ),
+				  statement(
+								$void_subject,
+								$rdf->type,
+								$void->Dataset
+							  ),
+				  'VoID-specific statements');
+	pattern_ok(
+				  statement($void_subject,
+								$rdf->type,
+								$hydra->Collection),
+				  statement($void_subject,
+								$hydra->search,
+								blank('template')),
+				  statement(blank('template'),
+								$hydra->template,
+								literal($base_uri . '/fragments{?subject,predicate,object}')),
+				  statement(blank('template'),
+								$hydra->property,
+								$rdf->subject),
+				  statement(blank('template'),
+								$hydra->variable,
+								literal('subject')),
+				  statement(blank('template'),
+								$hydra->property,
+								$rdf->predicate),
+				  statement(blank('template'),
+								$hydra->variable,
+								literal('predicate')),
+				  statement(blank('template'),
+								$hydra->property,
+								$rdf->object),
+				  statement(blank('template'),
+								$hydra->variable,
+								literal('object')),
+				  "Control statements OK");
 }
 
 sub return_model {
