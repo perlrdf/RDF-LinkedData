@@ -9,8 +9,12 @@ use Test::RDF;
 use RDF::Trine qw[iri literal blank variable statement];
 use Log::Log4perl qw(:easy);
 use RDF::Trine::Namespace qw(rdf rdfs foaf);
-use Module::Load::Conditional qw[can_load];
+use Module::Load::Conditional qw[check_install];
 use URI::Escape;
+
+unless (defined(check_install( module => 'RDF::Generator::Void', version => 0.02))) {
+  plan skip_all => 'You need RDF::Generator::Void for this test'
+}
 
 Log::Log4perl->easy_init( { level   => $FATAL } ) unless $ENV{TEST_VERBOSE};
 
@@ -168,10 +172,6 @@ my $ld = RDF::LinkedData->new(model => $model,
 
 
 {
-
-	SKIP: {
-		  skip 'You need RDF::Generator::Void for this test', 6 unless can_load( modules => {'RDF::Generator::Void' => '0.02' });
-
 		  note 'Testing the Void for fragments';
 		  
 		  my $ld = RDF::LinkedData->new(model => $model, base_uri=>$base_uri, 
@@ -228,7 +228,7 @@ my $ld = RDF::LinkedData->new(model => $model,
 									  $hydra->variable,
 									  literal('object')),
 						 "Control statements OK");
-	  }
+
 }
 
 sub return_model {
