@@ -830,8 +830,6 @@ L<http://lists.perlrdf.org/listinfo/dev>
 
 =item * Make it read-write hypermedia.
 
-=item * Use a environment variable for config on the command line?
-
 =item * Make the result graph configurable.
 
 =back
