@@ -1,0 +1,45 @@
+@prefix deps:  <http://ontologi.es/doap-deps#> .
+
+<http://purl.org/NET/cpan-uri/dist/RDF-LinkedData/project>
+	deps:runtime-recommendation      [ deps:on "Config::JFDI"^^deps:CpanId ];
+	deps:runtime-recommendation      [ deps:on "JSON"^^deps:CpanId ];
+	deps:runtime-recommendation      [ deps:on "RDF::Endpoint 0.05"^^deps:CpanId ];
+	deps:runtime-recommendation      [
+		deps:on "Plack::Middleware::CrossOrigin"^^deps:CpanId;
+	];
+	deps:runtime-recommendation      [ deps:on "RDF::Generator::Void 0.04"^^deps:CpanId ];
+	deps:runtime-requirement         [ deps:on "Moose"^^deps:CpanId ];
+	deps:runtime-requirement         [ deps:on "MooseX::UndefTolerant"^^deps:CpanId ];
+	deps:runtime-requirement         [
+		deps:on "MooseX::Log::Log4perl::Easy"^^deps:CpanId;
+	];
+	deps:runtime-requirement         [ deps:on "Log::Log4perl"^^deps:CpanId ];
+	deps:runtime-requirement         [ deps:on "RDF::Trine 0.133"^^deps:CpanId ];
+	deps:runtime-requirement         [ deps:on "Scalar::Util"^^deps:CpanId ];
+	deps:runtime-requirement         [ deps:on "Plack 0.9939"^^deps:CpanId ];
+	deps:runtime-requirement         [ deps:on "namespace::autoclean 0.12"^^deps:CpanId ];
+	deps:runtime-requirement         [ deps:on "HTTP::Headers"^^deps:CpanId ];
+	deps:runtime-requirement         [
+		deps:on "RDF::Helper::Properties 0.10"^^deps:CpanId;
+	];
+	deps:runtime-requirement         [ deps:on "URI 1.52"^^deps:CpanId ];
+	deps:runtime-requirement         [ deps:on "URI::NamespaceMap"^^deps:CpanId ];
+	deps:runtime-requirement         [ deps:on "Module::Load::Conditional"^^deps:CpanId ];
+	deps:runtime-requirement         [ deps:on "Encode"^^deps:CpanId ];
+	deps:runtime-requirement         [
+		deps:on "RDF::RDFa::Generator 0.102"^^deps:CpanId;
+	];
+	deps:runtime-requirement         [ deps:on "HTML::HTML5::Writer"^^deps:CpanId ];
+	deps:runtime-requirement         [ deps:on "Digest::MD5"^^deps:CpanId ];
+	deps:runtime-requirement         [ deps:on "Try::Tiny"^^deps:CpanId ];
+	deps:test-requirement            [ deps:on "Test::More 0.88"^^deps:CpanId ];
+	deps:test-requirement            [ deps:on "Test::RDF 0.26"^^deps:CpanId ];
+	deps:test-requirement            [ deps:on "FindBin"^^deps:CpanId ];
+	deps:test-requirement            [
+		deps:on "Test::WWW::Mechanize::PSGI"^^deps:CpanId;
+	];
+	deps:test-requirement            [ deps:on "Test::Exception"^^deps:CpanId ];
+	deps:test-requirement            [ deps:on "Config::JFDI"^^deps:CpanId ];
+	deps:test-requirement            [ deps:on "Test::JSON"^^deps:CpanId ];
+	deps:test-requirement            [ deps:on "RDF::RDFa::Parser"^^deps:CpanId ].
+
