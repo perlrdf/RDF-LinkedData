@@ -7,6 +7,9 @@
 	deps:runtime-recommendation      [
 		deps:on "Plack::Middleware::CrossOrigin"^^deps:CpanId;
 	];
+	deps:runtime-recommendation      [
+		deps:on "Plack::Middleware::Expires"^^deps:CpanId;
+	];
 	deps:runtime-recommendation      [ deps:on "RDF::Generator::Void 0.04"^^deps:CpanId ];
 	deps:runtime-requirement         [ deps:on "Moo"^^deps:CpanId ];
 	deps:runtime-requirement         [ deps:on "Types::Standard"^^deps:CpanId ];
