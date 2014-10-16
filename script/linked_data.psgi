@@ -46,6 +46,11 @@ builder {
 	enable "Head";
 	enable "ContentLength";
 	enable "ConditionalGET";
+	if (can_load( modules => { 'Plack::Middleware::Expires' => 0 })) {
+		enable 'Expires',
+		  content_type => qr//,
+		  expires => %{$config->{expires}}
+	  };
 	if (can_load( modules => { 'Plack::Middleware::CrossOrigin' => 0 })) { enable 'CrossOrigin' => %{$config->{cors}}};
 	$rdf_linkeddata;
 };
