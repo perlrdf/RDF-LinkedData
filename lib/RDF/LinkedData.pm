@@ -314,6 +314,8 @@ sub response {
 
 	if ($self->has_fragments && ($uri->path eq $self->fragments_config->{fragments_path})) {
 		croak 'A VoID description is needed when using Triple Pattern Fragments' unless ($self->has_void);
+
+		# First compute the selectors from the query parameters
 		my %params = $uri->query_form;
 		my %statement = (subject => undef,
 							  predicate => undef,
@@ -321,10 +323,10 @@ sub response {
 		foreach my $term (keys(%statement)) {
 			my $value = $params{$term};
 			next unless $value;
-			return _client_error($response, "$term is invalid") if ref($value);
-			if ($value =~ m/^\?(\S+)$/) {
+			return _client_error($response, "$term is invalid") if ref($value); # E.g. an array would be invalid
+			if ($value =~ m/^\?(\S+)$/) { # Regexp matching variable
 				$statement{$term} = variable($1);
-			} elsif (($term eq 'object') && ($value =~ m/^\"(.+)\"((\@|\^\^)(\S+))?$/)) {
+			} elsif (($term eq 'object') && ($value =~ m/^\"(.+)\"((\@|\^\^)(\S+))?$/)) { # regexp matching literal
 				my $string = $1;
 				my $lang_or_datatype = $3;
 				my $rest = $4;
@@ -333,7 +335,7 @@ sub response {
 				} else {
 					$statement{$term} = literal($string, undef, $rest);
 				}
-			} else {
+			} else { # Now, it may be an IRI
 				try {
 					$statement{$term} = iri($value);
 				} catch {
