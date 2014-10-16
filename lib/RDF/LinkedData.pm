@@ -149,11 +149,19 @@ sub BUILD {
 	}
 }
 
-around BUILDARGS { 
-	my ($next,$self)=(shift,shift);
-	my $params = $self->$next(@_);
-	!defined($params->{$_})&&delete($params->{$_}) for keys %$params; $params 
-};
+sub BUILDARGS {
+	my $class = shift;
+	my $args;
+	while (my ($key, $value) = (shift, shift)) {
+		if ($key) {
+			if (defined($value)) {
+				$args->{$key} = $value;
+			}
+		} else { last }
+	}
+
+	return $args;
+}
 
 has store => (is => 'rw', isa => HashRef | Str );
 
