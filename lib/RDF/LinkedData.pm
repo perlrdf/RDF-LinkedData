@@ -149,19 +149,21 @@ sub BUILD {
 	}
 }
 
-sub BUILDARGS {
-	my $class = shift;
-	my $args;
-	while (my ($key, $value) = (shift, shift)) {
-		if ($key) {
-			if (defined($value)) {
-				$args->{$key} = $value;
-			}
-		} else { last }
-	}
+=item C<< BUILDARGS >>
 
-	return $args;
-}
+Called by Moo to ensure that some attributes can be left unset.
+
+=cut
+
+around BUILDARGS => sub 
+  {
+	  my ($next, $self) = (shift, shift);
+	  my $args = $self->$next(@_);
+	  for (keys %$args) {
+		  delete $args->{$_} if not defined $args->{$_};
+	  }
+	  return $args;
+  };
 
 has store => (is => 'rw', isa => HashRef | Str );
 
