@@ -225,8 +225,7 @@ has endpoint_config => (is => 'rw',	isa=>Maybe[HashRef], predicate => 'has_endpo
 
 has void_config => (is => 'rw', isa=>Maybe[HashRef], predicate => 'has_void_config');
 
-has fragments_config => (is => 'rw', traits => [ qw(MooseX::UndefTolerant::Attribute)],
-								isa=>'HashRef', predicate => 'has_fragments');
+has fragments_config => (is => 'rw', isa=>Maybe[HashRef], predicate => 'has_fragments');
 
 
 
