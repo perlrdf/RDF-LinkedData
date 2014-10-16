@@ -95,6 +95,13 @@ The endpoint-part of the config sets up a SPARQL Endpoint. This requires
 the RDF::Endpoint module, which is recommended by this module. To
 use it, it needs to have some config, but will use defaults.
  
+It is also possible to set an expires time. This needs
+Plack::Middleware::Expires and uses Apache mod_expires syntax, in the
+example above, it will set an expires header for all resources to
+expire after 1 day of access. It is strongly recommended that this is
+used, as it can potentially speed up access to resources that aren't
+accessed frequently considerably, and take load off your server.
+
 The last, cors-part of the config enables Cross-Origin Resource
 Sharing, which is a W3C Recommendation for relaxing security
 constraints to allow data to be shared across domains. In most cases,
