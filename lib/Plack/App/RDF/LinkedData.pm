@@ -74,6 +74,7 @@ file C<rdf_linkeddata.json> that looks something like:
 	                 "resource_links": true
 	                }
                     },
+        "expires" : "A86400" ,
         "cors": {
                   "origins": "*"
                 },
@@ -95,6 +96,11 @@ in C</usr/local/bin>, go:
 The C<endpoint>-part of the config sets up a SPARQL Endpoint. This requires
 the L<RDF::Endpoint> module, which is recommended by this module. To
 use it, it needs to have some config, but will use defaults.
+
+It is also possible to set an C<expires> time. This needs
+L<Plack::Middleware::Expires> and uses Apache C<mod_expires> syntax,
+in the example above, it will set an expires header for all resources
+to expire after 1 day of access.
 
 The last, C<cors>-part of the config enables Cross-Origin Resource
 Sharing, which is a W3C Recommendation for relaxing security
