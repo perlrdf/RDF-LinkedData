@@ -20,9 +20,8 @@ Log::Log4perl->easy_init( { level   => $FATAL } ) unless $ENV{TEST_VERBOSE};
 
 my $file = $Bin . '/data/fragments.ttl';
 
-BEGIN {
-    use_ok('RDF::LinkedData');
-}
+use_ok('RDF::LinkedData');
+use_ok('RDF::Generator::Void');
 
 
 my $void = RDF::Trine::Namespace->new('http://rdfs.org/ns/void#');
