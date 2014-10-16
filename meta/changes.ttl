@@ -7,13 +7,13 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl:  <http://www.w3.org/2002/07/owl#> .
 
-my:project :release my:v_0-69-02, my:v_0-68, my:v_0-66, my:v_0-64, my:v_0-62, my:v_0-60, my:v_0-58, my:v_0_56 .
+my:project :release my:v_0-69-05, my:v_0-68, my:v_0-66, my:v_0-64, my:v_0-62, my:v_0-60, my:v_0-58, my:v_0_56 .
 
-my:v_0-69-02
+my:v_0-69-05
     a           :Version ;
-    dc:issued   "2014-10-14"^^xsd:date ;
-    rdfs:label "Just try Dist::Inkt packaging."@en ;
-    :revision   "0.69_02"^^xsd:string .
+    dc:issued   "2014-10-16"^^xsd:date ;
+    rdfs:label "Just try Dist::Inkt packaging and migrate to Moo."@en ;
+    :revision   "0.69_05"^^xsd:string .
 
 
 my:v_0-68
