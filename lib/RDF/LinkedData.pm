@@ -660,6 +660,10 @@ has _last_extvoid_mtime => (is => 'rw', isa => Int);
 
 Kjetil Kjernsmo, C<< <kjetilk@cpan.org> >>
 
+=head1 CONTRIBUTORS
+
+Toby Inkster
+
 =head1 BUGS
 
 Please report any bugs using L<github|https://github.com/kjetilk/RDF-LinkedData/issues>
