@@ -148,7 +148,7 @@ my $hydra = RDF::Trine::Namespace->new('http://www.w3.org/ns/hydra/core#');
 				  statement(iri($base_uri . '/foo'),
 								$foaf->page,
 								iri('http://en.wikipedia.org/wiki/Foo'))
-				  , 'Both triples present',
+				  , 'Both fragment data triples present',
 				 );
 	
 	pattern_ok(
