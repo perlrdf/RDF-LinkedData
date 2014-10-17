@@ -43,6 +43,7 @@ Log::Log4perl->easy_init( { level   => $FATAL } ) unless $ENV{TEST_VERBOSE};
 
 
 my $rxparser = RDF::Trine::Parser->new( 'rdfxml' );
+my $parser = RDF::Trine::Parser->new( 'turtle' );
 my $base_uri = 'http://localhost/';
 
 my $void = RDF::Trine::Namespace->new('http://rdfs.org/ns/void#');
@@ -131,12 +132,12 @@ my $hydra = RDF::Trine::Namespace->new('http://www.w3.org/ns/hydra/core#');
 {
 	note 'Testing Triple Pattern Fragments';
 	my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester);
-	$mech->default_header('Accept' => 'application/rdf+xml');
+	$mech->default_header('Accept' => 'text/turtle');
 	$mech->get_ok( '/fragments?subject=' . uri_escape_utf8('http://localhost/foo'));
-	is($mech->ct, 'application/rdf+xml', "Correct content-type");
+	is($mech->ct, 'text/turtle', "Correct content-type");
 	my $model = RDF::Trine::Model->temporary_model;
-	is_valid_rdf($mech->content, 'rdfxml', 'Returns valid RDF/XML');
-	$rxparser->parse_into_model( $base_uri, $mech->content, $model );
+	is_valid_rdf($mech->content, 'turtle', 'Returns valid Turtle');
+	$parser->parse_into_model( $base_uri, $mech->content, $model );
 	has_literal('This is a test', 'en', undef, $model, "Test phrase in content");
 	has_subject($base_uri . '#dataset-0', $model, "Dataset subject URI in content");
 	has_subject($base_uri . 'foo', $model, "Result subject URI in content");
