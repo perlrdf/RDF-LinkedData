@@ -25,6 +25,7 @@ my:project
     :developer <http://kasei.us/about/foaf.xrdf#greg> ;
     :homepage       <https://metacpan.org/release/RDF-LinkedData> ;
     :download-page  <https://metacpan.org/release/RDF-LinkedData> ;
+    :mailing-list <http://lists.perlrdf.org/listinfo/dev> ;
     :bug-database <https://github.com/kjetilk/RDF-LinkedData/issues> ;
     :license        <http://dev.perl.org/licenses/> ;
     :repository [ 
