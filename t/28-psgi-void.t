@@ -44,6 +44,13 @@ Log::Log4perl->easy_init( { level   => $FATAL } ) unless $ENV{TEST_VERBOSE};
 my $rxparser = RDF::Trine::Parser->new( 'rdfxml' );
 my $base_uri = 'http://localhost/';
 
+{
+    note "Get /.well-known/void, no redirects";
+    my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester, requests_redirectable => []);
+    my $res = $mech->get("/.well-known/void");
+    is($mech->status, 302, "Returns 302");
+    like($res->header('Location'), qr|$base_uri|, "Location is OK");
+}
 
 
 {
