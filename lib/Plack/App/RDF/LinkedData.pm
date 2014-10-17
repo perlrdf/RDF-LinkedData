@@ -322,6 +322,10 @@ sub call {
 		return [ 405, [ 'Content-type', 'text/plain' ], [ 'Method not allowed' ] ];
 	}
 
+	if (($uri->path eq '/.well-known/void') && ($ld->has_void)) {
+		return [ 302, [ 'Location', $ld->base_uri . '/' ], [ '' ] ];
+	}
+
 	if ($uri->as_iri =~ m!^(.+?)/?(page|data)$!) {
 		$uri = URI->new($1);
 		$ld->type($2);
