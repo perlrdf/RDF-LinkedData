@@ -18,6 +18,8 @@ my:v_0-69-07
     dcs:changeset [
       dcs:item        
         [ rdfs:label "Triple Pattern Fragments support."@en ; a dcs:Addition ] ,
+        [ rdfs:label "Improve documentation."@en ; a dcs:Addition ] ,
+        [ rdfs:label "Add the use of Expires module."@en ; a dcs:Addition ] ,
         [ rdfs:label "Hand-maintain README."@en ; a dcs:Change ] , 
         [ rdfs:label "Migrate object system from Moose to Moo."@en ; a dcs:Change ] , 
         [ rdfs:label "Use Log::Contextual to manage the logging."@en ; a dcs:Change ] , 
