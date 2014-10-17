@@ -44,7 +44,7 @@ BEGIN {
 
 =head1 NAME
 
-RDF::LinkedData - A simple Linked Data server implementation
+RDF::LinkedData - A Linked Data server implementation
 
 =head1 VERSION
 
@@ -74,12 +74,18 @@ See L<Plack::App::RDF::LinkedData> for a complete example.
 
 =head1 DESCRIPTION
 
-This module is used to create a minimal Linked Data server that can
+This module is used to create a Linked Data server that can
 serve RDF data out of an L<RDF::Trine::Model>. It will look up URIs in
 the model and do the right thing (known as the 303 dance) and mint
 URLs for that, as well as content negotiation. Thus, you can
 concentrate on URIs for your things, you need not be concerned about
-minting URLs for the pages to serve it.
+minting URLs for the pages to serve it. In addition, optional modules
+can provide other important functionalities: Cross-origin resource
+sharing, VoID description, cache headers, SPARQL Endpoint, Triple
+Pattern Fragments, etc. As such, it encompasses a fair share of
+Semantic Web best practices, but possibly not in a very flexible Big
+Data manner.
+
 
 =head1 METHODS
 
