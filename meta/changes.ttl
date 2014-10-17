@@ -7,7 +7,39 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl:  <http://www.w3.org/2002/07/owl#> .
 
-my:project :release my:v_0-66, my:v_0-64, my:v_0-62, my:v_0-60, my:v_0-58, my:v_0_56 .
+my:project :release my:v_0-70, my:v_0-68, my:v_0-66, my:v_0-64, my:v_0-62, my:v_0-60, my:v_0-58, my:v_0_56 .
+
+my:v_0-70
+    a           :Version ;
+    dc:issued   "2014-10-17"^^xsd:date ;
+    rdfs:label "Triple Pattern Fragments support and modernization."@en ;
+    :revision   "0.70"^^xsd:string ;
+    owl:sameAs <http://packages.qa.debian.org/librdf-linkeddata-perl#upstreamsrc_0.70> ;
+    dcs:changeset [
+      dcs:item        
+        [ rdfs:label "Triple Pattern Fragments support."@en ; a dcs:Addition ] ,
+        [ rdfs:label "Improve documentation."@en ; a dcs:Addition ] ,
+        [ rdfs:label "Add the use of Expires module."@en ; a dcs:Addition ] ,
+        [ rdfs:label "Support the .well-known/void magic URL."@en ; a dcs:Addition ] ,
+        [ rdfs:label "Hand-maintain README."@en ; a dcs:Change ] , 
+        [ rdfs:label "Migrate object system from Moose to Moo."@en ; a dcs:Change ] , 
+        [ rdfs:label "Use Log::Contextual to manage the logging."@en ; a dcs:Change ] , 
+        [ rdfs:label "Use Dist::Inkt to package."@en ; a dcs:Change ] 
+    ] .
+
+my:v_0-68
+    a           :Version ;
+    dc:issued   "2014-07-22"^^xsd:date ;
+    rdfs:label "Documentation updates and small fixes."@en ;
+    :revision   "0.68"^^xsd:string ;
+    owl:sameAs <http://packages.qa.debian.org/librdf-linkeddata-perl#upstreamsrc_0.68> ;
+    dcs:changeset [
+      dcs:item        
+        [ rdfs:label "Use Try::Tiny instead of eval."@en ; a dcs:Change ] ,
+        [ rdfs:label "Drop the weak ETag checking."@en ; a dcs:Change ] ,
+        [ rdfs:label "Many smaller documentation updates."@en ; a dcs:Update ] ,
+        [ rdfs:label "Document the use of the PERLRDF_STORE environment variable."@en ; a dcs:Change ] 
+    ] .
 
 my:v_0-66
     a           :Version ;

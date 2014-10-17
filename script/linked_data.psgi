@@ -46,6 +46,11 @@ builder {
 	enable "Head";
 	enable "ContentLength";
 	enable "ConditionalGET";
+	if (defined($config->{expires}) && (can_load( modules => { 'Plack::Middleware::Expires' => 0 }))) {
+		enable 'Expires',
+		  content_type => qr//,
+		  expires => $config->{expires}
+	  };
 	if (can_load( modules => { 'Plack::Middleware::CrossOrigin' => 0 })) { enable 'CrossOrigin' => %{$config->{cors}}};
 	enable_if { $linkeddata->auth_required($_[0]) } "Auth::Basic", authenticator => \&authen_cb;
 	# TODO: Find clever ways to support other auth modules
@@ -66,7 +71,8 @@ Kjetil Kjernsmo C<< <kjetilk@cpan.org> >>
 =head1 COPYRIGHT
 
 Copyright (c) 2010 ABC Startsiden AS and Gregory Todd Williams and
-2010-2013 Kjetil Kjernsmo. This program is free software; you can
-redistribute it and/or modify it under the same terms as Perl itself.
+2010, 2011, 2012, 2013, 2014 Kjetil Kjernsmo. This program is free
+software; you can redistribute it and/or modify it under the same
+terms as Perl itself.
 
 =cut
