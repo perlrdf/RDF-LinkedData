@@ -58,9 +58,10 @@ Version 0.69_08
 =head1 SYNOPSIS
 
 For just setting this up and get it to run, you would just use the
-C<linked_data.psgi> script in this distribution. The usage of that is documented in
-L<Plack::App::RDF::LinkedData>. If you want to try and use this
-directly, you'd do stuff like:
+C<linked_data.psgi> script in this distribution. The usage of that is
+documented in L<Plack::App::RDF::LinkedData>, with the README is a
+quick start guide. If you want to try and use this directly, you'd do
+stuff like:
 
 	my $ld = RDF::LinkedData->new(store => $config->{store},
                                  endpoint_config => $config->{endpoint},
