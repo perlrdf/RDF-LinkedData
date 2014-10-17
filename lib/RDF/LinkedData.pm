@@ -512,9 +512,6 @@ get a URI object containing the full URI of the node.
 
 sub my_node {
 	my ($self, $iri) = @_;
-    
-	# not happy with this, but it helps for clients that do content sniffing based on filename
-	$iri =~ s/.(nt|rdf|ttl)$//;
 	log_info { "Subject URI to be used: $iri" };
 	return RDF::Trine::Node::Resource->new( $iri );
 }
