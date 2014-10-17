@@ -80,7 +80,8 @@ file C<rdf_linkeddata.json> that looks something like:
                 },
         "void": {
                   "pagetitle": "VoID Description for my dataset"
-                }
+                },
+        "fragments" : { "fragments_path" : "/fragments" }
   }
 
 In your shell set
@@ -97,17 +98,33 @@ The C<endpoint>-part of the config sets up a SPARQL Endpoint. This requires
 the L<RDF::Endpoint> module, which is recommended by this module. To
 use it, it needs to have some config, but will use defaults.
 
+<<<<<<< HEAD
 It is also possible to set an C<expires> time. This needs
 L<Plack::Middleware::Expires> and uses Apache C<mod_expires> syntax,
 in the example above, it will set an expires header for all resources
 to expire after 1 day of access.
 
 The last, C<cors>-part of the config enables Cross-Origin Resource
+=======
+The C<cors>-part of the config enables Cross-Origin Resource
+>>>>>>> 4e5442e996c1181cc4331cd7204f98f62ebcafd4
 Sharing, which is a W3C Recommendation for relaxing security
 constraints to allow data to be shared across domains. In most cases,
 this is what you want when you are serving open data, but in some
 cases, notably intranets, this should be turned off by removing this
 part.
+
+The C<void>-part generates some statistics and a description of the
+dataset, using RDF::Generator::Void. It is strongly recommended to
+install and run that, but it can take some time to generate, so you
+may have to set the detail level.
+
+Finally, C<fragments> add support for Triple Pattern Fragments, a
+work-in-progress, It is a more lightweight but less powerful way to
+query RDF data than SPARQL. If you have this, it is recommended to
+have CORS enabled and required to have at least a minimal VoID setup.
+
+
 
 =head2 Details of the implementation
 
