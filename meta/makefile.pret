@@ -12,6 +12,7 @@
 	];
 	deps:runtime-recommendation      [ deps:on "RDF::Generator::Void 0.04"^^deps:CpanId ];
 	deps:runtime-requirement         [ deps:on "Moo"^^deps:CpanId ];
+	deps:runtime-requirement         [ deps:on "List::Util 1.33"^^deps:CpanId ];
 	deps:runtime-requirement         [ deps:on "Types::Standard"^^deps:CpanId ];
 	deps:runtime-requirement         [ deps:on "Log::Contextual"^^deps:CpanId ];
 	deps:runtime-requirement         [ deps:on "Log::Log4perl"^^deps:CpanId ];
