@@ -138,26 +138,27 @@ my $hydra = RDF::Trine::Namespace->new('http://www.w3.org/ns/hydra/core#');
 	is_valid_rdf($mech->content, 'rdfxml', 'Returns valid RDF/XML');
 	$rxparser->parse_into_model( $base_uri, $mech->content, $model );
 	has_literal('This is a test', 'en', undef, $model, "Test phrase in content");
-	has_subject($base_uri . '#dataset-0', $model, "Subject URI in content");
+	has_subject($base_uri . '#dataset-0', $model, "Dataset subject URI in content");
+	has_subject($base_uri . 'foo', $model, "Result subject URI in content");
 	has_predicate('http://www.w3.org/ns/hydra/core#search', $model, 'Hydra search predicate is in');
 	pattern_target($model);
 	pattern_ok(
-				  statement(iri($base_uri . '/foo'),
+				  statement(iri($base_uri . 'foo'),
 								$rdfs->label,
 								literal("This is a test", 'en')),
-				  statement(iri($base_uri . '/foo'),
+				  statement(iri($base_uri . 'foo'),
 								$foaf->page,
 								iri('http://en.wikipedia.org/wiki/Foo'))
 				  , 'Both fragment data triples present',
 				 );
 	
 	pattern_ok(
-				  statement(iri($base_uri . '/fragments?subject=' . uri_escape_utf8('http://localhost/foo')),
+				  statement(iri($base_uri . 'fragments?subject=' . uri_escape_utf8('http://localhost/foo')),
 								$void->triples,
-								literal("2", undef, $xsd->integer)),
-				  statement(iri($base_uri . '/fragments?subject=' . uri_escape_utf8('http://localhost/foo')),
+								literal("2", undef, $xsd->integer->uri_value)),
+				  statement(iri($base_uri . 'fragments?subject=' . uri_escape_utf8('http://localhost/foo')),
 								$hydra->totalItems,
-								literal("2", undef, $xsd->integer)),
+								literal("2", undef, $xsd->integer->uri_value)),
 				  , 'Triple count is correct',
 				 );
 	
@@ -170,7 +171,7 @@ my $hydra = RDF::Trine::Namespace->new('http://www.w3.org/ns/hydra/core#');
 								blank('template')),
 				  statement(blank('template'),
 								$hydra->template,
-								literal($base_uri . '/fragments{?subject,predicate,object}')),
+								literal($base_uri . 'fragments{?subject,predicate,object}')),
 				  'Important control information present');
 }
 
