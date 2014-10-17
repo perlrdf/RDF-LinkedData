@@ -164,10 +164,10 @@ my $hydra = RDF::Trine::Namespace->new('http://www.w3.org/ns/hydra/core#');
 				 );
 	
 	pattern_ok(
-				  statement($base_uri . '#dataset-0',
+				  statement(iri($base_uri . '#dataset-0'),
 								$rdf->type,
 								$hydra->Collection),
-				  statement($base_uri . '#dataset-0',
+				  statement(iri($base_uri . '#dataset-0'),
 								$hydra->search,
 								blank('template')),
 				  statement(blank('template'),
