@@ -210,7 +210,7 @@ sub _build_model {
 }
 
 #	warn Dumper($self->acl_config);
-has acl => (is => 'ro', isa => 'RDF::ACL', builder => '_build_acl', lazy => 1,
+has acl => (is => 'ro', isa => InstanceOf['RDF::ACL'], builder => '_build_acl', lazy => 1,
 				handles => { check_authz => 'check' });
 
 sub _build_acl {
@@ -250,6 +250,8 @@ has endpoint_config => (is => 'rw',	isa=>Maybe[HashRef], predicate => 'has_endpo
 
 has void_config => (is => 'rw', isa=>Maybe[HashRef], predicate => 'has_void_config');
 
+has acl_config => (is => 'rw', isa=>Maybe[HashRef], predicate => 'has_acl_config');
+
 has fragments_config => (is => 'rw', isa=>Maybe[HashRef], predicate => 'has_fragments');
 
 
@@ -262,14 +264,13 @@ Returns the L<Plack::Request> object if it exists or sets it if a L<Plack::Reque
 
 has request => ( is => 'rw', isa => InstanceOf['Plack::Request']);
 
-around user => sub {
-	my ($orig, $self) = (shift, shift);
-	my $uname = $self->$orig;
+has user => ( is => 'ro', isa => Str, lazy => 1, builder => '_build_user', predicate => 'is_logged_in');
+
+sub _build_user {
+	my $self = shift;
+	my $uname = $self->request->user;
 	return "urn:X-basicauth:$uname" if ($uname);
-};
-
-sub is_logged_in { return defined $_[0]->user };
-
+}
 
 
 =item C<< current_etag >>
