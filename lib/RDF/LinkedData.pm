@@ -144,7 +144,7 @@ sub BUILD {
 		log_info {'No endpoint config found'};
 	}
  	if ($self->has_acl_config) {
-		$self->logger->debug('ACL config found with parameters: ' . Dumper($self->acl_config) );
+		log_debug {'ACL config found with parameters: ' . Dumper($self->acl_config) };
 
 		unless (can_load( modules => { 'RDF::ACL' => 0.100 })) {
 			throw Error -text => "RDF::ACL not installed. Please install or remove its configuration.";
@@ -152,7 +152,7 @@ sub BUILD {
 
 		$self->acl;
  	} else {
-		$self->logger->info('No ACL config found');
+		log_info {'No ACL config found' };
 	}
 
  	if ($self->has_void_config) {
@@ -334,12 +334,12 @@ sub response {
 	my $response = Plack::Response->new;
 
 	my $headers_in = $self->request->headers;
-	$self->logger->trace('Full headers we respond to: ' . $headers_in->as_string);
+	log_trace {'Full headers we respond to: ' . $headers_in->as_string };
 
 	if ($self->is_logged_in) {
-		$self->logger->debug('Logged in as: ' . $self->user);
+		log_debug {'Logged in as: ' . $self->user };
 	} else {
-		$self->logger->debug('No user is logged in');
+		log_debug {'No user is logged in' };
 	}
 
 	my $server = "RDF::LinkedData/$VERSION";
@@ -517,7 +517,7 @@ sub replace {
 	my $response = Plack::Response->new;
 	if ($payload) {
 	  my $headers_in = $self->request->headers;
-	  $self->logger->debug('Will merge payload as ' . $headers_in->content_type);
+	  log_debug {'Will merge payload as ' . $headers_in->content_type };
 	  eval {
 		 my $parser = RDF::Trine::Parser->parser_by_media_type($headers_in->content_type);
 		 $parser->parse_into_model($self->base_uri, $payload, $self->model);
