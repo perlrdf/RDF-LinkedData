@@ -86,8 +86,11 @@ file rdf_linkeddata.json that looks something like:
         "void": {
                   "pagetitle": "VoID Description for my dataset"
                 },
-	"expires" : "A86400" ,
-        "fragments" : { "fragments_path" : "/fragments" }	
+	      "expires" : "A86400" ,
+        "fragments" : { 
+                "fragments_path" : "/fragments" ,
+                "allow_dump_dataset" : 0
+        }	
   }
  
 In your shell set
