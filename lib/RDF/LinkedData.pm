@@ -351,7 +351,8 @@ sub response {
 		}
 
 		log_debug {'Getting fragment with this selector ' . Dumper(\%statement) };
-		return _client_error($response, 'Returning the whole database not allowed') unless any { defined } values(%statement);
+		return _client_error($response, 'Returning the whole database not allowed') 
+				unless $self->fragments_config->{allow_dump_dataset} || any { defined } values(%statement);
 		my $output_model = $self->_common_fragments_control;
 
 		my $iterator = $self->model->get_statements($statement{subject}, $statement{predicate}, $statement{object});
