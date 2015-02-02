@@ -1,5 +1,6 @@
 package RDF::LinkedData;
 
+use 5.006;
 use Moo;
 use namespace::autoclean;
 use Types::Standard qw(InstanceOf Str Bool Maybe Int HashRef);
