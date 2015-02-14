@@ -71,8 +71,8 @@ Kjetil Kjernsmo C<< <kjetilk@cpan.org> >>
 =head1 COPYRIGHT
 
 Copyright (c) 2010 ABC Startsiden AS and Gregory Todd Williams and
-2010, 2011, 2012, 2013, 2014 Kjetil Kjernsmo. This program is free
-software; you can redistribute it and/or modify it under the same
+2010, 2011, 2012, 2013, 2014, 2015 Kjetil Kjernsmo. This program is
+free software; you can redistribute it and/or modify it under the same
 terms as Perl itself.
 
 =cut

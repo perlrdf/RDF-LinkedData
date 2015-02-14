@@ -13,3 +13,10 @@
     owl:sameAs  <http://purl.org/NET/cpan-uri/person/gwilliams> ;
     foaf:name   "Gregory Todd Williams" ;
     foaf:mbox   <mailto:gwilliams@cpan.org> .
+
+<http://purl.org/NET/cpan-uri/person/hochsten>
+    a           foaf:Person ;
+    owl:sameAs  result:user-Patrick-Hochstenbach ;
+    foaf:name   "Patrick Hochstenbach" ;
+    foaf:homepage <http://hochstenbach.wordpress.com/> ;
+    foaf:mbox   <mailto:patrick.hochstenbach@gmail.com> .

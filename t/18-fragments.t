@@ -229,6 +229,29 @@ my $void_subject = iri($base_uri . '/#dataset-0');
 				  "Control statements OK");
 }
 
+{
+	note 'Testing the allow_dump_dataset feature';
+
+	my $ld = RDF::LinkedData->new(model => $model,
+											base_uri => $base_uri, 
+											namespaces_as_vocabularies => 1, 
+											void_config => { urispace => 'http://localhost' }, 
+											fragments_config => { %$ec , allow_dump_dataset => 1 }
+										  );
+
+	isa_ok($ld, 'RDF::LinkedData');
+
+	$ld->request(Plack::Request->new({}));
+
+	{
+		my $response = $ld->response($base_uri . '/fragments?subject=&predicate=&object=');	
+		isa_ok($response, 'Plack::Response');
+		is($response->status, 200, "Returns 200 with all parameters empty");
+		my $retmodel = return_model($response->content, $parser);
+		has_literal("4", undef, $xsd->integer, $retmodel, 'Triple count is correct got all 4 triples');
+	}
+}
+
 sub return_model {
 	my ($content, $parser) = @_;
 	my $retmodel = RDF::Trine::Model->temporary_model;

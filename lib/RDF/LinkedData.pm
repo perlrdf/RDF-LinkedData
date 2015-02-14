@@ -1,5 +1,6 @@
 package RDF::LinkedData;
 
+use 5.006;
 use Moo;
 use namespace::autoclean;
 use Types::Standard qw(InstanceOf Str Bool Maybe Int HashRef);
@@ -48,11 +49,11 @@ RDF::LinkedData - A Linked Data server implementation
 
 =head1 VERSION
 
-Version 0.70_01
+Version 0.72_01
 
 =cut
 
- our $VERSION = '0.70_01';
+ our $VERSION = '0.72_01';
 
 
 =head1 SYNOPSIS
@@ -387,7 +388,8 @@ sub response {
 		}
 
 		log_debug {'Getting fragment with this selector ' . Dumper(\%statement) };
-		return _client_error($response, 'Returning the whole database not allowed') unless any { defined } values(%statement);
+		return _client_error($response, 'Returning the whole database not allowed') 
+				unless $self->fragments_config->{allow_dump_dataset} || any { defined } values(%statement);
 		my $output_model = $self->_common_fragments_control;
 
 		my $iterator = $self->model->get_statements($statement{subject}, $statement{predicate}, $statement{object});
@@ -934,7 +936,7 @@ Copyright 2010 Gregory Todd Williams
 
 Copyright 2010 ABC Startsiden AS
 
-Copyright 2010, 2011, 2012, 2013, 2014 Kjetil Kjernsmo
+Copyright 2010, 2011, 2012, 2013, 2014, 2015 Kjetil Kjernsmo
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
