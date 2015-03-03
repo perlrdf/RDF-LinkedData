@@ -27,6 +27,7 @@ use_ok('RDF::Generator::Void');
 my $void = RDF::Trine::Namespace->new('http://rdfs.org/ns/void#');
 my $xsd  = RDF::Trine::Namespace->new('http://www.w3.org/2001/XMLSchema#');
 my $hydra = RDF::Trine::Namespace->new('http://www.w3.org/ns/hydra/core#');
+my $dcterms = RDF::Trine::Namespace->new('http://purl.org/dc/terms/');
 
 my $parser     = RDF::Trine::Parser->new( 'turtle' );
 my $rxparser   = RDF::Trine::Parser->new( 'rdfxml' );
@@ -82,9 +83,14 @@ my $void_subject = iri($base_uri . '/#dataset-0');
 					  , 'Triple count is correct',
 					 );
 		
-		
+		pattern_ok(	 statement(iri($base_uri . '/fragments?subject=' . uri_escape_utf8('http://localhost/foo')),
+									$dcterms->source,
+									$void_subject),
+					  , 'Void Subject in dct:source'
+					 );
+
 		has_subject($void_subject->uri_value, $retmodel, "Void Subject URI in content");
-		
+
 		pattern_ok(
 					  statement($void_subject,
 									$rdf->type,
@@ -96,21 +102,33 @@ my $void_subject = iri($base_uri . '/#dataset-0');
 									$hydra->template,
 									literal($base_uri . '/fragments{?subject,predicate,object}')),
 					  statement(blank('template'),
+					  				$hydra->mapping,
+					  				blank('subject')),
+					  statement(blank('template'),
+					  				$hydra->mapping,
+					  				blank('predicate')),
+					  statement(blank('template'),
+					  				$hydra->mapping,
+					  				blank('predicate')),
+					  statement(blank('template'),
+					  				$hydra->mapping,
+					  				blank('object')),
+					  statement(blank('subject'),
 									$hydra->property,
 									$rdf->subject),
-					  statement(blank('template'),
+					  statement(blank('subject'),
 									$hydra->variable,
 									literal('subject')),
-					  statement(blank('template'),
+					  statement(blank('predicate'),
 									$hydra->property,
 									$rdf->predicate),
-					  statement(blank('template'),
+					  statement(blank('predicate'),
 									$hydra->variable,
 									literal('predicate')),
-					  statement(blank('template'),
+					  statement(blank('object'),
 									$hydra->property,
 									$rdf->object),
-					  statement(blank('template'),
+					  statement(blank('object'),
 									$hydra->variable,
 									literal('object')),
 					  "Control statements OK");
@@ -209,21 +227,33 @@ my $void_subject = iri($base_uri . '/#dataset-0');
 								$hydra->template,
 								literal($base_uri . '/fragments{?subject,predicate,object}')),
 				  statement(blank('template'),
+				                $hydra->mapping,
+					  		    blank('subject')),
+				  statement(blank('template'),
+					  			$hydra->mapping,
+					  			blank('predicate')),
+				  statement(blank('template'),
+				                $hydra->mapping,
+					  		    blank('predicate')),
+	              statement(blank('template'),
+					            $hydra->mapping,
+					  		    blank('object')),
+				  statement(blank('subject'),
 								$hydra->property,
 								$rdf->subject),
-				  statement(blank('template'),
+				  statement(blank('subject'),
 								$hydra->variable,
 								literal('subject')),
-				  statement(blank('template'),
+				  statement(blank('predicate'),
 								$hydra->property,
 								$rdf->predicate),
-				  statement(blank('template'),
+				  statement(blank('predicate'),
 								$hydra->variable,
 								literal('predicate')),
-				  statement(blank('template'),
+				  statement(blank('object'),
 								$hydra->property,
 								$rdf->object),
-				  statement(blank('template'),
+				  statement(blank('object'),
 								$hydra->variable,
 								literal('object')),
 				  "Control statements OK");
