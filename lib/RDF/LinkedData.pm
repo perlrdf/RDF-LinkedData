@@ -379,6 +379,10 @@ sub response {
 		$output_model->add_statement(statement($self->void->dataset_uri,
 															$void->subset,
 															iri($uri)));
+		$output_model->add_statement(statement(iri($uri),
+															iri('http://purl.org/dc/terms/source'),
+															$self->void->dataset_uri
+															));
 		$output_model->end_bulk_ops;
 		my ($ct, $s);
 		try {
@@ -794,22 +798,35 @@ sub _common_fragments_control {
 								 $hydra->template,
 								 literal($self->base_uri . $self->fragments_config->{fragments_path}
 											. '{?subject,predicate,object}')));
+	
 	$model->add_statement(statement(blank('template'),
+								  $hydra->mapping,
+								  blank('subject')));
+	$model->add_statement(statement(blank('template'),
+								  $hydra->mapping,
+								  blank('predicate')));
+	$model->add_statement(statement(blank('template'),
+								  $hydra->mapping,
+								  blank('object')));
+
+	$model->add_statement(statement(blank('subject'),
 								 $hydra->property,
 								 $rdf->subject));
-	$model->add_statement(statement(blank('template'),
+	$model->add_statement(statement(blank('subject'),
 								 $hydra->variable,
 								 literal('subject')));
-	$model->add_statement(statement(blank('template'),
+
+	$model->add_statement(statement(blank('predicate'),
 								 $hydra->property,
 								 $rdf->predicate));
-	$model->add_statement(statement(blank('template'),
+	$model->add_statement(statement(blank('predicate'),
 								 $hydra->variable,
 								 literal('predicate')));
-	$model->add_statement(statement(blank('template'),
+
+	$model->add_statement(statement(blank('object'),
 								 $hydra->property,
 								 $rdf->object));
-	$model->add_statement(statement(blank('template'),
+	$model->add_statement(statement(blank('object'),
 								 $hydra->variable,
 								 literal('object')));
 	$model->end_bulk_ops;
