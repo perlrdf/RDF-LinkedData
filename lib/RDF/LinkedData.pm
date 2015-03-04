@@ -1,6 +1,7 @@
 package RDF::LinkedData;
 
-use 5.006;
+use strict;
+use warnings;
 use Moo;
 use namespace::autoclean;
 use Types::Standard qw(InstanceOf Str Bool Maybe Int HashRef);
@@ -228,7 +229,7 @@ has hypermedia => (is => 'ro', isa => Bool, default => 1);
 
 has namespaces_as_vocabularies => (is => 'ro', isa => Bool, default => 1);
 
-has endpoint_config => (is => 'rw',	isa=>Maybe[HashRef], predicate => 'has_endpoint_config');
+has endpoint_config => (is => 'rw', isa=>Maybe[HashRef], predicate => 'has_endpoint_config');
 
 has void_config => (is => 'rw', isa=>Maybe[HashRef], predicate => 'has_void_config');
 
