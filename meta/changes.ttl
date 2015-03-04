@@ -21,7 +21,8 @@ my:v_0-74
         [ rdfs:label "Fix the template to be Hydra compliant."@en ; 
           a dcs:Bugfix ;
           dcs:blame  <http://purl.org/NET/cpan-uri/person/hochsten>
-        ] 
+        ], 
+        [ rdfs:label "Move Perl version setting to makefile."@en ; a dcs:Change ] 
     ] .
 
 my:v_0-72
