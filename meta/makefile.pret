@@ -34,6 +34,7 @@
 	deps:runtime-requirement         [ deps:on "HTML::HTML5::Writer"^^deps:CpanId ];
 	deps:runtime-requirement         [ deps:on "Digest::MD5"^^deps:CpanId ];
 	deps:runtime-requirement         [ deps:on "Try::Tiny"^^deps:CpanId ];
+        deps:runtime-requirement         [ deps:on "perl 5.006"^^deps:CpanId ]; 
 	deps:test-requirement            [ deps:on "Test::More 0.88"^^deps:CpanId ];
 	deps:test-requirement            [ deps:on "Test::RDF 1.16"^^deps:CpanId ];
 	deps:test-requirement            [ deps:on "FindBin"^^deps:CpanId ];
