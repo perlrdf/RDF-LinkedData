@@ -16,14 +16,14 @@ my $store = { storetype => 'Memory',
 	my $ld = RDF::LinkedData->new(store => $store, base_uri=>$base_uri);
 	isa_ok($ld, 'RDF::LinkedData');
 	is($ld->count, 3, "There are 3 triples in model");
-	ok(!$ld->has_endpoint_config, 'No endpoint configged');
+	ok(!$ld->has_endpoint_config, 'No endpoint configured');
 }
 
 {
 	my $ld = RDF::LinkedData->new(store => $store, endpoint_config => undef, base_uri=>$base_uri);
 	isa_ok($ld, 'RDF::LinkedData');
 	is($ld->count, 3, "There are 3 triples in model");
-	ok(!$ld->has_endpoint_config, 'No endpoint configged');
+	ok(!$ld->has_endpoint_config, 'No endpoint configured');
 }
 
 done_testing;
