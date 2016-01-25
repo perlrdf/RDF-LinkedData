@@ -7,10 +7,10 @@ use strict;
 use Test::More;# tests => 37;
 use Test::RDF;
 use RDF::Trine qw[iri literal blank variable statement];
-use Log::Log4perl qw(:easy);
+use Log::Any::Adapter;
 use Module::Load::Conditional qw[can_load];
 
-Log::Log4perl->easy_init( { level   => $FATAL } ) unless $ENV{TEST_VERBOSE};
+Log::Any::Adapter->set($ENV{LOG_ADAPTER} || 'Stderr') if $ENV{TEST_VERBOSE};
 
 my $file = $Bin . '/data/basic.ttl';
 

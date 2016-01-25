@@ -10,9 +10,9 @@ use Test::Exception;
 
 my $file = $Bin . '/data/basic.ttl';
 
-use Log::Log4perl qw(:easy);
+use Log::Any::Adapter;
 
-Log::Log4perl->easy_init( { level   => $FATAL } ) unless $ENV{TEST_VERBOSE};
+Log::Any::Adapter->set($ENV{LOG_ADAPTER} || 'Stderr') if $ENV{TEST_VERBOSE};
 
 BEGIN {
     use_ok('RDF::LinkedData');

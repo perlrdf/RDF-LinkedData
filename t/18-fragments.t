@@ -7,7 +7,7 @@ use strict;
 use Test::More;# tests => 37;
 use Test::RDF;
 use RDF::Trine qw[iri literal blank variable statement];
-use Log::Log4perl qw(:easy);
+use Log::Any::Adapter;
 use RDF::Trine::Namespace qw(rdf rdfs foaf);
 use Module::Load::Conditional qw[check_install];
 use URI::Escape;
@@ -16,7 +16,7 @@ unless (defined(check_install( module => 'RDF::Generator::Void', version => 0.02
   plan skip_all => 'You need RDF::Generator::Void for this test'
 }
 
-Log::Log4perl->easy_init( { level   => $FATAL } ) unless $ENV{TEST_VERBOSE};
+Log::Any::Adapter->set($ENV{LOG_ADAPTER} || 'Stderr') if $ENV{TEST_VERBOSE};
 
 my $file = $Bin . '/data/fragments.ttl';
 

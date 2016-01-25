@@ -6,7 +6,7 @@ use Plack::Request;
 use strict;
 use Test::More;
 use Test::RDF;
-use Log::Log4perl qw(:easy);
+use Log::Any::Adapter;
 use Module::Load::Conditional qw[check_install];
 use Test::RDF;
 use RDF::Trine qw[iri literal blank variable statement];
@@ -17,7 +17,7 @@ unless (defined(check_install( module => 'RDF::Generator::Void', version => 0.02
   plan skip_all => 'You need RDF::Generator::Void for this test'
 }
 
-Log::Log4perl->easy_init( { level   => $FATAL } ) unless $ENV{TEST_VERBOSE};
+Log::Any::Adapter->set($ENV{LOG_ADAPTER} || 'Stderr') if $ENV{TEST_VERBOSE};
 
 my $file = $Bin . '/data/basic.ttl';
 
