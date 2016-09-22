@@ -1,47 +1,37 @@
-@prefix deps:  <http://ontologi.es/doap-deps#> .
+@prefix :  <http://ontologi.es/doap-deps#> .
 
 <http://purl.org/NET/cpan-uri/dist/RDF-LinkedData/project>
-	deps:runtime-recommendation      [ deps:on "Config::JFDI"^^deps:CpanId ];
-	deps:runtime-recommendation      [ deps:on "JSON"^^deps:CpanId ];
-	deps:runtime-recommendation      [ deps:on "RDF::Endpoint 0.05"^^deps:CpanId ];
-	deps:runtime-recommendation      [
-		deps:on "Plack::Middleware::CrossOrigin"^^deps:CpanId;
-	];
-	deps:runtime-recommendation      [
-		deps:on "Plack::Middleware::Expires"^^deps:CpanId;
-	];
-	deps:runtime-recommendation      [ deps:on "RDF::Generator::Void 0.04"^^deps:CpanId ];
-	deps:runtime-requirement         [ deps:on "Moo"^^deps:CpanId ];
-	deps:runtime-requirement         [ deps:on "List::Util 1.33"^^deps:CpanId ];
-	deps:runtime-requirement         [ deps:on "Types::Standard"^^deps:CpanId ];
-	deps:runtime-requirement         [ deps:on "Log::Contextual"^^deps:CpanId ];
-	deps:runtime-requirement         [ deps:on "Log::Log4perl"^^deps:CpanId ];
-	deps:runtime-requirement         [ deps:on "RDF::Trine 0.133"^^deps:CpanId ];
-	deps:runtime-requirement         [ deps:on "Scalar::Util"^^deps:CpanId ];
-	deps:runtime-requirement         [ deps:on "Plack 0.9939"^^deps:CpanId ];
-	deps:runtime-requirement         [ deps:on "namespace::autoclean 0.12"^^deps:CpanId ];
-	deps:runtime-requirement         [ deps:on "HTTP::Headers"^^deps:CpanId ];
-	deps:runtime-requirement         [
-		deps:on "RDF::Helper::Properties 0.10"^^deps:CpanId;
-	];
-	deps:runtime-requirement         [ deps:on "URI 1.52"^^deps:CpanId ];
-	deps:runtime-requirement         [ deps:on "URI::NamespaceMap"^^deps:CpanId ];
-	deps:runtime-requirement         [ deps:on "Module::Load::Conditional"^^deps:CpanId ];
-	deps:runtime-requirement         [ deps:on "Encode"^^deps:CpanId ];
-	deps:runtime-requirement         [
-		deps:on "RDF::RDFa::Generator 0.102"^^deps:CpanId;
-	];
-	deps:runtime-requirement         [ deps:on "HTML::HTML5::Writer"^^deps:CpanId ];
-	deps:runtime-requirement         [ deps:on "Digest::MD5"^^deps:CpanId ];
-	deps:runtime-requirement         [ deps:on "Try::Tiny"^^deps:CpanId ];
-	deps:test-requirement            [ deps:on "Test::More 0.88"^^deps:CpanId ];
-	deps:test-requirement            [ deps:on "Test::RDF 1.16"^^deps:CpanId ];
-	deps:test-requirement            [ deps:on "FindBin"^^deps:CpanId ];
-	deps:test-requirement            [
-		deps:on "Test::WWW::Mechanize::PSGI"^^deps:CpanId;
-	];
-	deps:test-requirement            [ deps:on "Test::Exception"^^deps:CpanId ];
-	deps:test-requirement            [ deps:on "Config::JFDI"^^deps:CpanId ];
-	deps:test-requirement            [ deps:on "Test::JSON"^^deps:CpanId ];
-	deps:test-requirement            [ deps:on "RDF::RDFa::Parser"^^deps:CpanId ].
+    :runtime-recommendation      [ :on "Config::JFDI"^^:CpanId ];
+    :runtime-recommendation      [ :on "JSON"^^:CpanId ];
+    :runtime-recommendation      [ :on "RDF::Endpoint 0.05"^^:CpanId ];
+    :runtime-recommendation      [ :on "Plack::Middleware::CrossOrigin"^^:CpanId; ];
+    :runtime-recommendation      [ :on "Plack::Middleware::Expires"^^:CpanId; ];
+    :runtime-recommendation      [ :on "RDF::Generator::Void 0.04"^^:CpanId ];
+    :runtime-requirement         [ :on "Moo"^^:CpanId ];
+    :runtime-requirement         [ :on "List::Util 1.33"^^:CpanId ];
+    :runtime-requirement         [ :on "Types::Standard"^^:CpanId ];
+    :runtime-requirement         [ :on "MooX::Log::Any"^^:CpanId ];
+    :runtime-requirement         [ :on "RDF::Trine 0.133"^^:CpanId ];
+    :runtime-requirement         [ :on "Scalar::Util"^^:CpanId ];
+    :runtime-requirement         [ :on "Plack 0.9939"^^:CpanId ];
+    :runtime-requirement         [ :on "namespace::autoclean 0.12"^^:CpanId ];
+    :runtime-requirement         [ :on "HTTP::Headers"^^:CpanId ];
+    :runtime-requirement         [ :on "RDF::Helper::Properties 0.10"^^:CpanId; ];
+    :runtime-requirement         [ :on "URI 1.52"^^:CpanId ];
+    :runtime-requirement         [ :on "URI::NamespaceMap"^^:CpanId ];
+    :runtime-requirement         [ :on "Module::Load::Conditional"^^:CpanId ];
+    :runtime-requirement         [ :on "Encode"^^:CpanId ];
+    :runtime-requirement         [ :on "RDF::RDFa::Generator 0.102"^^:CpanId; ];
+    :runtime-requirement         [ :on "HTML::HTML5::Writer"^^:CpanId ];
+    :runtime-requirement         [ :on "Digest::MD5"^^:CpanId ];
+    :runtime-requirement         [ :on "Try::Tiny"^^:CpanId ];
+    :runtime-requirement         [ :on "perl 5.006"^^:CpanId ] ;
+    :test-requirement            [ :on "Test::More 0.88"^^:CpanId ];
+    :test-requirement            [ :on "Test::RDF 1.16"^^:CpanId ];
+    :test-requirement            [ :on "FindBin"^^:CpanId ];
+    :test-requirement            [ :on "Test::WWW::Mechanize::PSGI"^^:CpanId; ];
+    :test-requirement            [ :on "Test::Exception"^^:CpanId ];
+    :test-requirement            [ :on "Config::JFDI"^^:CpanId ];
+    :test-requirement            [ :on "Test::JSON"^^:CpanId ];
+    :test-requirement            [ :on "RDF::RDFa::Parser"^^:CpanId ].
 

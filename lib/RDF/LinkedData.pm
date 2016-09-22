@@ -1,6 +1,7 @@
 package RDF::LinkedData;
 
-use 5.006;
+use strict;
+use warnings;
 use Moo;
 use namespace::autoclean;
 use Types::Standard qw(InstanceOf Str Bool Maybe Int HashRef);
@@ -8,7 +9,6 @@ use Types::Standard qw(InstanceOf Str Bool Maybe Int HashRef);
 use RDF::Trine qw[iri literal blank statement variable];
 use RDF::Trine::Serializer;
 use RDF::Trine::Namespace;
-use Log::Log4perl qw(:easy);
 use Plack::Response;
 use RDF::Helper::Properties;
 use URI::NamespaceMap;
@@ -23,25 +23,8 @@ use Digest::MD5 ('md5_base64');
 use Carp;
 use Try::Tiny;
 use List::Util qw(any);
-use Log::Log4perl;
-use Log::Log4perl ':easy';
-use Log::Contextual qw( :log ), -package_logger => Log::Log4perl->get_logger;
 
-BEGIN {
-	if ($ENV{TEST_VERBOSE}) {
-		Log::Log4perl->easy_init( { level   => $TRACE,
-											 category => 'RDF.LinkedData' 
-										  } );
-	} else {
-		Log::Log4perl->easy_init( { level   => $FATAL,
-											 category => 'RDF.LinkedData' 
-										  } );
-	}
-	use Log::Contextual -logger => Log::Log4perl->get_logger;
-}
-
-
-
+with 'MooX::Log::Any';
 
 =head1 NAME
 
@@ -49,12 +32,9 @@ RDF::LinkedData - A Linked Data server implementation
 
 =head1 VERSION
 
-Version 0.72_01
+Version 0.74
 
-=cut
-
- our $VERSION = '0.72_01';
-
+our $VERSION = '0.74';
 
 =head1 SYNOPSIS
 
@@ -130,7 +110,7 @@ sub BUILD {
 	}
 
  	if ($self->has_endpoint_config) {
-		log_debug {'Endpoint config found with parameters: ' . Dumper($self->endpoint_config) };
+		$self->log->debug('Endpoint config found with parameters: ' . Dumper($self->endpoint_config) );
 
 		unless (can_load( modules => { 'RDF::Endpoint' => 0.03 })) {
 			throw Error -text => "RDF::Endpoint not installed. Please install or remove its configuration.";
@@ -142,7 +122,7 @@ sub BUILD {
 
 		$self->endpoint(RDF::Endpoint->new($self->model, $self->endpoint_config));
  	} else {
-		log_info {'No endpoint config found'};
+		$self->log->info('No endpoint config found');
 	}
  	if ($self->has_acl_config) {
 		log_debug {'ACL config found with parameters: ' . Dumper($self->acl_config) };
@@ -157,7 +137,7 @@ sub BUILD {
 	}
 
  	if ($self->has_void_config) {
-		log_debug {'VoID config found with parameters: ' . Dumper($self->void_config) };
+		$self->log->debug('VoID config found with parameters: ' . Dumper($self->void_config) );
 
 		unless (can_load( modules => { 'RDF::Generator::Void' => 0.04 })) {
 			throw Error -text => "RDF::Generator::Void not installed. Please install or remove its configuration.";
@@ -170,10 +150,10 @@ sub BUILD {
 														  dataset_uri => $dataset_uri,
 														  namespaces_as_vocabularies => $self->void_config->{namespaces_as_vocabularies}));
 		if ($self->has_fragments) {
-			log_debug {'Triple Pattern Fragments config found with parameters: ' . Dumper($self->fragments_config) };
+			$self->log->debug('Triple Pattern Fragments config found with parameters: ' . Dumper($self->fragments_config) );
 		}
  	} else {
-		log_info {'No VoID config found'};
+		$self->log->info('No VoID config found');
 	}
 }
 
@@ -247,7 +227,7 @@ has hypermedia => (is => 'ro', isa => Bool, default => 1);
 
 has namespaces_as_vocabularies => (is => 'ro', isa => Bool, default => 1);
 
-has endpoint_config => (is => 'rw',	isa=>Maybe[HashRef], predicate => 'has_endpoint_config');
+has endpoint_config => (is => 'rw', isa=>Maybe[HashRef], predicate => 'has_endpoint_config');
 
 has void_config => (is => 'rw', isa=>Maybe[HashRef], predicate => 'has_void_config');
 
@@ -387,7 +367,7 @@ sub response {
 			}
 		}
 
-		log_debug {'Getting fragment with this selector ' . Dumper(\%statement) };
+		$self->log->debug('Getting fragment with this selector ' . Dumper(\%statement) );
 		return _client_error($response, 'Returning the whole database not allowed') 
 				unless $self->fragments_config->{allow_dump_dataset} || any { defined } values(%statement);
 		my $output_model = $self->_common_fragments_control;
@@ -416,6 +396,10 @@ sub response {
 		$output_model->add_statement(statement($self->void->dataset_uri,
 															$void->subset,
 															iri($uri)));
+		$output_model->add_statement(statement(iri($uri),
+															iri('http://purl.org/dc/terms/source'),
+															$self->void->dataset_uri
+															));
 		$output_model->end_bulk_ops;
 		my ($ct, $s);
 		try {
@@ -435,7 +419,7 @@ sub response {
 			$response->headers->header('ETag' => '"' . md5_base64($self->last_etag . $ct) . '"');
 		}
 		my $body = $s->serialize_model_to_string($output_model);
-		log_trace { "Fragment message body is $body" };
+		$self->log->trace("Fragment message body is $body" );
 		$response->headers->content_type($ct);
 		$response->body(encode_utf8($body));
 		return $response;
@@ -449,7 +433,7 @@ sub response {
 	my $type = $self->type;
 	$self->type('');
 	my $node = $self->my_node($uri);
-	log_info{"Try rendering '$type' page for subject node: " . $node->as_string};
+	$self->log->info("Try rendering '$type' page for subject node: " . $node->as_string);
 	if ($self->count($node) > 0) {
 		if ($type) {
 			my $preds = $self->helper_properties;
@@ -461,15 +445,15 @@ sub response {
 				return $response;
 			}
 
-			log_debug {"Will render '$type' page " };
+			$self->log->debug("Will render '$type' page " );
 			if ($headers_in->can('header') && $headers_in->header('Accept')) {
-				log_debug {'Found Accept header: ' . $headers_in->header('Accept') };
+				$self->log->debug('Found Accept header: ' . $headers_in->header('Accept') );
 			} else {
 				$headers_in->header('Accept' => 'application/rdf+xml');
 				if ($headers_in->header('Accept')) {
-					log_warn { 'Setting Accept header: ' . $headers_in->header('Accept') };
+					$self->log->warn('Setting Accept header: ' . $headers_in->header('Accept') );
 				} else {
-					log_warn { 'No content type header can be set' };
+					$self->log->warn('No content type header can be set' );
 				}
 			}
 
@@ -494,7 +478,7 @@ sub response {
 				my $preds = $self->helper_properties;
 				$newurl = $preds->page($node);
 			}
-			log_debug {'Will do a 303 redirect to ' . $newurl };
+			$self->log->debug('Will do a 303 redirect to ' . $newurl );
 			$response->headers->header('Location' => $newurl);
 			$response->headers->header('Vary' => join(", ", qw(Accept)));
 		}
@@ -582,7 +566,7 @@ get a URI object containing the full URI of the node.
 
 sub my_node {
 	my ($self, $iri) = @_;
-	log_info { "Subject URI to be used: $iri" };
+	$self->log->info("Subject URI to be used: $iri" );
 	return RDF::Trine::Node::Resource->new( $iri );
 }
 
@@ -653,7 +637,7 @@ sub _content {
 			$iter = $iter->concat($hmmodel->as_stream);
 		}
 		$output{body} = $s->serialize_iterator_to_string ( $iter );
-		log_trace { "Message body is $output{body}" };
+		$self->log->trace("Message body is $output{body}" );
 
 	} else {
 		$self->{_type} = 'page';
@@ -714,7 +698,7 @@ sub _negotiate {
 																					'application/xhtml+xml' => 'xhtml'
 																				  }
 																	);
-		log_debug { "Got $ct content type" };
+		$self->log->debug("Got $ct content type" );
 		1;
 	} or do {
 		my $response = Plack::Response->new;
@@ -861,22 +845,35 @@ sub _common_fragments_control {
 								 $hydra->template,
 								 literal($self->base_uri . $self->fragments_config->{fragments_path}
 											. '{?subject,predicate,object}')));
+	
 	$model->add_statement(statement(blank('template'),
+								  $hydra->mapping,
+								  blank('subject')));
+	$model->add_statement(statement(blank('template'),
+								  $hydra->mapping,
+								  blank('predicate')));
+	$model->add_statement(statement(blank('template'),
+								  $hydra->mapping,
+								  blank('object')));
+
+	$model->add_statement(statement(blank('subject'),
 								 $hydra->property,
 								 $rdf->subject));
-	$model->add_statement(statement(blank('template'),
+	$model->add_statement(statement(blank('subject'),
 								 $hydra->variable,
 								 literal('subject')));
-	$model->add_statement(statement(blank('template'),
+
+	$model->add_statement(statement(blank('predicate'),
 								 $hydra->property,
 								 $rdf->predicate));
-	$model->add_statement(statement(blank('template'),
+	$model->add_statement(statement(blank('predicate'),
 								 $hydra->variable,
 								 literal('predicate')));
-	$model->add_statement(statement(blank('template'),
+
+	$model->add_statement(statement(blank('object'),
 								 $hydra->property,
 								 $rdf->object));
-	$model->add_statement(statement(blank('template'),
+	$model->add_statement(statement(blank('object'),
 								 $hydra->variable,
 								 literal('object')));
 	$model->end_bulk_ops;
@@ -936,7 +933,7 @@ Copyright 2010 Gregory Todd Williams
 
 Copyright 2010 ABC Startsiden AS
 
-Copyright 2010, 2011, 2012, 2013, 2014, 2015 Kjetil Kjernsmo
+Copyright 2010, 2011, 2012, 2013, 2014, 2015, 2016 Kjetil Kjernsmo
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.

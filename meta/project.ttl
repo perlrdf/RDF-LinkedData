@@ -18,6 +18,7 @@
 my:project	 
     a           :Project ;
     :name       "RDF-LinkedData" ;
+    dc:identifier "RDF::LinkedData"^^<http://ontologi.es/doap-deps#CpanId> ;    
     :shortdesc  "Base class and scripts for servers that serve RDF as Linked Data."@en ;
     :created    "2009-04-23"^^xsd:date ;
     :programming-language "Perl" ;
