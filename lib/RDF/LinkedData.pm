@@ -8,7 +8,6 @@ use Types::Standard qw(InstanceOf Str Bool Maybe Int HashRef);
 
 use RDF::Trine qw[iri literal blank statement variable];
 use RDF::Trine::Serializer;
-use RDF::Trine::Namespace;
 use Plack::Response;
 use RDF::Helper::Properties;
 use URI::NamespaceMap;
@@ -349,18 +348,18 @@ sub response {
 		$self->add_namespace_mapping(void => 'http://rdfs.org/ns/void#');
 		$self->add_namespace_mapping(hydra => 'http://www.w3.org/ns/hydra/core#');
 		my $cl = literal($counter, undef, 'http://www.w3.org/2001/XMLSchema#integer');
-		my $void = RDF::Trine::Namespace->new('http://rdfs.org/ns/void#');
+		my $void = $self->namespaces->void;
 		$output_model->add_statement(statement(iri($uri), 
-															$void->triples,
+															iri($void->triples),
 															$cl));
 		$output_model->add_statement(statement(iri($uri), 
 															iri('http://www.w3.org/ns/hydra/core#totalItems'),
 															$cl));
 		$output_model->add_statement(statement(iri($uri),
 															iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
-															$void->Dataset));
+															iri($void->Dataset)));
 		$output_model->add_statement(statement($self->void->dataset_uri,
-															$void->subset,
+															iri($void->subset),
 															iri($uri)));
 		$output_model->add_statement(statement(iri($uri),
 															iri('http://purl.org/dc/terms/source'),
