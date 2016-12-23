@@ -258,7 +258,11 @@ has 'namespaces' => (is => 'rw',
 
 sub _build_namespaces {
   my ($self, $ns_hash) = @_;
-  return $ns_hash || URI::NamespaceMap->new({ rdf => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' });
+  my $map = URI::NamespaceMap->new(['rdf', 'void', 'dct']);
+  while (my ($name, $uri) = each %{$ns_hash}) {
+	  $self->add_namespace_mapping($name => $uri);
+  }
+  return $map;
 }
 
 # Just a temporary compatibility hack
@@ -345,7 +349,6 @@ sub response {
 			# TODO: Paging goes here
 			$output_model->add_statement($st);
 		}
-		$self->add_namespace_mapping(void => 'http://rdfs.org/ns/void#');
 		$self->add_namespace_mapping(hydra => 'http://www.w3.org/ns/hydra/core#');
 		my $cl = literal($counter, undef, 'http://www.w3.org/2001/XMLSchema#integer');
 		my $void = $self->namespaces->void;
