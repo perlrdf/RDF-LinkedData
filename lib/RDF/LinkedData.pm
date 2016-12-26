@@ -240,9 +240,10 @@ Returns or sets the last Etag of so that changes to the model can be detected.
 has last_etag => ( is => 'rw', isa => Str, predicate => 'has_last_etag');
 
 
-=item namespaces ( { skos => 'http://www.w3.org/2004/02/skos/core#', dct => 'http://purl.org/dc/terms/' } )
+=item namespaces ( $namespace_map )
 
-Gets or sets the namespaces that some serializers use for pretty-printing.
+Gets or sets the namespaces that some serializers use for
+pretty-printing. Should be handed a L<URI::NamespaceMap> object.
 
 =cut
 
@@ -260,8 +261,9 @@ sub _build_namespaces {
   my ($self, $ns_hash) = @_;
   my $map = URI::NamespaceMap->new(['rdf', 'void', 'dct']);
   while (my ($name, $uri) = each %{$ns_hash}) {
-	  $self->add_namespace_mapping($name => $uri);
+	  $map->add_mapping($name => $uri);
   }
+  warn Data::Dumper::Dumper($map)
   return $map;
 }
 
@@ -351,6 +353,7 @@ sub response {
 		}
 		$self->add_namespace_mapping(hydra => 'http://www.w3.org/ns/hydra/core#');
 		my $cl = literal($counter, undef, 'http://www.w3.org/2001/XMLSchema#integer');
+		warn Data::Dumper::Dumper($self->list_namespaces);
 		my $void = $self->namespaces->void;
 		$output_model->add_statement(statement(iri($uri), 
 															iri($void->triples),
