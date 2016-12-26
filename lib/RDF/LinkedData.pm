@@ -243,7 +243,9 @@ has last_etag => ( is => 'rw', isa => Str, predicate => 'has_last_etag');
 =item namespaces ( $namespace_map )
 
 Gets or sets the namespaces that some serializers use for
-pretty-printing. Should be handed a L<URI::NamespaceMap> object.
+pretty-printing. Should be handed a L<URI::NamespaceMap> object. RDF,
+VoID, Hydra, DC Terms and XML Schema are added by the module and do
+not need to be declared.
 
 =cut
 
@@ -258,13 +260,11 @@ has 'namespaces' => (is => 'rw',
 
 
 sub _build_namespaces {
-  my ($self, $ns_hash) = @_;
-  my $map = URI::NamespaceMap->new(['rdf', 'void', 'dct']);
-  while (my ($name, $uri) = each %{$ns_hash}) {
-	  $map->add_mapping($name => $uri);
-  }
-  warn Data::Dumper::Dumper($map)
-  return $map;
+  my $self = shift;
+  my $nsmap = shift || URI::NamespaceMap->new();
+  $nsmap->guess_and_add('rdf', 'void', 'dct', 'xsd');
+  $nsmap->add_mapping(hydra => 'http://www.w3.org/ns/hydra/core#');
+  return $nsmap;
 }
 
 # Just a temporary compatibility hack
@@ -351,9 +351,7 @@ sub response {
 			# TODO: Paging goes here
 			$output_model->add_statement($st);
 		}
-		$self->add_namespace_mapping(hydra => 'http://www.w3.org/ns/hydra/core#');
 		my $cl = literal($counter, undef, 'http://www.w3.org/2001/XMLSchema#integer');
-		warn Data::Dumper::Dumper($self->list_namespaces);
 		my $void = $self->namespaces->void;
 		$output_model->add_statement(statement(iri($uri), 
 															iri($void->triples),
