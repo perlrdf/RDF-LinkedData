@@ -243,9 +243,7 @@ has last_etag => ( is => 'rw', isa => Str, predicate => 'has_last_etag');
 =item namespaces ( $namespace_map )
 
 Gets or sets the namespaces that some serializers use for
-pretty-printing. Should be handed a L<URI::NamespaceMap> object. RDF,
-VoID, Hydra, DC Terms and XML Schema are added by the module and do
-not need to be declared.
+pretty-printing. Should be handed a L<URI::NamespaceMap> object.
 
 =cut
 
@@ -255,16 +253,14 @@ has 'namespaces' => (is => 'rw',
 							lazy => 1,
 							handles => {
 											'add_namespace_mapping' => 'add_mapping',
+											'guess_namespaces' => 'guess_and_add',
 											'list_namespaces' => 'list_namespaces'
 										  });
 
 
 sub _build_namespaces {
   my $self = shift;
-  my $nsmap = shift || URI::NamespaceMap->new();
-  $nsmap->guess_and_add('rdf', 'void', 'dct', 'xsd');
-  $nsmap->add_mapping(hydra => 'http://www.w3.org/ns/hydra/core#');
-  return $nsmap;
+  return shift || URI::NamespaceMap->new();
 }
 
 # Just a temporary compatibility hack
@@ -352,6 +348,7 @@ sub response {
 			$output_model->add_statement($st);
 		}
 		my $cl = literal($counter, undef, 'http://www.w3.org/2001/XMLSchema#integer');
+		$self->guess_namespaces('void');
 		my $void = $self->namespaces->void;
 		$output_model->add_statement(statement(iri($uri), 
 															iri($void->triples),
@@ -715,7 +712,6 @@ sub _void_content {
 		}
 
 		if ($self->has_fragments) {
-			$self->add_namespace_mapping(hydra => 'http://www.w3.org/ns/hydra/core#');
 			$self->_common_fragments_control($self->_voidmodel);
 		}
 
