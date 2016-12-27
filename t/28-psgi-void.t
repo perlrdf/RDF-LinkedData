@@ -8,7 +8,6 @@ use Test::RDF;
 use RDF::Trine qw[iri literal blank variable statement];
 use Test::WWW::Mechanize::PSGI;
 use Module::Load::Conditional qw[check_install];
-use RDF::Trine::Namespace qw(rdf rdfs foaf);
 use URI::Escape;
 
 
@@ -45,10 +44,8 @@ Log::Any::Adapter->set($ENV{LOG_ADAPTER} || 'Stderr') if $ENV{TEST_VERBOSE};
 my $rxparser = RDF::Trine::Parser->new( 'rdfxml' );
 my $parser = RDF::Trine::Parser->new( 'turtle' );
 my $base_uri = 'http://localhost/';
-
-my $void = RDF::Trine::Namespace->new('http://rdfs.org/ns/void#');
-my $xsd  = RDF::Trine::Namespace->new('http://www.w3.org/2001/XMLSchema#');
-my $hydra = RDF::Trine::Namespace->new('http://www.w3.org/ns/hydra/core#');
+my $ns = URI::NamespaceMap->new(['rdf', 'rdfs', 'foaf', 'void', 'xsd']);
+$ns->add_mapping('hydra' => 'http://www.w3.org/ns/hydra/core#');
 
 
 {
@@ -99,18 +96,18 @@ my $hydra = RDF::Trine::Namespace->new('http://www.w3.org/ns/hydra/core#');
 	pattern_ok(
 				  statement(
 								iri($base_uri . '#dataset-0'),
-								$void->triples,
-								literal(3, undef, $xsd->integer)
+								iri($ns->void->triples),
+								literal(3, undef, iri($ns->xsd->integer))
 							  ),
 				  statement(
 								iri($base_uri . '#dataset-0'),
-								$void->sparqlEndpoint,
+								iri($ns->void->sparqlEndpoint),
 								iri($base_uri . 'sparql'),
 							  ),
 				  statement(
 								iri($base_uri . '#dataset-0'),
-								$rdf->type,
-								$void->Dataset
+								iri($ns->rdf->type),
+								iri($ns->void->Dataset)
 							  ),
 				  'Common statements are there');
 }
@@ -145,33 +142,33 @@ my $hydra = RDF::Trine::Namespace->new('http://www.w3.org/ns/hydra/core#');
 	pattern_target($model);
 	pattern_ok(
 				  statement(iri($base_uri . 'foo'),
-								$rdfs->label,
+								iri($ns->rdfs->label),
 								literal("This is a test", 'en')),
 				  statement(iri($base_uri . 'foo'),
-								$foaf->page,
+								iri($ns->foaf->page),
 								iri('http://en.wikipedia.org/wiki/Foo'))
 				  , 'Both fragment data triples present',
 				 );
 	
 	pattern_ok(
 				  statement(iri($base_uri . 'fragments?subject=' . uri_escape_utf8('http://localhost/foo')),
-								$void->triples,
-								literal("2", undef, $xsd->integer->uri_value)),
+								iri($ns->void->triples),
+								literal("2", undef, iri($ns->xsd->integer))),
 				  statement(iri($base_uri . 'fragments?subject=' . uri_escape_utf8('http://localhost/foo')),
-								$hydra->totalItems,
-								literal("2", undef, $xsd->integer->uri_value)),
+								iri($ns->hydra->totalItems),
+								literal("2", undef, iri($ns->xsd->integer))),
 				  , 'Triple count is correct',
 				 );
 	
 	pattern_ok(
 				  statement(iri($base_uri . '#dataset-0'),
-								$rdf->type,
-								$hydra->Collection),
+								iri($ns->rdf->type),
+								iri($ns->hydra->Collection)),
 				  statement(iri($base_uri . '#dataset-0'),
-								$hydra->search,
+								iri($ns->hydra->search),
 								blank('template')),
 				  statement(blank('template'),
-								$hydra->template,
+								iri($ns->hydra->template),
 								literal($base_uri . 'fragments{?subject,predicate,object}')),
 				  'Important control information present');
 }

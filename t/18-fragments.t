@@ -8,7 +8,7 @@ use Test::More;# tests => 37;
 use Test::RDF;
 use RDF::Trine qw[iri literal blank variable statement];
 use Log::Any::Adapter;
-use RDF::Trine::Namespace qw(rdf rdfs foaf);
+use URI::NamespaceMap;
 use Module::Load::Conditional qw[check_install];
 use URI::Escape;
 
@@ -23,11 +23,8 @@ my $file = $Bin . '/data/fragments.ttl';
 use_ok('RDF::LinkedData');
 use_ok('RDF::Generator::Void');
 
-
-my $void = RDF::Trine::Namespace->new('http://rdfs.org/ns/void#');
-my $xsd  = RDF::Trine::Namespace->new('http://www.w3.org/2001/XMLSchema#');
-my $hydra = RDF::Trine::Namespace->new('http://www.w3.org/ns/hydra/core#');
-my $dcterms = RDF::Trine::Namespace->new('http://purl.org/dc/terms/');
+my $ns = URI::NamespaceMap->new(['rdf', 'rdfs', 'foaf', 'void', 'dct', 'xsd']);
+$ns->add_mapping('hydra' => 'http://www.w3.org/ns/hydra/core#');
 
 my $parser     = RDF::Trine::Parser->new( 'turtle' );
 my $rxparser   = RDF::Trine::Parser->new( 'rdfxml' );
@@ -65,26 +62,26 @@ my $void_subject = iri($base_uri . '/#dataset-0');
 		pattern_target($retmodel);
 		pattern_ok(
 					  statement(iri($base_uri . '/foo'),
-									$rdfs->label,
+									iri($ns->rdfs->label),
 									literal("This is a test", 'en')),
 					  statement(iri($base_uri . '/foo'),
-									$foaf->page,
+									iri($ns->foaf->page),
 									iri('http://en.wikipedia.org/wiki/Foo'))
 					  , 'Both triples present',
 					 );
 		
 		pattern_ok(
 					  statement(iri($base_uri . '/fragments?subject=' . uri_escape_utf8('http://localhost/foo')),
-									$void->triples,
-									literal("2", undef, $xsd->integer)),
+									iri($ns->void->triples),
+									literal("2", undef, iri($ns->xsd->integer))),
 					  statement(iri($base_uri . '/fragments?subject=' . uri_escape_utf8('http://localhost/foo')),
-									$hydra->totalItems,
-									literal("2", undef, $xsd->integer)),
+									iri($ns->hydra->totalItems),
+									literal("2", undef, iri($ns->xsd->integer))),
 					  , 'Triple count is correct',
 					 );
 		
 		pattern_ok(	 statement(iri($base_uri . '/fragments?subject=' . uri_escape_utf8('http://localhost/foo')),
-									$dcterms->source,
+									iri($ns->dct->source),
 									$void_subject),
 					  , 'Void Subject in dct:source'
 					 );
@@ -93,43 +90,43 @@ my $void_subject = iri($base_uri . '/#dataset-0');
 
 		pattern_ok(
 					  statement($void_subject,
-									$rdf->type,
-									$hydra->Collection),
+									iri($ns->rdf->type),
+									iri($ns->hydra->Collection)),
 					  statement($void_subject,
-									$hydra->search,
+									iri($ns->hydra->search),
 									blank('template')),
 					  statement(blank('template'),
-									$hydra->template,
+									iri($ns->hydra->template),
 									literal($base_uri . '/fragments{?subject,predicate,object}')),
 					  statement(blank('template'),
-					  				$hydra->mapping,
+					  				iri($ns->hydra->mapping),
 					  				blank('subject')),
 					  statement(blank('template'),
-					  				$hydra->mapping,
+					  				iri($ns->hydra->mapping),
 					  				blank('predicate')),
 					  statement(blank('template'),
-					  				$hydra->mapping,
+					  				iri($ns->hydra->mapping),
 					  				blank('predicate')),
 					  statement(blank('template'),
-					  				$hydra->mapping,
+					  				iri($ns->hydra->mapping),
 					  				blank('object')),
 					  statement(blank('subject'),
-									$hydra->property,
-									$rdf->subject),
+									iri($ns->hydra->property),
+									iri($ns->rdf->subject)),
 					  statement(blank('subject'),
-									$hydra->variable,
+									iri($ns->hydra->variable),
 									literal('subject')),
 					  statement(blank('predicate'),
-									$hydra->property,
-									$rdf->predicate),
+									iri($ns->hydra->property),
+									iri($ns->rdf->predicate)),
 					  statement(blank('predicate'),
-									$hydra->variable,
+									iri($ns->hydra->variable),
 									literal('predicate')),
 					  statement(blank('object'),
-									$hydra->property,
-									$rdf->object),
+									iri($ns->hydra->property),
+									iri($ns->rdf->object)),
 					  statement(blank('object'),
-									$hydra->variable,
+									iri($ns->hydra->variable),
 									literal('object')),
 					  "Control statements OK");
    }
@@ -140,7 +137,7 @@ my $void_subject = iri($base_uri . '/#dataset-0');
 		is($response->status, 200, "Returns 200");
 		my $retmodel = return_model($response->content, $parser);
 		has_literal('Testing with longer URI.', 'en', undef, $retmodel, "Longer test phrase is in content");
-		has_literal("1", undef, $xsd->integer, $retmodel, 'Triple count is correct');
+		has_literal("1", undef, $ns->xsd->integer->as_string, $retmodel, 'Triple count is correct');
 		hasnt_literal('This is a test', 'en', undef, $retmodel, "Test phrase isn't in content");
 	}
 	{
@@ -148,8 +145,8 @@ my $void_subject = iri($base_uri . '/#dataset-0');
 		isa_ok($response, 'Plack::Response');
 		is($response->status, 200, "Returns 200");
 		my $retmodel = return_model($response->content, $parser);
-		has_literal('42', undef, $xsd->integer, $retmodel, "The Answer is in the content");
-		has_literal("1", undef, $xsd->integer, $retmodel, 'Triple count is correct');
+		has_literal('42', undef, $ns->xsd->integer->as_string, $retmodel, "The Answer is in the content");
+		has_literal("1", undef, $ns->xsd->integer->as_string, $retmodel, 'Triple count is correct');
 		hasnt_literal('This is a test', 'en', undef, $retmodel, "Test phrase isn't in content");
 	}
 	{
@@ -158,7 +155,7 @@ my $void_subject = iri($base_uri . '/#dataset-0');
 		is($response->status, 200, "Returns 200");
 		my $retmodel = return_model($response->content, $parser);
 		hasnt_literal('Testing with longer URI.', 'en', undef, $retmodel, "Longer test phrase is in content");
-		has_literal("0", undef, $xsd->integer, $retmodel, 'Triple count is correct');
+		has_literal("0", undef, $ns->xsd->integer->as_string, $retmodel, 'Triple count is correct');
 	}
 	{
 		my $response = $ld->response($base_uri . '/fragments?predicate=' . uri_escape_utf8('http://www.w3.org/2000/01/rdf-schema#label') . '&subject=');
@@ -167,7 +164,7 @@ my $void_subject = iri($base_uri . '/#dataset-0');
 		my $retmodel = return_model($response->content, $parser);
 		has_subject($base_uri . '/foo', $retmodel, 'Subject 1 is correct');
 		has_subject($base_uri . '/bar/baz/bing', $retmodel, 'Subject 2 is correct');
-		has_literal("2", undef, $xsd->integer, $retmodel, 'Triple count is correct');
+		has_literal("2", undef, $ns->xsd->integer->as_string, $retmodel, 'Triple count is correct');
 		has_literal('This is a test', 'en', undef, $retmodel, "Test phrase is in content");
 	}
 	{
@@ -202,59 +199,59 @@ my $void_subject = iri($base_uri . '/#dataset-0');
 	is($response->status, 200, "Returns 200");
 	my $retmodel = return_model($response->content, $parser);
 	has_subject($void_subject->uri_value, $retmodel, "Subject URI in content");
-	has_predicate($hydra->search->uri_value, $retmodel, 'Hydra search predicate');
+	has_predicate($ns->hydra->search->as_string, $retmodel, 'Hydra search predicate');
 	pattern_target($retmodel);
 	pattern_ok(
 				  statement(
 								$void_subject,
-								$void->triples,
-								literal(4, undef, $xsd->integer)
+								iri($ns->void->triples),
+								literal(4, undef, iri($ns->xsd->integer))
 							  ),
 				  statement(
 								$void_subject,
-								$rdf->type,
-								$void->Dataset
+								iri($ns->rdf->type),
+								iri($ns->void->Dataset)
 							  ),
 				  'VoID-specific statements');
 	pattern_ok(
 				  statement($void_subject,
-								$rdf->type,
-								$hydra->Collection),
+								iri($ns->rdf->type),
+								iri($ns->hydra->Collection)),
 				  statement($void_subject,
-								$hydra->search,
+								iri($ns->hydra->search),
 								blank('template')),
 				  statement(blank('template'),
-								$hydra->template,
+								iri($ns->hydra->template),
 								literal($base_uri . '/fragments{?subject,predicate,object}')),
 				  statement(blank('template'),
-				                $hydra->mapping,
+				                iri($ns->hydra->mapping),
 					  		    blank('subject')),
 				  statement(blank('template'),
-					  			$hydra->mapping,
+					  			iri($ns->hydra->mapping),
 					  			blank('predicate')),
 				  statement(blank('template'),
-				                $hydra->mapping,
+				                iri($ns->hydra->mapping),
 					  		    blank('predicate')),
 	              statement(blank('template'),
-					            $hydra->mapping,
+					            iri($ns->hydra->mapping),
 					  		    blank('object')),
 				  statement(blank('subject'),
-								$hydra->property,
-								$rdf->subject),
+								iri($ns->hydra->property),
+								iri($ns->rdf->subject)),
 				  statement(blank('subject'),
-								$hydra->variable,
+								iri($ns->hydra->variable),
 								literal('subject')),
 				  statement(blank('predicate'),
-								$hydra->property,
-								$rdf->predicate),
+								iri($ns->hydra->property),
+								iri($ns->rdf->predicate)),
 				  statement(blank('predicate'),
-								$hydra->variable,
+								iri($ns->hydra->variable),
 								literal('predicate')),
 				  statement(blank('object'),
-								$hydra->property,
-								$rdf->object),
+								iri($ns->hydra->property),
+								iri($ns->rdf->object)),
 				  statement(blank('object'),
-								$hydra->variable,
+								iri($ns->hydra->variable),
 								literal('object')),
 				  "Control statements OK");
 }
@@ -278,7 +275,7 @@ my $void_subject = iri($base_uri . '/#dataset-0');
 		isa_ok($response, 'Plack::Response');
 		is($response->status, 200, "Returns 200 with all parameters empty");
 		my $retmodel = return_model($response->content, $parser);
-		has_literal("4", undef, $xsd->integer, $retmodel, 'Triple count is correct got all 4 triples');
+		has_literal("4", undef, $ns->xsd->integer->as_string, $retmodel, 'Triple count is correct got all 4 triples');
 	}
 }
 
