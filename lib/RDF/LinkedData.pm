@@ -757,59 +757,60 @@ has _last_extvoid_mtime => (is => 'rw', isa => Int);
 sub _common_fragments_control {
 	my $self = shift;
 	my $model = shift || RDF::Trine::Model->temporary_model;
-	my $void = RDF::Trine::Namespace->new('http://rdfs.org/ns/void#');
-	my $xsd  = RDF::Trine::Namespace->new('http://www.w3.org/2001/XMLSchema#');
-	my $hydra = RDF::Trine::Namespace->new('http://www.w3.org/ns/hydra/core#');
-	my $rdf = RDF::Trine::Namespace->new('http://www.w3.org/1999/02/22-rdf-syntax-ns#');
+	$self->guess_namespaces('rdf', 'void');
+	$self->add_namespace_mapping(hydra => 'http://www.w3.org/ns/hydra/core#');
+	my $void = $self->namespaces->void;
+	my $hydra = $self->namespaces->hydra;
+	my $rdf = $self->namespaces->rdf;
 	$model->begin_bulk_ops;
 	my $void_subject = $self->void->dataset_uri;
 	$model->add_statement(statement($void_subject,
-											  $rdf->type,
-											  $hydra->Collection));
+											  iri($rdf->type),
+											  iri($hydra->Collection)));
 	$model->add_statement(statement($void_subject,
-											  $rdf->type,
-											  $void->Dataset));
+											  iri($rdf->type),
+											  iri($void->Dataset)));
 	$model->add_statement(statement($void_subject,
-											  $hydra->search,
+											  iri($hydra->search),
 											  blank('template')));
 	$model->add_statement(statement($void_subject,
-								 $void->uriLookupEndpoint,
+								 iri($void->uriLookupEndpoint),
 								 literal($self->base_uri . $self->fragments_config->{fragments_path}
 											. '{?subject,predicate,object}')));
 	$model->add_statement(statement(blank('template'),
-								 $hydra->template,
+								 iri($hydra->template),
 								 literal($self->base_uri . $self->fragments_config->{fragments_path}
 											. '{?subject,predicate,object}')));
 	
 	$model->add_statement(statement(blank('template'),
-								  $hydra->mapping,
+								  iri($hydra->mapping),
 								  blank('subject')));
 	$model->add_statement(statement(blank('template'),
-								  $hydra->mapping,
+								  iri($hydra->mapping),
 								  blank('predicate')));
 	$model->add_statement(statement(blank('template'),
-								  $hydra->mapping,
+								  iri($hydra->mapping),
 								  blank('object')));
 
 	$model->add_statement(statement(blank('subject'),
-								 $hydra->property,
-								 $rdf->subject));
+								 iri($hydra->property),
+								 iri($rdf->subject)));
 	$model->add_statement(statement(blank('subject'),
-								 $hydra->variable,
+								 iri($hydra->variable),
 								 literal('subject')));
 
 	$model->add_statement(statement(blank('predicate'),
-								 $hydra->property,
-								 $rdf->predicate));
+								 iri($hydra->property),
+								 iri($rdf->predicate)));
 	$model->add_statement(statement(blank('predicate'),
-								 $hydra->variable,
+								 iri($hydra->variable),
 								 literal('predicate')));
 
 	$model->add_statement(statement(blank('object'),
-								 $hydra->property,
-								 $rdf->object));
+								 iri($hydra->property),
+								 iri($rdf->object)));
 	$model->add_statement(statement(blank('object'),
-								 $hydra->variable,
+								 iri($hydra->variable),
 								 literal('object')));
 	$model->end_bulk_ops;
 	return $model;
