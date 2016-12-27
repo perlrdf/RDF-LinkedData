@@ -10,6 +10,15 @@ use Plack::Request;
 
 Plack::App::RDF::LinkedData - A Plack application for running RDF::LinkedData
 
+=head1 VERSION
+
+Version 0.75_01
+
+=cut
+
+ our $VERSION = '0.75_01';
+
+
 =head1 SYNOPSIS
 
   my $linkeddata = Plack::App::RDF::LinkedData->new();
