@@ -23,7 +23,7 @@ my $file = $Bin . '/data/fragments.ttl';
 use_ok('RDF::LinkedData');
 use_ok('RDF::Generator::Void');
 
-my $ns = URI::NamespaceMap->new(['rdf', 'rdfs', 'foaf', 'void', 'dct', 'xsd']);
+my $ns = URI::NamespaceMap->new(['rdf', 'rdfs', 'foaf', 'void', 'dc', 'xsd']);
 $ns->add_mapping('hydra' => 'http://www.w3.org/ns/hydra/core#');
 
 my $parser     = RDF::Trine::Parser->new( 'turtle' );
@@ -81,9 +81,9 @@ my $void_subject = iri($base_uri . '/#dataset-0');
 					 );
 		
 		pattern_ok(	 statement(iri($base_uri . '/fragments?subject=' . uri_escape_utf8('http://localhost/foo')),
-									iri($ns->dct->source),
+									iri($ns->dc->source),
 									$void_subject),
-					  , 'Void Subject in dct:source'
+					  , 'Void Subject in dc:source'
 					 );
 
 		has_subject($void_subject->uri_value, $retmodel, "Void Subject URI in content");

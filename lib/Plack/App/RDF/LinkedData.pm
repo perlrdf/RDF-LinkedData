@@ -320,7 +320,7 @@ sub prepare_app {
 															);
 	$self->{linkeddata}->namespaces(URI::NamespaceMap->new($config->{namespaces})) if ($config->{namespaces});
 	# Ensure that certain namespaces are always declared
-	$self->{linkeddata}->guess_namespaces('rdf', 'dct', 'xsd', 'void');
+	$self->{linkeddata}->guess_namespaces('rdf', 'dc', 'xsd', 'void');
 	$self->{linkeddata}->add_namespace_mapping(hydra => 'http://www.w3.org/ns/hydra/core#');
 }
 
