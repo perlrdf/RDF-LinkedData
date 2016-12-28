@@ -18,7 +18,7 @@
     :runtime-requirement         [ :on "HTTP::Headers"^^:CpanId ];
     :runtime-requirement         [ :on "RDF::Helper::Properties 0.10"^^:CpanId; ];
     :runtime-requirement         [ :on "URI 1.52"^^:CpanId ];
-    :runtime-requirement         [ :on "URI::NamespaceMap 0.31_06"^^:CpanId ];
+    :runtime-requirement         [ :on "URI::NamespaceMap 0.31_08"^^:CpanId ];
     :runtime-requirement         [ :on "RDF::NS::Curated"^^:CpanId ];
     :runtime-requirement         [ :on "Module::Load::Conditional"^^:CpanId ];
     :runtime-requirement         [ :on "Encode"^^:CpanId ];
