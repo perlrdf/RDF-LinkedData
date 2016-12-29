@@ -176,11 +176,17 @@ my $void_subject = iri($base_uri . '/#dataset-0');
 		my $response = $ld->response($base_uri . '/fragments');	
 		isa_ok($response, 'Plack::Response');
 		is($response->status, 200, "Returns 200 with all parameters missing");
+		my $retmodel = return_model($response->content, $parser);
+		has_predicate('http://www.w3.org/ns/hydra/core#next', $retmodel, 'Has hydra:next predicate');
+		has_object_uri($base_uri . '/fragments?allow_dump_dataset=1', $retmodel, '...and object with ? to find the rest');
 	}
 	{
 		my $response = $ld->response($base_uri . '/fragments?predicate=&object=');	
 		isa_ok($response, 'Plack::Response');
 		is($response->status, 200, "Returns 200 with subject missing other parameters empty");
+		my $retmodel = return_model($response->content, $parser);
+		has_predicate('http://www.w3.org/ns/hydra/core#next', $retmodel, 'Has hydra:next predicate');
+		has_object_uri($base_uri . '/fragments?predicate=&object=&allow_dump_dataset=1', $retmodel, '...and object with & to find the rest');
 	}
 }
 
