@@ -10,6 +10,15 @@ use Plack::Request;
 
 Plack::App::RDF::LinkedData - A Plack application for running RDF::LinkedData
 
+=head1 VERSION
+
+Version 0.75_03
+
+=cut
+
+ our $VERSION = '0.75_03';
+
+
 =head1 SYNOPSIS
 
   my $linkeddata = Plack::App::RDF::LinkedData->new();
@@ -133,7 +142,10 @@ is are longer examples in the distribtion, which is used to run
 tests. In the config file, there is a C<store> parameter, which must
 contain the L<RDF::Trine::Store> config hashref. It may also have a
 C<base_uri> URI and a C<namespace> hashref which may contain prefix -
-URI mappings to be used in serializations.
+URI mappings to be used in serializations. Certain namespace, namely
+RDF, VoID, Hydra, DC Terms and XML Schema are added by the module and
+do not need to be declared.
+
 
 Note that this is a server that can only serve URIs of hosts you
 control, it is not a general purpose Linked Data manipulation tool,
@@ -309,6 +321,9 @@ sub prepare_app {
 															);
 
 	$self->{linkeddata}->namespaces(URI::NamespaceMap->new($config->{namespaces})) if ($config->{namespaces});
+	# Ensure that certain namespaces are always declared
+	$self->{linkeddata}->guess_namespaces('rdf', 'dc', 'xsd', 'void');
+	$self->{linkeddata}->add_namespace_mapping(hydra => 'http://www.w3.org/ns/hydra/core#');
 }
 
 sub call {

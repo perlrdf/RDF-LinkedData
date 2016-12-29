@@ -104,7 +104,7 @@ ok($model, "We have a model");
 		note "Get /foo/data, namespaces set";
 		$ld->type('data');
 		$ld->add_namespace_mapping(skos => 'http://www.w3.org/2004/02/skos/core#');
-		$ld->add_namespace_mapping(dct => 'http://purl.org/dc/terms/' );
+		$ld->add_namespace_mapping(dc => 'http://purl.org/dc/terms/' );
 	   my $response = $ld->response($base_uri . '/foo');
 		isa_ok($response, 'Plack::Response');
 		is($response->status, 200, "Returns 200");

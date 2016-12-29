@@ -8,7 +8,7 @@ use Types::Standard qw(InstanceOf Str Bool Maybe Int HashRef);
 
 use RDF::Trine qw[iri literal blank statement variable];
 use RDF::Trine::Serializer;
-use RDF::Trine::Namespace;
+use RDF::Trine::Iterator::Graph;
 use Plack::Response;
 use RDF::Helper::Properties;
 use URI::NamespaceMap;
@@ -32,9 +32,12 @@ RDF::LinkedData - A Linked Data server implementation
 
 =head1 VERSION
 
-Version 0.74
+Version 0.75_03
 
-our $VERSION = '0.74';
+=cut
+
+ our $VERSION = '0.75_03';
+
 
 =head1 SYNOPSIS
 
@@ -267,9 +270,10 @@ Returns or sets the last Etag of so that changes to the model can be detected.
 has last_etag => ( is => 'rw', isa => Str, predicate => 'has_last_etag');
 
 
-=item namespaces ( { skos => 'http://www.w3.org/2004/02/skos/core#', dct => 'http://purl.org/dc/terms/' } )
+=item namespaces ( $namespace_map )
 
-Gets or sets the namespaces that some serializers use for pretty-printing.
+Gets or sets the namespaces that some serializers use for
+pretty-printing. Should be handed a L<URI::NamespaceMap> object.
 
 =cut
 
@@ -279,14 +283,15 @@ has 'namespaces' => (is => 'rw',
 							lazy => 1,
 							handles => {
 											'add_namespace_mapping' => 'add_mapping',
+											'guess_namespaces' => 'guess_and_add',
 											'list_namespaces' => 'list_namespaces'
 										  });
 
 
 
 sub _build_namespaces {
-  my ($self, $ns_hash) = @_;
-  return $ns_hash || URI::NamespaceMap->new({ rdf => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' });
+  my $self = shift;
+  return shift || URI::NamespaceMap->new();
 }
 
 # Just a temporary compatibility hack
@@ -368,33 +373,42 @@ sub response {
 		}
 
 		$self->log->debug('Getting fragment with this selector ' . Dumper(\%statement) );
-		return _client_error($response, 'Returning the whole database not allowed') 
-				unless $self->fragments_config->{allow_dump_dataset} || any { defined } values(%statement);
 		my $output_model = $self->_common_fragments_control;
-
-		my $iterator = $self->model->get_statements($statement{subject}, $statement{predicate}, $statement{object});
-		$output_model->begin_bulk_ops;
+		my $iterator;
 		my $counter = 0;
+		if ($params{allow_dump_dataset} || $self->fragments_config->{allow_dump_dataset} || any { defined } values(%statement)) {
+			$iterator = $self->model->get_statements($statement{subject}, $statement{predicate}, $statement{object});
+		} else {
+			$counter = $self->model->size - 1;
+			my $nexturi = $uri;
+			$nexturi->query_form('allow_dump_dataset' => 1);
+			$iterator = RDF::Trine::Iterator::Graph->new([
+																		 statement(iri($uri),
+																					  iri('http://www.w3.org/ns/hydra/core#next'),
+																					  iri($nexturi))
+																		]);
+		}
+
+		$output_model->begin_bulk_ops;
 		while (my $st = $iterator->next) {
 			$counter++;
 			# TODO: Paging goes here
 			$output_model->add_statement($st);
 		}
-		$self->add_namespace_mapping(void => 'http://rdfs.org/ns/void#');
-		$self->add_namespace_mapping(hydra => 'http://www.w3.org/ns/hydra/core#');
 		my $cl = literal($counter, undef, 'http://www.w3.org/2001/XMLSchema#integer');
-		my $void = RDF::Trine::Namespace->new('http://rdfs.org/ns/void#');
+		$self->guess_namespaces('void');
+		my $void = $self->namespaces->void;
 		$output_model->add_statement(statement(iri($uri), 
-															$void->triples,
+															iri($void->triples),
 															$cl));
 		$output_model->add_statement(statement(iri($uri), 
 															iri('http://www.w3.org/ns/hydra/core#totalItems'),
 															$cl));
 		$output_model->add_statement(statement(iri($uri),
 															iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
-															$void->Dataset));
+															iri($void->Dataset)));
 		$output_model->add_statement(statement($self->void->dataset_uri,
-															$void->subset,
+															iri($void->subset),
 															iri($uri)));
 		$output_model->add_statement(statement(iri($uri),
 															iri('http://purl.org/dc/terms/source'),
@@ -776,7 +790,6 @@ sub _void_content {
 		}
 
 		if ($self->has_fragments) {
-			$self->add_namespace_mapping(hydra => 'http://www.w3.org/ns/hydra/core#');
 			$self->_common_fragments_control($self->_voidmodel);
 		}
 
@@ -822,59 +835,60 @@ has _last_extvoid_mtime => (is => 'rw', isa => Int);
 sub _common_fragments_control {
 	my $self = shift;
 	my $model = shift || RDF::Trine::Model->temporary_model;
-	my $void = RDF::Trine::Namespace->new('http://rdfs.org/ns/void#');
-	my $xsd  = RDF::Trine::Namespace->new('http://www.w3.org/2001/XMLSchema#');
-	my $hydra = RDF::Trine::Namespace->new('http://www.w3.org/ns/hydra/core#');
-	my $rdf = RDF::Trine::Namespace->new('http://www.w3.org/1999/02/22-rdf-syntax-ns#');
+	$self->guess_namespaces('rdf', 'void');
+	$self->add_namespace_mapping(hydra => 'http://www.w3.org/ns/hydra/core#');
+	my $void = $self->namespaces->void;
+	my $hydra = $self->namespaces->hydra;
+	my $rdf = $self->namespaces->rdf;
 	$model->begin_bulk_ops;
 	my $void_subject = $self->void->dataset_uri;
 	$model->add_statement(statement($void_subject,
-											  $rdf->type,
-											  $hydra->Collection));
+											  iri($rdf->type),
+											  iri($hydra->Collection)));
 	$model->add_statement(statement($void_subject,
-											  $rdf->type,
-											  $void->Dataset));
+											  iri($rdf->type),
+											  iri($void->Dataset)));
 	$model->add_statement(statement($void_subject,
-											  $hydra->search,
+											  iri($hydra->search),
 											  blank('template')));
 	$model->add_statement(statement($void_subject,
-								 $void->uriLookupEndpoint,
+								 iri($void->uriLookupEndpoint),
 								 literal($self->base_uri . $self->fragments_config->{fragments_path}
 											. '{?subject,predicate,object}')));
 	$model->add_statement(statement(blank('template'),
-								 $hydra->template,
+								 iri($hydra->template),
 								 literal($self->base_uri . $self->fragments_config->{fragments_path}
 											. '{?subject,predicate,object}')));
 	
 	$model->add_statement(statement(blank('template'),
-								  $hydra->mapping,
+								  iri($hydra->mapping),
 								  blank('subject')));
 	$model->add_statement(statement(blank('template'),
-								  $hydra->mapping,
+								  iri($hydra->mapping),
 								  blank('predicate')));
 	$model->add_statement(statement(blank('template'),
-								  $hydra->mapping,
+								  iri($hydra->mapping),
 								  blank('object')));
 
 	$model->add_statement(statement(blank('subject'),
-								 $hydra->property,
-								 $rdf->subject));
+								 iri($hydra->property),
+								 iri($rdf->subject)));
 	$model->add_statement(statement(blank('subject'),
-								 $hydra->variable,
+								 iri($hydra->variable),
 								 literal('subject')));
 
 	$model->add_statement(statement(blank('predicate'),
-								 $hydra->property,
-								 $rdf->predicate));
+								 iri($hydra->property),
+								 iri($rdf->predicate)));
 	$model->add_statement(statement(blank('predicate'),
-								 $hydra->variable,
+								 iri($hydra->variable),
 								 literal('predicate')));
 
 	$model->add_statement(statement(blank('object'),
-								 $hydra->property,
-								 $rdf->object));
+								 iri($hydra->property),
+								 iri($rdf->object)));
 	$model->add_statement(statement(blank('object'),
-								 $hydra->variable,
+								 iri($hydra->variable),
 								 literal('object')));
 	$model->end_bulk_ops;
 	return $model;
