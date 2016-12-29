@@ -8,6 +8,7 @@ use Types::Standard qw(InstanceOf Str Bool Maybe Int HashRef);
 
 use RDF::Trine qw[iri literal blank statement variable];
 use RDF::Trine::Serializer;
+use RDF::Trine::Iterator::Graph;
 use Plack::Response;
 use RDF::Helper::Properties;
 use URI::NamespaceMap;
@@ -335,13 +336,23 @@ sub response {
 		}
 
 		$self->log->debug('Getting fragment with this selector ' . Dumper(\%statement) );
-		return _client_error($response, 'Returning the whole database not allowed') 
-				unless $self->fragments_config->{allow_dump_dataset} || any { defined } values(%statement);
 		my $output_model = $self->_common_fragments_control;
-
-		my $iterator = $self->model->get_statements($statement{subject}, $statement{predicate}, $statement{object});
-		$output_model->begin_bulk_ops;
+		my $iterator;
 		my $counter = 0;
+		if ($params{allow_dump_dataset} || $self->fragments_config->{allow_dump_dataset} || any { defined } values(%statement)) {
+			$iterator = $self->model->get_statements($statement{subject}, $statement{predicate}, $statement{object});
+		} else {
+			$counter = $self->model->size - 1;
+			my $nexturi = $uri;
+			$nexturi->query_form('allow_dump_dataset' => 1);
+			$iterator = RDF::Trine::Iterator::Graph->new([
+																		 statement(iri($uri),
+																					  iri('http://www.w3.org/ns/hydra/core#next'),
+																					  iri($nexturi))
+																		]);
+		}
+
+		$output_model->begin_bulk_ops;
 		while (my $st = $iterator->next) {
 			$counter++;
 			# TODO: Paging goes here
