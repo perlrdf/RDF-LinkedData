@@ -186,7 +186,7 @@ my $void_subject = iri($base_uri . '/#dataset-0');
 		is($response->status, 200, "Returns 200 with subject missing other parameters empty");
 		my $retmodel = return_model($response->content, $parser);
 		has_predicate('http://www.w3.org/ns/hydra/core#next', $retmodel, 'Has hydra:next predicate');
-		has_object_uri($base_uri . '/fragments?predicate=&object=&allow_dump_dataset=1', $retmodel, '...and object with & to find the rest');
+		has_object_uri($base_uri . '/fragments?allow_dump_dataset=1', $retmodel, '...and object with & to find the rest');
 	}
 }
 
@@ -308,8 +308,8 @@ my $void_subject = iri($base_uri . '/#dataset-0');
 		my $size1 = $retmodel1->size;
 		is($size1, 20, 'Returned triples contain only controls and metadata');
 		has_predicate('http://www.w3.org/ns/hydra/core#next', $retmodel1, 'Has hydra:next predicate');
-		has_object_uri($base_uri . '/fragments?subject=&predicate=&object=&allow_dump_dataset=1', $retmodel1, '...and object to find the rest');
-		my $response2 = $ld->response($base_uri . '/fragments?subject=&predicate=&object=&allow_dump_dataset=1');	
+		has_object_uri($base_uri . '/fragments?allow_dump_dataset=1', $retmodel1, '...and object to find the rest');
+		my $response2 = $ld->response($base_uri . '/fragments?allow_dump_dataset=1');	
 		isa_ok($response, 'Plack::Response');
 		is($response->status, 200, "Returns 200 with all parameters empty");
 		my $retmodel2 = return_model($response2->content, $parser);
