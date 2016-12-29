@@ -257,7 +257,7 @@ my $void_subject = iri($base_uri . '/#dataset-0');
 }
 
 {
-	note 'Testing the allow_dump_dataset feature';
+	note 'Testing the allow_dump_dataset feature with config param';
 
 	my $ld = RDF::LinkedData->new(model => $model,
 											base_uri => $base_uri, 
@@ -278,6 +278,9 @@ my $void_subject = iri($base_uri . '/#dataset-0');
 		has_literal("4", undef, $ns->xsd->integer->as_string, $retmodel, 'Triple count is correct got all 4 triples');
 	}
 }
+
+
+
 
 sub return_model {
 	my ($content, $parser) = @_;
