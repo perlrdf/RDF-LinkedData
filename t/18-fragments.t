@@ -170,17 +170,17 @@ my $void_subject = iri($base_uri . '/#dataset-0');
 	{
 		my $response = $ld->response($base_uri . '/fragments?subject=&predicate=&object=');	
 		isa_ok($response, 'Plack::Response');
-		is($response->status, 400, "Returns 400 with all parameters empty");
+		is($response->status, 200, "Returns 200 with all parameters empty");
 	}
 	{
 		my $response = $ld->response($base_uri . '/fragments');	
 		isa_ok($response, 'Plack::Response');
-		is($response->status, 400, "Returns 400 with all parameters missing");
+		is($response->status, 200, "Returns 200 with all parameters missing");
 	}
 	{
 		my $response = $ld->response($base_uri . '/fragments?predicate=&object=');	
 		isa_ok($response, 'Plack::Response');
-		is($response->status, 400, "Returns 400 with subject missing other parameters empty");
+		is($response->status, 200, "Returns 200 with subject missing other parameters empty");
 	}
 }
 
@@ -276,6 +276,41 @@ my $void_subject = iri($base_uri . '/#dataset-0');
 		is($response->status, 200, "Returns 200 with all parameters empty");
 		my $retmodel = return_model($response->content, $parser);
 		has_literal("4", undef, $ns->xsd->integer->as_string, $retmodel, 'Triple count is correct got all 4 triples');
+	}
+}
+
+{
+	note 'Testing the allow_dump_dataset feature with hypermedia';
+
+	my $ld = RDF::LinkedData->new(model => $model,
+											base_uri => $base_uri, 
+											namespaces_as_vocabularies => 1, 
+											void_config => { urispace => 'http://localhost' }, 
+											fragments_config => { %$ec }
+										  );
+
+	isa_ok($ld, 'RDF::LinkedData');
+
+	$ld->request(Plack::Request->new({}));
+
+	{
+		my $response = $ld->response($base_uri . '/fragments?subject=&predicate=&object=');	
+		isa_ok($response, 'Plack::Response');
+		is($response->status, 200, "Returns 200 with all parameters empty");
+		my $retmodel1 = return_model($response->content, $parser);
+		has_literal("4", undef, $ns->xsd->integer->as_string, $retmodel1, 'Triple count is correct got all 4 triples');
+		my $size1 = $retmodel1->size;
+		is($size1, 20, 'Returned triples contain only controls and metadata');
+		has_predicate('http://www.w3.org/ns/hydra/core#next', $retmodel1, 'Has hydra:next predicate');
+		has_object_uri($base_uri . '/fragments?subject=&predicate=&object=&allow_dump_dataset=1', $retmodel1, '...and object to find the rest');
+		my $response2 = $ld->response($base_uri . '/fragments?subject=&predicate=&object=&allow_dump_dataset=1');	
+		isa_ok($response, 'Plack::Response');
+		is($response->status, 200, "Returns 200 with all parameters empty");
+		my $retmodel2 = return_model($response2->content, $parser);
+		has_literal("4", undef, $ns->xsd->integer->as_string, $retmodel2, 'Triple count is correct got all 4 triples');
+		cmp_ok($size1 + 4 - 1 , '==', $retmodel2->size, 'Size is now three more (+data, -hydra:next)');
+		cmp_ok($size1, '<', $retmodel2->size, 'Size is now larger');
+		hasnt_uri('http://www.w3.org/ns/hydra/core#next', $retmodel2, 'Hasnt hydra:next predicate');
 	}
 }
 
