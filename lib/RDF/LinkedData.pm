@@ -298,12 +298,12 @@ sub response {
 	my $endpoint_path;
 	if ($self->has_endpoint) {
 	  $endpoint_path = $self->endpoint_config->{endpoint_path};
-	  if ($uri->path eq $endpoint_path) {
+	  if (($uri->path eq $endpoint_path) || ($self->request->path eq $endpoint_path)) {
 		 return $self->endpoint->run( $self->request );
 	  }
 	}
 
-	if ($self->has_fragments && ($uri->path eq $self->fragments_config->{fragments_path})) {
+	if ($self->has_fragments && (($uri->path eq $self->fragments_config->{fragments_path}) || ($self->request->path eq $self->fragments_config->{fragments_path}))) {
 		croak 'A VoID description is needed when using Triple Pattern Fragments' unless ($self->has_void);
 
 		# First compute the selectors from the query parameters
