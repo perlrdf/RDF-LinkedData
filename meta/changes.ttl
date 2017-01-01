@@ -7,23 +7,28 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl:  <http://www.w3.org/2002/07/owl#> .
 
-my:project :release my:v_0-75-03, 
+my:project :release my:v_0-75-03, my:v_0-75-04, 
                     my:v_0-74, my:v_0-72, my:v_0-70, my:v_0-68, my:v_0-66,
                     my:v_0-64, my:v_0-62, my:v_0-60, my:v_0-58, my:v_0_56 .
 
-my:v_0-75-03
+my:v_0-75-04
     a           :Version ;
-    dc:issued   "2016-12-29"^^xsd:date ;
+    dc:issued   "2017-01-01"^^xsd:date ;
     rdfs:label "Improve Namespace handling and hypermedia controls."@en ;
-    :revision   "0.75_03"^^xsd:string ;
+    :revision   "0.75_04"^^xsd:string ;
 #    owl:sameAs <http://packages.qa.debian.org/librdf-linkeddata-perl#upstreamsrc_0.74> ;
     dcs:changeset [
       dcs:item        
         [ rdfs:label "Use URI::NamespaceMap properly."@en ; 
           a dcs:Update 
         ], 
-        [ rdfs:label "Hypermedia controls for the 'all' fragment."@en ; a dcs:Change ] 
+        [ rdfs:label "Hypermedia controls for the 'all' fragment."@en ; a dcs:Change ] ,
+        [ rdfs:label "Also check the request path for the endpoints."@en ; 
+          a dcs:Change ;
+          dcs:blame  <http://richardlewis.me.uk/richardlewis.foaf.rdf#rjl>
+        ]
     ] .
+
 
 my:v_0-74
     a           :Version ;
