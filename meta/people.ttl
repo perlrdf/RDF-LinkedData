@@ -23,4 +23,5 @@
 
 <http://richardlewis.me.uk/richardlewis.foaf.rdf#rjl> a foaf:Person ;
     foaf:name     "Richard Lewis" ;
+    foaf:nick     "ironChicken" ;
     foaf:homepage <http://www.richard-lewis.me.uk/> .
