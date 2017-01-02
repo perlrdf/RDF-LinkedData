@@ -151,7 +151,7 @@ Note that this is a server that can only serve URIs of hosts you
 control, it is not a general purpose Linked Data manipulation tool,
 nor is it a full implementation of the L<Linked Data API|http://code.google.com/p/linked-data-api/>.
 
-The configuration is done using L<Config::JFDI> and all its features
+The configuration is done using L<Config::ZOMG> and all its features
 can be used. Importantly, you can set the C<RDF_LINKEDDATA_CONFIG>
 environment variable to point to the config file you want to use. See
 also L<Catalyst::Plugin::ConfigLoader> for more information on how to

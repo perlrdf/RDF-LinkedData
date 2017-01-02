@@ -6,7 +6,7 @@ use Plack::App::RDF::LinkedData;
 use RDF::LinkedData;
 use Plack::Request;
 use Plack::Builder;
-use Config::JFDI;
+use Config::ZOMG;
 use Carp qw(confess);
 use Module::Load::Conditional qw[can_load];
 
@@ -24,7 +24,7 @@ See L<Plack::App::RDF::LinkedData> for instructions on how to use this.
 
 my $config;
 BEGIN {
-	unless ($config = Config::JFDI->open(
+	unless ($config = Config::ZOMG->open(
                                         name => "RDF::LinkedData"
                                        )) {
 		if ($ENV{'PERLRDF_STORE'}) {
