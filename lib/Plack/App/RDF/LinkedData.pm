@@ -12,11 +12,11 @@ Plack::App::RDF::LinkedData - A Plack application for running RDF::LinkedData
 
 =head1 VERSION
 
-Version 0.75_05
+Version 0.76
 
 =cut
 
- our $VERSION = '0.75_05';
+ our $VERSION = '0.76';
 
 
 =head1 SYNOPSIS
