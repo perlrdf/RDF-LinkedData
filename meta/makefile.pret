@@ -1,7 +1,7 @@
 @prefix :  <http://ontologi.es/doap-deps#> .
 
 <http://purl.org/NET/cpan-uri/dist/RDF-LinkedData/project>
-    :runtime-recommendation      [ :on "Config::JFDI"^^:CpanId ];
+    :runtime-recommendation      [ :on "Config::ZOMG"^^:CpanId ];
     :runtime-recommendation      [ :on "JSON"^^:CpanId ];
     :runtime-recommendation      [ :on "RDF::Endpoint 0.05"^^:CpanId ];
     :runtime-recommendation      [ :on "Plack::Middleware::CrossOrigin"^^:CpanId; ];
