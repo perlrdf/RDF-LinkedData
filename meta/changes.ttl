@@ -7,16 +7,28 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl:  <http://www.w3.org/2002/07/owl#> .
 
-my:project :release my:v_0-76, 
+my:project :release my:v_0-77, my:v_0-76, 
                     my:v_0-74, my:v_0-72, my:v_0-70, my:v_0-68, my:v_0-66,
                     my:v_0-64, my:v_0-62, my:v_0-60, my:v_0-58, my:v_0_56 .
+
+my:v_0-77
+    a           :Version ;
+    dc:issued   "2017-01-03"^^xsd:date ;
+    rdfs:label "Improve Namespace handling and hypermedia controls."@en ;
+    :revision   "0.77"^^xsd:string ;
+    owl:sameAs <http://packages.qa.debian.org/librdf-linkeddata-perl#upstreamsrc_0.77> ;
+    dcs:changeset [
+      dcs:item        
+        [ rdfs:label "Use Config::ZOMG for config."@en ; 
+          a dcs:Change 
+        ]
+    ] .
 
 my:v_0-76
     a           :Version ;
     dc:issued   "2017-01-02"^^xsd:date ;
     rdfs:label "Improve Namespace handling and hypermedia controls."@en ;
     :revision   "0.76"^^xsd:string ;
-    owl:sameAs <http://packages.qa.debian.org/librdf-linkeddata-perl#upstreamsrc_0.76> ;
     dcs:changeset [
       dcs:item        
         [ rdfs:label "Use URI::NamespaceMap properly."@en ; 
