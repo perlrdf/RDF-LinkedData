@@ -34,7 +34,7 @@
     :test-requirement            [ :on "Test::WWW::Mechanize::PSGI"^^:CpanId; ];
     :test-requirement            [ :on "Test::Exception"^^:CpanId ];
     :test-requirement            [ :on "Log::Any::Adapter"^^:CpanId ];
-    :test-requirement            [ :on "Config::JFDI"^^:CpanId ];
+    :test-requirement            [ :on "Config::ZOMG"^^:CpanId ];
     :test-requirement            [ :on "Test::JSON"^^:CpanId ];
     :test-requirement            [ :on "RDF::RDFa::Parser"^^:CpanId ].
 
