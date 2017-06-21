@@ -20,3 +20,8 @@
     foaf:name   "Patrick Hochstenbach" ;
     foaf:homepage <http://hochstenbach.wordpress.com/> ;
     foaf:mbox   <mailto:patrick.hochstenbach@gmail.com> .
+
+<http://richardlewis.me.uk/richardlewis.foaf.rdf#rjl> a foaf:Person ;
+    foaf:name     "Richard Lewis" ;
+    foaf:nick     "ironChicken" ;
+    foaf:homepage <http://www.richard-lewis.me.uk/> .

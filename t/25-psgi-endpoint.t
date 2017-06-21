@@ -18,7 +18,7 @@ unless (defined(check_install( module => 'RDF::Endpoint', version => 0.03))) {
 
 $ENV{'RDF_LINKEDDATA_CONFIG_LOCAL_SUFFIX'} = 'end';
 
-my $tester = do "script/linked_data.psgi";
+my $tester = do "./script/linked_data.psgi" or BAIL_OUT("Can't do script: " . ($@ || $!));
 
 BAIL_OUT("The application is not running") unless ($tester);
 

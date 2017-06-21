@@ -32,11 +32,11 @@ RDF::LinkedData - A Linked Data server implementation
 
 =head1 VERSION
 
-Version 0.75_03
+Version 0.78
 
 =cut
 
- our $VERSION = '0.75_03';
+ our $VERSION = '0.78';
 
 
 =head1 SYNOPSIS
@@ -335,12 +335,12 @@ sub response {
 	my $endpoint_path;
 	if ($self->has_endpoint) {
 	  $endpoint_path = $self->endpoint_config->{endpoint_path};
-	  if ($uri->path eq $endpoint_path) {
+	  if (($uri->path eq $endpoint_path) || ($self->request->path eq $endpoint_path)) {
 		 return $self->endpoint->run( $self->request );
 	  }
 	}
 
-	if ($self->has_fragments && ($uri->path eq $self->fragments_config->{fragments_path})) {
+	if ($self->has_fragments && (($uri->path eq $self->fragments_config->{fragments_path}) || ($self->request->path eq $self->fragments_config->{fragments_path}))) {
 		croak 'A VoID description is needed when using Triple Pattern Fragments' unless ($self->has_void);
 
 		# First compute the selectors from the query parameters
@@ -947,7 +947,7 @@ Copyright 2010 Gregory Todd Williams
 
 Copyright 2010 ABC Startsiden AS
 
-Copyright 2010, 2011, 2012, 2013, 2014, 2015, 2016 Kjetil Kjernsmo
+Copyright 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017 Kjetil Kjernsmo
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.

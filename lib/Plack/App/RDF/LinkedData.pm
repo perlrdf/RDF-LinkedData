@@ -12,11 +12,11 @@ Plack::App::RDF::LinkedData - A Plack application for running RDF::LinkedData
 
 =head1 VERSION
 
-Version 0.75_03
+Version 0.78
 
 =cut
 
- our $VERSION = '0.75_03';
+ our $VERSION = '0.78';
 
 
 =head1 SYNOPSIS
@@ -151,7 +151,7 @@ Note that this is a server that can only serve URIs of hosts you
 control, it is not a general purpose Linked Data manipulation tool,
 nor is it a full implementation of the L<Linked Data API|http://code.google.com/p/linked-data-api/>.
 
-The configuration is done using L<Config::JFDI> and all its features
+The configuration is done using L<Config::ZOMG> and all its features
 can be used. Importantly, you can set the C<RDF_LINKEDDATA_CONFIG>
 environment variable to point to the config file you want to use. See
 also L<Catalyst::Plugin::ConfigLoader> for more information on how to
@@ -373,7 +373,7 @@ Kjetil Kjernsmo, C<< <kjetilk@cpan.org> >>
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2010, 2011, 2012, 2013, 2014, 2015, 2016 Kjetil Kjernsmo
+Copyright 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017 Kjetil Kjernsmo
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.

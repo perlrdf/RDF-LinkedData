@@ -90,6 +90,7 @@ is($ld->count, 3, "There are 3 triples in the model");
 	my $retmodel = RDF::Trine::Model->temporary_model;
 	$parser->parse_into_model( $base_uri, $content, $retmodel );
 	has_subject($base_uri . '/#dataset-0', $retmodel, "Subject URI in content");
+	is($ns->xsd->integer, 'http://www.w3.org/2001/XMLSchema#integer', 'Integer URI is OK (check if XML::CommonNS provides ns if this fails)');
 	pattern_target($retmodel);
 	pattern_ok(
 				  statement(
