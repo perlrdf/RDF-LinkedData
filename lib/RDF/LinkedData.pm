@@ -43,7 +43,7 @@ Version 0.78
 
 For just setting this up and get it to run, you would just use the
 C<linked_data.psgi> script in this distribution. The usage of that is
-documented in L<Plack::App::RDF::LinkedData>, with the README is a
+documented in L<Plack::App::RDF::LinkedData>, with the README being a
 quick start guide. If you want to try and use this directly, you'd do
 stuff like:
 
@@ -62,14 +62,14 @@ See L<Plack::App::RDF::LinkedData> for a complete example.
 This module is used to create a Linked Data server that can
 serve RDF data out of an L<RDF::Trine::Model>. It will look up URIs in
 the model and do the right thing (known as the 303 dance) and mint
-URLs for that, as well as content negotiation. Thus, you can
-concentrate on URIs for your things, you need not be concerned about
+URLs for that, as well as perform content negotiation. Thus, you can
+concentrate on URIs for your things, and you need not be concerned about
 minting URLs for the pages to serve it. In addition, optional modules
 can provide other important functionalities: Cross-origin resource
 sharing, VoID description, cache headers, SPARQL Endpoint, Triple
 Pattern Fragments, etc. As such, it encompasses a fair share of
-Semantic Web best practices, but possibly not in a very flexible Big
-Data manner.
+Semantic Web best practices, but possibly not in a very flexible "Big
+Data" manner.
 
 
 =head1 METHODS
@@ -81,11 +81,11 @@ Data manner.
                 request => $request, endpoint_config => $endpoint_config, 
                 void_config => $void_config ) >>
 
-Creates a new handler object based on named parameters, given a store
+Creates a new handler object based on the named parameters, given a store
 config (recommended usage is to pass a hashref of the type that can be
 passed to L<RDF::Trine::Store>->new_with_config, but a simple string
-can also be used) or model and a base URI. Optionally, you may pass a
-L<Plack::Request> object (must be passed before you call C<content>)
+can also be used) or a model and a base URI. Optionally, you may pass a
+L<Plack::Request> object (which must be passed before you call C<content>)
 and an C<endpoint_config> hashref if you want to have a SPARQL
 Endpoint running using the recommended module L<RDF::Endpoint>.
 
@@ -221,7 +221,7 @@ has fragments_config => (is => 'rw', isa=>Maybe[HashRef], predicate => 'has_frag
 
 =item C<< request ( [ $request ] ) >>
 
-Returns the L<Plack::Request> object if it exists or sets it if a L<Plack::Request> object is given as parameter.
+Returns the L<Plack::Request> object, if it exists; or sets it if a L<Plack::Request> object is given as parameter.
 
 =cut
 
@@ -480,8 +480,8 @@ sub _client_error {
 
 =item C<< helper_properties (  ) >>
 
-Returns the L<RDF::Helper::Properties> object if it exists or sets
-it if a L<RDF::Helper::Properties> object is given as parameter.
+Returns the L<RDF::Helper::Properties> object. if it exists; or sets
+it if an L<RDF::Helper::Properties> object is given as a parameter.
 
 =cut
 
@@ -621,8 +621,8 @@ has endpoint => (is => 'rw', isa => InstanceOf['RDF::Endpoint'], predicate => 'h
 
 =item C<< void ( [ $voidg ] ) >>
 
-Returns the L<RDF::Generator::Void> object if it exists or sets it if
-a L<RDF::Generator::Void> object is given as parameter. Like
+Returns the L<RDF::Generator::Void> object, if it exists; or sets it if
+an L<RDF::Generator::Void> object is given as parameter. Like
 C<endpoint>, it will be created for you if you pass a C<void_config>
 hashref to the constructor, so you would most likely not use this
 method.
