@@ -24,6 +24,7 @@ use Carp;
 use Try::Tiny;
 use List::Util qw(any);
 
+
 with 'MooX::Log::Any';
 
 =head1 NAME
@@ -128,7 +129,7 @@ sub BUILD {
 		$self->log->info('No endpoint config found');
 	}
  	if ($self->has_acl_config) {
-		log_debug {'ACL config found with parameters: ' . Dumper($self->acl_config) };
+		$self->log->debug('ACL config found with parameters: ' . Dumper($self->acl_config) );
 
 		unless (can_load( modules => { 'RDF::ACL' => 0.100 })) {
 			throw Error -text => "RDF::ACL not installed. Please install or remove its configuration.";
@@ -136,7 +137,7 @@ sub BUILD {
 
 		$self->acl;
  	} else {
-		log_info {'No ACL config found' };
+		$self->log->info('No ACL config found');
 	}
 
  	if ($self->has_void_config) {
@@ -320,12 +321,12 @@ sub response {
 	my $response = Plack::Response->new;
 
 	my $headers_in = $self->request->headers;
-	log_trace {'Full headers we respond to: ' . $headers_in->as_string };
+	$self->log->trace('Full headers we respond to: ' . $headers_in->as_string);
 
 	if ($self->is_logged_in) {
-		log_debug {'Logged in as: ' . $self->user };
+		$self->log->debug('Logged in as: ' . $self->user);
 	} else {
-		log_debug {'No user is logged in' };
+		$self->log->debug('No user is logged in');
 	}
 
 	my $server = "RDF::LinkedData/$VERSION";
@@ -517,7 +518,7 @@ sub replace {
 	my $response = Plack::Response->new;
 	if ($payload) {
 	  my $headers_in = $self->request->headers;
-	  log_debug {'Will merge payload as ' . $headers_in->content_type };
+	  $self->log->debug('Will merge payload as ' . $headers_in->content_type);
 	  eval {
 		 my $parser = RDF::Trine::Parser->parser_by_media_type($headers_in->content_type);
 		 $parser->parse_into_model($self->base_uri, $payload, $self->model);
