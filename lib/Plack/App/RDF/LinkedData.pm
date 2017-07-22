@@ -331,7 +331,10 @@ sub call {
 	my $uri = $req->uri;
 	my $ld = $self->{linkeddata};
 
-	return [ 405, [ 'Content-type', 'text/plain' ], [ 'Method not allowed' ] ] unless ($self->does_read_operation($req));
+	# Never return 405 here if writes are enabled by config, only do it if there isn't a read operation and writes are not enabled
+	unless ($self->{config}->{writes_enabled} || $self->does_read_operation($req)) {
+		return [ 405, [ 'Content-type', 'text/plain' ], [ 'Method not allowed' ] ];
+	}
 
 	if (($uri->path eq '/.well-known/void') && ($ld->has_void)) {
 		return [ 302, [ 'Location', $ld->base_uri . '/' ], [ '' ] ];
@@ -348,7 +351,7 @@ sub call {
 sub auth_required {
 	my ($self, $env) = @_;
 	my $req = Plack::Request->new($env);
-	return (! $self->does_read_operation($req));
+	return ($self->{config}->{writes_enabled} && (! $self->does_read_operation($req)));
 
 }
 
