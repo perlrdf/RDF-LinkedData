@@ -315,7 +315,6 @@ sub prepare_app {
 	$self->{linkeddata} = RDF::LinkedData->new(store => $config->{store},
 															 endpoint_config => $config->{endpoint},
 															 void_config => $config->{void},
-															 acl_config => $config->{acl}
 															 fragments_config => $config->{fragments},
 															 base_uri => $config->{base_uri}
 															);
