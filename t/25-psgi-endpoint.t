@@ -38,14 +38,14 @@ Log::Any::Adapter->set($ENV{LOG_ADAPTER} || 'Stderr') if $ENV{TEST_VERBOSE};
     note "Post /foo, no redirects";
     my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester, requests_redirectable => []);
     my $res = $mech->post("/foo");
-    is($mech->status, 401, "Returns 401");
+    is($mech->status, 405, "Returns 405");
 }
 
 {
     note "Post /foo/data, no redirects";
     my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester, requests_redirectable => []);
     my $res = $mech->post("/foo/data");
-    is($mech->status, 401, "Returns 401");
+    is($mech->status, 405, "Returns 405");
 }
 
 
