@@ -331,7 +331,7 @@ sub call {
 	my $uri = $req->uri;
 	my $ld = $self->{linkeddata};
 
-	return [ 405, [ 'Content-type', 'text/plain' ], [ 'Method not allowed' ] ] unless ($self->is_read_operation($req));
+	return [ 405, [ 'Content-type', 'text/plain' ], [ 'Method not allowed' ] ] unless ($self->does_read_operation($req));
 
 	if (($uri->path eq '/.well-known/void') && ($ld->has_void)) {
 		return [ 302, [ 'Location', $ld->base_uri . '/' ], [ '' ] ];
@@ -348,11 +348,11 @@ sub call {
 sub auth_required {
 	my ($self, $env) = @_;
 	my $req = Plack::Request->new($env);
-	return (! $self->is_read_operation($req));
+	return (! $self->does_read_operation($req));
 
 }
 
-sub is_read_operation {
+sub does_read_operation {
 	my ($self, $req) = @_;
 	my $uri = $req->uri;
 	my $endpoint_path;
