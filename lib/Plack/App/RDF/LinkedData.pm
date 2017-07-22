@@ -331,6 +331,8 @@ sub call {
 	my $uri = $req->uri;
 	my $ld = $self->{linkeddata};
 
+	return [ 405, [ 'Content-type', 'text/plain' ], [ 'Method not allowed' ] ] unless ($self->is_read_operation($req));
+
 	if (($uri->path eq '/.well-known/void') && ($ld->has_void)) {
 		return [ 302, [ 'Location', $ld->base_uri . '/' ], [ '' ] ];
 	}
