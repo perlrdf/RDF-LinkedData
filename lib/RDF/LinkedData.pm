@@ -127,17 +127,6 @@ sub BUILD {
  	} else {
 		$self->log->info('No endpoint config found');
 	}
- 	if ($self->has_acl_config) {
-		$self->log->debug('ACL config found with parameters: ' . Dumper($self->acl_config) );
-
-		unless (can_load( modules => { 'RDF::ACL' => 0.100 })) {
-			croak "RDF::ACL not installed. Please install or remove its configuration.";
-		}
-
-		$self->acl;
- 	} else {
-		$self->log->info('No ACL config found');
-	}
 
  	if ($self->has_void_config) {
 		$self->log->debug('VoID config found with parameters: ' . Dumper($self->void_config) );
@@ -193,14 +182,6 @@ sub _build_model {
 	return $self->_load_model($self->store);
 }
 
-#	warn Dumper($self->acl_config);
-has acl => (is => 'ro', isa => InstanceOf['RDF::ACL'], builder => '_build_acl', lazy => 1,
-				handles => { check_authz => 'check' });
-
-sub _build_acl {
-	my $self = shift;
-	return RDF::ACL->new($self->acl_model);
-}
 sub _load_model {
 	my ($self, $store_config) = @_;
 	# First, set the base if none is configured
@@ -234,8 +215,6 @@ has endpoint_config => (is => 'rw', isa=>Maybe[HashRef], predicate => 'has_endpo
 
 has void_config => (is => 'rw', isa=>Maybe[HashRef], predicate => 'has_void_config');
 
-has acl_config => (is => 'rw', isa=>Maybe[HashRef], predicate => 'has_acl_config');
-
 has fragments_config => (is => 'rw', isa=>Maybe[HashRef], predicate => 'has_fragments');
 
 
@@ -247,14 +226,6 @@ Returns the L<Plack::Request> object, if it exists; or sets it if a L<Plack::Req
 =cut
 
 has request => ( is => 'rw', isa => InstanceOf['Plack::Request']);
-
-has user => ( is => 'ro', isa => Str, lazy => 1, builder => '_build_user', predicate => 'is_logged_in');
-
-sub _build_user {
-	my $self = shift;
-	my $uname = $self->request->user;
-	return "urn:X-basicauth:$uname" if ($uname);
-}
 
 
 =item C<< current_etag >>
@@ -319,13 +290,6 @@ sub response {
 	my $response = Plack::Response->new;
 
 	my $headers_in = $self->request->headers;
-	$self->log->trace('Full headers we respond to: ' . $headers_in->as_string);
-
-	if ($self->is_logged_in) {
-		$self->log->debug('Logged in as: ' . $self->user);
-	} else {
-		$self->log->debug('No user is logged in');
-	}
 
 	my $server = "RDF::LinkedData/$VERSION";
 	$server .= " " . $response->headers->header('Server') if defined($response->headers->header('Server'));
@@ -469,11 +433,6 @@ sub response {
 					$self->log->warn('No content type header can be set' );
 				}
 			}
-
-			if($type eq 'data' && $self->is_logged_in) {
-				$self->add_auth_levels($self->check_authz($self->user, $node->uri_value . '/data'));
-			}
-
 			$response->status(200);
 			my $content = $self->_content($node, $type, $endpoint_path);
 			$response->headers->header('Vary' => join(", ", qw(Accept)));
@@ -508,30 +467,6 @@ sub response {
 	$response->body('HTTP 500: No such functionality.');
 	return $response;
 }
-
-sub replace {
-	my $self = shift;
-	my $uri = URI->new(shift);
-	my $payload = $self->request->content || shift;
-	my $response = Plack::Response->new;
-	if ($payload) {
-	  my $headers_in = $self->request->headers;
-	  $self->log->debug('Will merge payload as ' . $headers_in->content_type);
-	  eval {
-		 my $parser = RDF::Trine::Parser->parser_by_media_type($headers_in->content_type);
-		 $parser->parse_into_model($self->base_uri, $payload, $self->model);
-	  };
-	  if ($@) {
-		 $response->status(400);
-		 $response->content_type('text/plain');
-		 $response->body("Couldn't parse the payload: $@");
-		 return $response;
-	  }
-	}
-	$response->status(204);
-	return $response;
-}
-
 
 sub _client_error {
 	my ($response, $msg) = @_;
