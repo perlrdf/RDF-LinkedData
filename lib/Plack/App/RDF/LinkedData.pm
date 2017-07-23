@@ -318,7 +318,6 @@ sub prepare_app {
 															 fragments_config => $config->{fragments},
 															 base_uri => $config->{base_uri}
 															);
-
 	$self->{linkeddata}->namespaces(URI::NamespaceMap->new($config->{namespaces})) if ($config->{namespaces});
 	# Ensure that certain namespaces are always declared
 	$self->{linkeddata}->guess_namespaces('rdf', 'dc', 'xsd', 'void');

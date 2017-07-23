@@ -24,7 +24,6 @@ use Carp;
 use Try::Tiny;
 use List::Util qw(any);
 
-
 with 'MooX::Log::Any';
 
 =head1 NAME
@@ -289,7 +288,6 @@ has 'namespaces' => (is => 'rw',
 										  });
 
 
-
 sub _build_namespaces {
   my $self = shift;
   return shift || URI::NamespaceMap->new();
@@ -542,7 +540,6 @@ sub _client_error {
 	$response->body("HTTP 400: $msg");
 	return $response;
 }
-
 
 
 
