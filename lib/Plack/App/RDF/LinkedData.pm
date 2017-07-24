@@ -312,12 +312,7 @@ Will be called by Plack to process the request.
 sub prepare_app {
 	my $self = shift;
 	my $config = $self->{config};
-	$self->{linkeddata} = RDF::LinkedData->new(store => $config->{store},
-															 endpoint_config => $config->{endpoint},
-															 void_config => $config->{void},
-															 fragments_config => $config->{fragments},
-															 base_uri => $config->{base_uri}
-															);
+	$self->{linkeddata} = RDF::LinkedData->new($config);
 	$self->{linkeddata}->namespaces(URI::NamespaceMap->new($config->{namespaces})) if ($config->{namespaces});
 	# Ensure that certain namespaces are always declared
 	$self->{linkeddata}->guess_namespaces('rdf', 'dc', 'xsd', 'void');

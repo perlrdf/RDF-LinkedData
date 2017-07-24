@@ -159,11 +159,28 @@ around BUILDARGS => sub
   {
 	  my ($next, $self) = (shift, shift);
 	  my $args = $self->$next(@_);
-	  for (keys %$args) {
-		  delete $args->{$_} if not defined $args->{$_};
+	  foreach my $key (keys %$args) {
+		  # Figure out how to configure the application
+		  if ((not defined $args->{$key}) || $self->_options_blacklist($key) ) { # Undef values need not be kept
+			  delete $args->{$key};
+			  next;
+		  }
+		  if ($self->can($key . '_config')) { # Check if we have an attribute with _config appended
+		  	  $args->{$key . '_config'} = $args->{$key}; # If so, rename
+		  	  delete $args->{$key};
+		  	  next;
+		  }
+		  next if ($self->can($key)); # Can be passed directly
+		  $self->log->warn("$next didn't recognize key: $key \nValue: " . Dumper($args->{$key}));
 	  }
 	  return $args;
   };
+
+sub _options_blacklist {
+	my ($self, $key) = @_;
+	my %list = ('namespaces' => 1, 'cors' => 1);
+	return $list{$key};
+}
 
 has store => (is => 'rw', isa => HashRef | Str );
 
