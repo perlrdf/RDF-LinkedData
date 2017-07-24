@@ -176,6 +176,9 @@ around BUILDARGS => sub
 	  return $args;
   };
 
+
+# Contains a hash with the options that shouldn't be passed to the constructor
+
 sub _options_blacklist {
 	my ($self, $key) = @_;
 	my %list = ('namespaces' => 1, 'cors' => 1, 'class' => 1, 'writes_enabled' => 1);
