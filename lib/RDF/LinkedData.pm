@@ -178,7 +178,7 @@ around BUILDARGS => sub
 
 sub _options_blacklist {
 	my ($self, $key) = @_;
-	my %list = ('namespaces' => 1, 'cors' => 1);
+	my %list = ('namespaces' => 1, 'cors' => 1, 'class' => 1);
 	return $list{$key};
 }
 
