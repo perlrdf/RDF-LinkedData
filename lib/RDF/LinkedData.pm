@@ -171,7 +171,7 @@ around BUILDARGS => sub
 		  	  next;
 		  }
 		  next if ($self->can($key)); # Can be passed directly
-		  $self->log->warn("$next didn't recognize key: $key \nValue: " . Dumper($args->{$key}));
+#		  $self->log->warn("$next didn't recognize key: $key \nValue: " . Dumper($args->{$key}));
 	  }
 	  return $args;
   };
