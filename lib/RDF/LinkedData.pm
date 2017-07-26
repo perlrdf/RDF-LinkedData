@@ -190,7 +190,8 @@ has store => (is => 'rw', isa => HashRef | Str );
 
 =item C<< model >>
 
-Returns the RDF::Trine::Model object.
+The model that contains the entire database of linked data. 
+This method returns a L<RDF::Trine::Model> object.
 
 =cut
 
@@ -216,6 +217,22 @@ sub _load_model {
 	}
 	my $store = RDF::Trine::Store->new( $store_config );
 	return RDF::Trine::Model->new( $store );
+}
+
+
+=item C<< response_model >>
+
+This model contains response, it is used to build the response to one particular request. This
+method returns a L<RDF::Trine::Model> object of a temporary model.
+
+=cut
+
+has response_model => (is => 'ro', isa => InstanceOf['RDF::Trine::Model'], lazy => 1, builder => '_build_response_model');
+
+
+sub _build_response_model {
+	my $self = shift;
+	return $self->temporary_model
 }
 
 
