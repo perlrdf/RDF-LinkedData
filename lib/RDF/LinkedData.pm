@@ -128,6 +128,19 @@ sub BUILD {
 		$self->log->info('No endpoint config found');
 	}
 
+	if ($self->writes_enabled && $self->has_rwhypermedia_config) {
+		$self->log->info('Writes are enabled!');
+		$self->log->trace('Read-write hypermedia config found with parameters: ' . Dumper($self->rwhypermedia_config) );
+		unless (can_load( modules => { 'RDF::LinkedData::RWHypermedia' })) {
+			croak "RDF::LinkedData::RWHypermedia not installed. Please install or remove its configuration.";
+		}
+
+		$self->rwhypermedia(RDF::LinkedData::RWHypermedia->new());
+	} else {
+		$self->log->info('Setup is read-only.');
+	}
+
+
  	if ($self->has_void_config) {
 		$self->log->debug('VoID config found with parameters: ' . Dumper($self->void_config) );
 
@@ -229,6 +242,8 @@ has base_uri => (is => 'rw', isa => Str, default => '' );
 
 has hypermedia => (is => 'ro', isa => Bool, default => 1);
 
+has writes_enabled => (is => 'ro', isa => Bool, default => 0);
+
 has namespaces_as_vocabularies => (is => 'ro', isa => Bool, default => 1);
 
 has endpoint_config => (is => 'rw', isa=>Maybe[HashRef], predicate => 'has_endpoint_config');
@@ -237,7 +252,7 @@ has void_config => (is => 'rw', isa=>Maybe[HashRef], predicate => 'has_void_conf
 
 has fragments_config => (is => 'rw', isa=>Maybe[HashRef], predicate => 'has_fragments');
 
-
+has rwhypermedia_config => (is => 'rw', isa=>Maybe[HashRef], predicate => 'has_rwhypermedia_config');
 
 =item C<< request ( [ $request ] ) >>
 
@@ -601,6 +616,10 @@ sub _content {
 					}
 				}
 			}
+			# Now, add write triples
+
+			$self->rwhypermedia->add_rw_controls($hmmodel) if ($self->writes_enabled && $self->has_rwhypermedia);
+
 			$iter = $iter->concat($hmmodel->as_stream);
 		}
 		$output{body} = $s->serialize_iterator_to_string ( $iter );
@@ -651,6 +670,8 @@ method.
 
 
 has void => (is => 'rw', isa => InstanceOf['RDF::Generator::Void'], predicate => 'has_void');
+
+has rwhypermedia => (is => 'rw', isa => InstanceOf['RDF::LinkedData::RWHypermedia'], predicate => 'has_rwhypermedia');
 
 
 sub _negotiate {
