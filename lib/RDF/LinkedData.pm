@@ -130,6 +130,7 @@ sub BUILD {
 
 	if ($self->writes_enabled && $self->has_rwhypermedia_config) {
 		$self->log->info('Writes are enabled!');
+		$self->log->error('Hypermedia is off, so users will not be able to discover how to write') unless ($self->hypermedia);
 		$self->log->trace('Read-write hypermedia config found with parameters: ' . Dumper($self->rwhypermedia_config) );
 		unless (can_load( modules => { 'RDF::LinkedData::RWHypermedia' })) {
 			croak "RDF::LinkedData::RWHypermedia not installed. Please install or remove its configuration.";
