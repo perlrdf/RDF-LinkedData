@@ -128,15 +128,12 @@ sub BUILD {
 		$self->log->info('No endpoint config found');
 	}
 
-	if ($self->writes_enabled && $self->has_rwhypermedia_config) {
+	if ($self->writes_enabled) {
 		$self->log->info('Writes are enabled!');
 		$self->log->error('Hypermedia is off, so users will not be able to discover how to write') unless ($self->hypermedia);
-		$self->log->trace('Read-write hypermedia config found with parameters: ' . Dumper($self->rwhypermedia_config) );
 		unless (can_load( modules => { 'RDF::LinkedData::RWHypermedia' })) {
-			croak "RDF::LinkedData::RWHypermedia not installed. Please install or remove its configuration.";
+			croak "RDF::LinkedData::RWHypermedia is required for write operations but not installed.";
 		}
-
-		$self->rwhypermedia(RDF::LinkedData::RWHypermedia->new());
 	} else {
 		$self->log->info('Setup is read-only.');
 	}
@@ -619,7 +616,7 @@ sub _content {
 			}
 			# Now, add write triples
 
-			$self->rwhypermedia->add_rw_controls($hmmodel) if ($self->writes_enabled && $self->has_rwhypermedia);
+			$self->add_rw_controls($hmmodel, $data_iri) if ($self->writes_enabled);
 
 			$iter = $iter->concat($hmmodel->as_stream);
 		}
@@ -671,8 +668,6 @@ method.
 
 
 has void => (is => 'rw', isa => InstanceOf['RDF::Generator::Void'], predicate => 'has_void');
-
-has rwhypermedia => (is => 'rw', isa => InstanceOf['RDF::LinkedData::RWHypermedia'], predicate => 'has_rwhypermedia');
 
 
 sub _negotiate {
