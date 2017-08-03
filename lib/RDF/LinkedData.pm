@@ -459,7 +459,7 @@ sub response {
 			if ($headers_in->can('header') && $headers_in->header('Accept')) {
 				$self->log->debug('Found Accept header: ' . $headers_in->header('Accept') );
 			} else {
-				$headers_in->header('Accept' => 'application/rdf+xml');
+				$headers_in->header('Accept' => 'text/turtle');
 				if ($headers_in->header('Accept')) {
 					$self->log->warn('Setting Accept header: ' . $headers_in->header('Accept') );
 				} else {
