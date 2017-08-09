@@ -128,6 +128,17 @@ sub BUILD {
 		$self->log->info('No endpoint config found');
 	}
 
+	if ($self->writes_enabled) {
+		$self->log->info('Writes are enabled!');
+		$self->log->error('Hypermedia is off, so users will not be able to discover how to write') unless ($self->hypermedia);
+		unless (can_load( modules => { 'RDF::LinkedData::RWHypermedia' })) {
+			croak "RDF::LinkedData::RWHypermedia is required for write operations but not installed.";
+		}
+	} else {
+		$self->log->info('Setup is read-only.');
+	}
+
+
  	if ($self->has_void_config) {
 		$self->log->debug('VoID config found with parameters: ' . Dumper($self->void_config) );
 
@@ -181,7 +192,7 @@ around BUILDARGS => sub
 
 sub _options_blacklist {
 	my ($self, $key) = @_;
-	my %list = ('namespaces' => 1, 'cors' => 1, 'class' => 1, 'writes_enabled' => 1);
+	my %list = ('namespaces' => 1, 'cors' => 1, 'class' => 1);
 	return $list{$key};
 }
 
@@ -246,6 +257,8 @@ has base_uri => (is => 'rw', isa => Str, default => '' );
 
 has hypermedia => (is => 'ro', isa => Bool, default => 1);
 
+has writes_enabled => (is => 'ro', isa => Bool, default => 0);
+
 has namespaces_as_vocabularies => (is => 'ro', isa => Bool, default => 1);
 
 has endpoint_config => (is => 'rw', isa=>Maybe[HashRef], predicate => 'has_endpoint_config');
@@ -254,7 +267,7 @@ has void_config => (is => 'rw', isa=>Maybe[HashRef], predicate => 'has_void_conf
 
 has fragments_config => (is => 'rw', isa=>Maybe[HashRef], predicate => 'has_fragments');
 
-
+has rwhypermedia_config => (is => 'rw', isa=>Maybe[HashRef], predicate => 'has_rwhypermedia_config');
 
 =item C<< request ( [ $request ] ) >>
 
@@ -463,7 +476,7 @@ sub response {
 			if ($headers_in->can('header') && $headers_in->header('Accept')) {
 				$self->log->debug('Found Accept header: ' . $headers_in->header('Accept') );
 			} else {
-				$headers_in->header('Accept' => 'application/rdf+xml');
+				$headers_in->header('Accept' => 'text/turtle');
 				if ($headers_in->header('Accept')) {
 					$self->log->warn('Setting Accept header: ' . $headers_in->header('Accept') );
 				} else {
@@ -618,6 +631,10 @@ sub _content {
 					}
 				}
 			}
+			# Now, add write triples
+
+			$self->add_rw_controls($hmmodel, $data_iri) if ($self->writes_enabled);
+
 			$iter = $iter->concat($hmmodel->as_stream);
 		}
 		$output{body} = $s->serialize_iterator_to_string ( $iter );
