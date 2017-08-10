@@ -130,7 +130,11 @@ work-in-progress, It is a more lightweight but less powerful way to
 query RDF data than SPARQL. If you have this, it is recommended to
 have CORS enabled and required to have at least a minimal VoID setup.
 
-
+Note that in some environments, for example if the Plack server that
+is dynamically configured, and/or behind a proxy server, the server
+may fail to bind to the address you give it as hostname. In this case,
+it is wise to allow the server to bind to any public IP address,
+i.e. set the host name to 0.0.0.0.
 
 =head2 Details of the implementation
 
