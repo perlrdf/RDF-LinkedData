@@ -636,7 +636,7 @@ has void => (is => 'rw', isa => InstanceOf['RDF::Generator::Void'], predicate =>
 sub _negotiate {
 	my ($self, $headers_in) = @_;
 	my ($ct, $s);
-	eval {
+	try {
 		($ct, $s) = RDF::Trine::Serializer->negotiate('request_headers' => $headers_in,
 																	 base_uri => $self->base_uri,
 																	 namespaces => $self->_namespace_hashref,
@@ -646,8 +646,7 @@ sub _negotiate {
 																				  }
 																	);
 		$self->log->debug("Got $ct content type" );
-		1;
-	} or do {
+	} catch {
 		my $response = Plack::Response->new;
 		$response->status(406);
 		$response->headers->content_type('text/plain');
