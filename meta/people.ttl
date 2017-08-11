@@ -28,6 +28,7 @@
 
 <http://purl.org/NET/cpan-uri/person/shlomif>
 	a                    foaf:Person;
+        owl:sameAs           result:user-Shlomi-Fish;
 	foaf:name            "Shlomi Fish";
 	foaf:nick            "SHLOMIF";
 	foaf:page            <https://metacpan.org/author/SHLOMIF>.
