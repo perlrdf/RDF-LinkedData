@@ -142,7 +142,7 @@ This server is a minimal Plack-script that should be sufficient for
 most linked data usages, and serve as a an example for most others.
 
 A minimal example of the required config file is provided above. There
-is are longer examples in the distribtion, which is used to run
+is are longer examples in the distribution, which is used to run
 tests. In the config file, there is a C<store> parameter, which must
 contain the L<RDF::Trine::Store> config hashref. It may also have a
 C<base_uri> URI and a C<namespace> hashref which may contain prefix -
@@ -153,7 +153,8 @@ do not need to be declared.
 
 Note that this is a server that can only serve URIs of hosts you
 control, it is not a general purpose Linked Data manipulation tool,
-nor is it a full implementation of the L<Linked Data API|http://code.google.com/p/linked-data-api/>.
+nor is it an implementation of Linked Data Platform or the Linked Data
+API.
 
 The configuration is done using L<Config::ZOMG> and all its features
 can be used. Importantly, you can set the C<RDF_LINKEDDATA_CONFIG>
@@ -163,8 +164,8 @@ use this config system.
 
 =head2 Behaviour
 
-The following documentation is adapted from the L<RDF::LinkedData::Apache>,
-which preceeded this script.
+The following documentation is adapted from RDF::LinkedData::Apache,
+which preceded this module.
 
 =over 4 
 
@@ -217,7 +218,7 @@ you may have to install it separately. It has many configuration
 options, please see its documentation for details.
 
 You may also need to set the C<RDF_ENDPOINT_SHAREDIR> variable to
-whereever the endpoint shared files are installed to. These are some
+wherever the endpoint shared files are installed to. These are some
 CSS and Javascript files that enhance the user experience. They are
 not strictly necessary, but it sure makes it pretty! L<RDF::Endpoint>
 should do the right thing, though, so it shouldn't be necessary.
@@ -257,8 +258,8 @@ By adding an C<add_void> config key, you can make pass a file to the
 generator so that arbitrary RDF can be added to the VoID
 description. It will check the last modification time of the file and
 only update the VoID description if it has been modified. This is
-usefil since as much of the VoID description cannot be simply
-generated. To use it, the configuration would in JSON look something
+useful since as much of the VoID description is expensive to
+compute. To use it, the configuration would in JSON look something
 like this:
 
 	"add_void": { "file": "/data/add.ttl", "syntax": "turtle" }
