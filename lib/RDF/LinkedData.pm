@@ -863,7 +863,7 @@ that.
 =head1 ACKNOWLEDGMENTS
 
 This module was started by Gregory Todd Williams C<<
-<gwilliams@cpan.org> >> for L<RDF::LinkedData::Apache>, but has been
+<gwilliams@cpan.org> >> for RDF::LinkedData::Apache, but has been
 almost totally rewritten.
 
 =head1 COPYRIGHT & LICENSE
