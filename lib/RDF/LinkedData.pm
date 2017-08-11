@@ -109,14 +109,14 @@ sub BUILD {
 
 	# A model will be passed or built by the _build_model, so we can check directly if we have one
 	unless ($self->model->isa('RDF::Trine::Model')) {
-		throw Error -text => "No valid RDF::Trine::Model, need either a store config hashref or a model.";
+		croak "No valid RDF::Trine::Model, need either a store config hashref or a model.";
 	}
 
  	if ($self->has_endpoint_config) {
 		$self->log->debug('Endpoint config found with parameters: ' . Dumper($self->endpoint_config) );
 
 		unless (can_load( modules => { 'RDF::Endpoint' => 0.03 })) {
-			throw Error -text => "RDF::Endpoint not installed. Please install or remove its configuration.";
+			croak "RDF::Endpoint not installed. Please install or remove its configuration.";
 		}
 
 		unless (defined($self->endpoint_config->{endpoint_path})) {
@@ -132,7 +132,7 @@ sub BUILD {
 		$self->log->debug('VoID config found with parameters: ' . Dumper($self->void_config) );
 
 		unless (can_load( modules => { 'RDF::Generator::Void' => 0.04 })) {
-			throw Error -text => "RDF::Generator::Void not installed. Please install or remove its configuration.";
+			croak "RDF::Generator::Void not installed. Please install or remove its configuration.";
 		}
 		my $dataset_uri = (defined($self->void_config->{dataset_uri}))
 								  ? $self->void_config->{dataset_uri} 
