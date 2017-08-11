@@ -25,3 +25,9 @@
     foaf:name     "Richard Lewis" ;
     foaf:nick     "ironChicken" ;
     foaf:homepage <http://www.richard-lewis.me.uk/> .
+
+<http://purl.org/NET/cpan-uri/person/shlomif>
+	a                    foaf:Person;
+	foaf:name            "Shlomi Fish";
+	foaf:nick            "SHLOMIF";
+	foaf:page            <https://metacpan.org/author/SHLOMIF>.
