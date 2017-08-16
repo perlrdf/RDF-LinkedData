@@ -9,6 +9,7 @@
     :runtime-recommendation      [ :on "RDF::Generator::Void 0.04"^^:CpanId ];
     :runtime-recommendation      [ :on "Log::Any::Adapter"^^:CpanId ];
     :runtime-requirement         [ :on "Moo"^^:CpanId ];
+    :runtime-requirement         [ :on "parent"^^:CpanId ];
     :runtime-requirement         [ :on "List::Util 1.33"^^:CpanId ];
     :runtime-requirement         [ :on "Types::Standard"^^:CpanId ];
     :runtime-requirement         [ :on "MooX::Log::Any"^^:CpanId ];
