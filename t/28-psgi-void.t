@@ -7,15 +7,15 @@ use Test::More;
 use Test::RDF;
 use RDF::Trine qw[iri literal blank variable statement];
 use Test::WWW::Mechanize::PSGI;
-use Module::Load::Conditional qw[check_install];
+use Module::Load::Conditional qw[can_load];
 use URI::Escape;
 
 
-unless (defined(check_install( module => 'RDF::Endpoint', version => 0.03))) {
+unless (can_load( modules => { 'RDF::Endpoint' => 0.03 })) {
   plan skip_all => 'You need RDF::Endpoint for this test'
 }
 
-unless (defined(check_install( module => 'RDF::Generator::Void', version => 0.04))) {
+unless (can_load( modules => { 'RDF::Generator::Void' => 0.04 })) {
   plan skip_all => 'You need RDF::Generator::Void for this test'
 }
 
