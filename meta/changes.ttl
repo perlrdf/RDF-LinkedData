@@ -7,15 +7,15 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl:  <http://www.w3.org/2002/07/owl#> .
 
-my:project :release my:v_0-99-03, my:v_0-78, my:v_0-76, 
+my:project :release my:v_0-99-04, my:v_0-78, my:v_0-76, 
                     my:v_0-74, my:v_0-72, my:v_0-70, my:v_0-68, my:v_0-66,
                     my:v_0-64, my:v_0-62, my:v_0-60, my:v_0-58, my:v_0_56 .
 
-my:v_0-99-03
+my:v_0-99-04
     a           :Version ;
-    dc:issued   "2017-08-21"^^xsd:date ;
+    dc:issued   "2017-08-23"^^xsd:date ;
     rdfs:label "Clean up for Milestone 1.0."@en ;
-    :revision   "0.99_03"^^xsd:string ;
+    :revision   "0.99_04"^^xsd:string ;
 #    owl:sameAs <http://packages.qa.debian.org/librdf-linkeddata-perl#upstreamsrc_0.78> ;
     dcs:changeset [
       dcs:item        
@@ -38,6 +38,9 @@ my:v_0-99-03
           a dcs:Change 
         ], 
         [ rdfs:label "Remove the final eval, use Try::Tiny."@en ; 
+          a dcs:Change 
+        ], 
+        [ rdfs:label "Use can_load to check for optionals in tests."@en ; 
           a dcs:Change 
         ], 
         [ rdfs:label "A few smaller changes."@en ; 
