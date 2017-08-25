@@ -6,10 +6,10 @@ use warnings;
 use Test::More;
 use Test::RDF;
 use Test::WWW::Mechanize::PSGI;
-use Module::Load::Conditional qw[check_install];
+use Module::Load::Conditional qw[can_load];
 
 
-unless (defined(check_install( module => 'RDF::Endpoint', version => 0.03))) {
+unless (can_load( modules => { 'RDF::Endpoint' => 0.03 })) {
   plan skip_all => 'You need RDF::Endpoint for this test'
 }
 
