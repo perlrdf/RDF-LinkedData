@@ -7,15 +7,16 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl:  <http://www.w3.org/2002/07/owl#> .
 
-my:project :release my:v_1-01-01, my:v_1-00, my:v_0-78, my:v_0-76, 
+my:project :release my:v_1-02, my:v_1-00, my:v_0-78, my:v_0-76, 
                     my:v_0-74, my:v_0-72, my:v_0-70, my:v_0-68, my:v_0-66,
                     my:v_0-64, my:v_0-62, my:v_0-60, my:v_0-58, my:v_0_56 .
 
-my:v_1-01-01
+my:v_1-02
     a           :Version ;
     dc:issued   "2017-08-28"^^xsd:date ;
     rdfs:label "Skip some tests if no RDFa parser is present."@en ;
-    :revision   "1.01_01"^^xsd:string ;
+    :revision   "1.02"^^xsd:string ;
+    owl:sameAs <http://packages.qa.debian.org/librdf-linkeddata-perl#upstreamsrc_1.02> ;
     dcs:changeset [
       dcs:item        
         [ rdfs:label "Skip some tests if no RDFa parser is present."@en ; 
