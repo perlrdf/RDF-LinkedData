@@ -24,3 +24,8 @@ script:
 after_success:
   - coverage-report
 
+
+
+notifications:
+  irc: "irc://irc.perl.org/#perlrdf"
+

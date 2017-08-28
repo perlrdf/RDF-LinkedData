@@ -7,16 +7,66 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl:  <http://www.w3.org/2002/07/owl#> .
 
-my:project :release my:v_0-78, my:v_0-76, 
+my:project :release my:v_1-02, my:v_1-00, my:v_0-78, my:v_0-76, 
                     my:v_0-74, my:v_0-72, my:v_0-70, my:v_0-68, my:v_0-66,
                     my:v_0-64, my:v_0-62, my:v_0-60, my:v_0-58, my:v_0_56 .
+
+my:v_1-02
+    a           :Version ;
+    dc:issued   "2017-08-28"^^xsd:date ;
+    rdfs:label "Skip some tests if no RDFa parser is present."@en ;
+    :revision   "1.02"^^xsd:string ;
+    owl:sameAs <http://packages.qa.debian.org/librdf-linkeddata-perl#upstreamsrc_1.02> ;
+    dcs:changeset [
+      dcs:item        
+        [ rdfs:label "Skip some tests if no RDFa parser is present."@en ; 
+          a dcs:Bugfix 
+        ]
+    ] .
+
+my:v_1-00
+    a           :Version ;
+    dc:issued   "2017-08-25"^^xsd:date ;
+    rdfs:label "Clean up for Milestone 1.0."@en ;
+    :revision   "1.00"^^xsd:string ;
+    owl:sameAs <http://packages.qa.debian.org/librdf-linkeddata-perl#upstreamsrc_1.00> ;
+    dcs:changeset [
+      dcs:item        
+        [ rdfs:label "Proofread and improve documentation."@en ; 
+          a dcs:Change ;
+          dcs:thanks <http://purl.org/NET/cpan-uri/person/shlomif>
+        ], 
+        [ rdfs:label "Check that Integer URI is OK in test."@en ; 
+          a dcs:Update 
+        ], 
+        [ rdfs:label "Can't rely on . in @INC."@en ; 
+          a dcs:Update 
+        ], 
+        [ rdfs:label "Return Turtle rather than RDF/XML if no content type is given."@en ; 
+          a dcs:Change ] ,
+        [ rdfs:label "Tests had wrong base_uri attribute."@en ; 
+          a dcs:Bugfix 
+        ], 
+        [ rdfs:label "Remove the Error module, use Carp::croak."@en ; 
+          a dcs:Change 
+        ], 
+        [ rdfs:label "Remove the final eval, use Try::Tiny."@en ; 
+          a dcs:Change 
+        ], 
+        [ rdfs:label "Use can_load to check for optionals in tests."@en ; 
+          a dcs:Change 
+        ], 
+        [ rdfs:label "A few smaller changes."@en ; 
+          a dcs:Change 
+        ]
+    ] .
+
 
 my:v_0-78
     a           :Version ;
     dc:issued   "2017-01-03"^^xsd:date ;
     rdfs:label "Use Config::ZOMG for config."@en ;
     :revision   "0.78"^^xsd:string ;
-    owl:sameAs <http://packages.qa.debian.org/librdf-linkeddata-perl#upstreamsrc_0.78> ;
     dcs:changeset [
       dcs:item        
         [ rdfs:label "Fix packaging bug with Config::ZOMG."@en ; 

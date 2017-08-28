@@ -32,11 +32,11 @@ RDF::LinkedData - A Linked Data server implementation
 
 =head1 VERSION
 
-Version 0.79_01
+Version 1.90_01
 
 =cut
 
- our $VERSION = '0.79_01';
+ our $VERSION = '1.90_01';
 
 
 =head1 SYNOPSIS
@@ -65,7 +65,7 @@ the model and do the right thing (known as the 303 dance) and mint
 URLs for that, as well as perform content negotiation. Thus, you can
 concentrate on URIs for your things, and you need not be concerned about
 minting URLs for the pages to serve it. In addition, optional modules
-can provide other important functionalities: Cross-origin resource
+can provide other important functionality: Cross-origin resource
 sharing, VoID description, cache headers, SPARQL Endpoint, Triple
 Pattern Fragments, etc. As such, it encompasses a fair share of
 Semantic Web best practices, but possibly not in a very flexible "Big
@@ -690,7 +690,7 @@ has void => (is => 'rw', isa => InstanceOf['RDF::Generator::Void'], predicate =>
 sub _negotiate {
 	my ($self, $headers_in) = @_;
 	my ($ct, $s);
-	eval {
+	try {
 		($ct, $s) = RDF::Trine::Serializer->negotiate('request_headers' => $headers_in,
 																	 base_uri => $self->base_uri,
 																	 namespaces => $self->_namespace_hashref,
@@ -700,8 +700,7 @@ sub _negotiate {
 																				  }
 																	);
 		$self->log->debug("Got $ct content type" );
-		1;
-	} or do {
+	} catch {
 		my $response = Plack::Response->new;
 		$response->status(406);
 		$response->headers->content_type('text/plain');
@@ -909,23 +908,16 @@ L<http://lists.perlrdf.org/listinfo/dev>
 
 =head1 TODO
 
-=over
+This module does what it is supposed to do rather well and has thus
+reached the 1.0 milestone. To support a wider variety of use cases,
+the current module isn't flexible enough, so future versions will need
+substantial changes, but the version number is intended to reflect
+that.
 
-=item * Use L<IO::Handle> streams when they become available from the serializers.
-
-=item * Figure out what needs to be done to use this code in other frameworks, such as Magpie.
-
-=item * Make it read-write hypermedia.
-
-=item * Make the result graph configurable.
-
-=back
-
-
-=head1 ACKNOWLEDGEMENTS
+=head1 ACKNOWLEDGMENTS
 
 This module was started by Gregory Todd Williams C<<
-<gwilliams@cpan.org> >> for L<RDF::LinkedData::Apache>, but has been
+<gwilliams@cpan.org> >> for RDF::LinkedData::Apache, but has been
 almost totally rewritten.
 
 =head1 COPYRIGHT & LICENSE

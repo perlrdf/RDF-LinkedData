@@ -7,12 +7,12 @@ use strict;
 use Test::More;
 use Test::RDF;
 use Log::Any::Adapter;
-use Module::Load::Conditional qw[check_install];
+use Module::Load::Conditional qw[can_load];
 use Test::RDF;
 use RDF::Trine qw[iri literal blank variable statement];
 use RDF::Trine::Store::Hexastore;
 
-unless (defined(check_install( module => 'RDF::Generator::Void', version => 0.02))) {
+unless (can_load( modules => { 'RDF::Generator::Void' => 0.04 })) {
   plan skip_all => 'You need RDF::Generator::Void for this test'
 }
 
