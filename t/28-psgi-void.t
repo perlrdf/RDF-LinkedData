@@ -108,7 +108,8 @@ subtest "Get the base_uri with the VoID" => sub {
 				  'Common statements are there');
 };
 
-subtest "Get the base_uri with the VoID" => sub {
+subtest "Get the base_uri with the VoID and RDFa" => sub {
+	plan skip_all => 'RDFa parser not present' unless $RDF::Trine::Parser::RDFa::HAVE_RDFA_PARSER;
 	my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester);
 	$mech->default_header('Accept' => 'application/xhtml+xml;q=1.0,text/html;q=0.94,application/xml;q=0.9,*/*;q=0.8');
 	$mech->get_ok($base_uri);
