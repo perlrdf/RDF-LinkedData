@@ -72,7 +72,7 @@ subtest "Get /bar/baz/bing, ask for RDF/XML" => sub {
 	 has_object_uri($base_uri . '#dataset-0', $model, "Void oject URI in content");
 };
 
-subtest"Get the base_uri with the VoID" => sub {
+subtest "Get the base_uri with the VoID" => sub {
 	my $mech = Test::WWW::Mechanize::PSGI->new(app => $tester);
 	$mech->default_header('Accept' => 'application/rdf+xml');
 	$mech->get_ok($base_uri);
