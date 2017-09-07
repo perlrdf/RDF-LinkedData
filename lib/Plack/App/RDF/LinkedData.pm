@@ -348,7 +348,7 @@ sub call {
 		return [ 302, [ 'Location', $ld->base_uri . '/' ], [ '' ] ];
 	}
 
-	if ($uri->as_iri =~ m!^(.+?)/?(page|data)$!) {
+	if ($uri->as_iri =~ m!^(.+?)/?(page|data|controls)$!) {
 		$uri = URI->new($1);
 		$ld->type($2);
 	}

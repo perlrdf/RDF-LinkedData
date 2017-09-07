@@ -131,7 +131,7 @@ sub BUILD {
 	if ($self->writes_enabled) {
 		$self->log->info('Writes are enabled!');
 		$self->log->error('Hypermedia is off, so users will not be able to discover how to write') unless ($self->hypermedia);
-		unless (can_load( modules => { 'RDF::LinkedData::RWHypermedia' })) {
+		unless (can_load( modules => { 'RDF::LinkedData::RWHypermedia' => 0 })) {
 			croak "RDF::LinkedData::RWHypermedia is required for write operations but not installed.";
 		}
 	} else {
@@ -633,7 +633,7 @@ sub _content {
 			}
 			# Now, add write triples
 
-			$self->add_rw_controls($hmmodel, $data_iri) if ($self->writes_enabled);
+			$self->add_rw_pointer($hmmodel, $node) if ($self->writes_enabled);
 
 			$iter = $iter->concat($hmmodel->as_stream);
 		}
