@@ -527,7 +527,8 @@ sub _client_error {
 }
 
 sub does_read_operation {
-  my ($self, $req) = @_;
+  my $self = shift;
+  my $req = $self->request;
   my $uri = $req->uri;
   my $endpoint_path;
   if ($self->has_endpoint) {

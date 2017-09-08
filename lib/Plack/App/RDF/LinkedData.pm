@@ -336,11 +336,13 @@ sub prepare_app {
 sub call {
 	my($self, $env) = @_;
 	my $req = Plack::Request->new($env);
-	my $uri = $req->uri;
 	my $ld = $self->{linkeddata};
+	$ld->request($req);
+	my $uri = $req->uri;
+
 
 	# Never return 405 here if writes are enabled by config, only do it if there isn't a read operation and writes are not enabled
-	unless ($self->{config}->{writes_enabled} || $ld->does_read_operation($req)) {
+	unless ($self->{config}->{writes_enabled} || $ld->does_read_operation) {
 		return [ 405, [ 'Content-type', 'text/plain' ], [ 'Method not allowed' ] ];
 	}
 
@@ -352,14 +354,13 @@ sub call {
 		$uri = URI->new($1);
 		$ld->type($2);
 	}
-	$ld->request($req);
 	return $ld->response($uri)->finalize;
 }
 
 sub auth_required {
 	my ($self, $env) = @_;
 	my $req = Plack::Request->new($env);
-	return ($self->{config}->{writes_enabled} && (! $self->{linkeddata}->does_read_operation($req)));
+	return ($self->{config}->{writes_enabled} && (! $self->{linkeddata}->does_read_operation));
 
 }
 
