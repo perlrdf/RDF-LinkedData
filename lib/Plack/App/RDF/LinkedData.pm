@@ -340,7 +340,7 @@ sub call {
 	my $ld = $self->{linkeddata};
 
 	# Never return 405 here if writes are enabled by config, only do it if there isn't a read operation and writes are not enabled
-	unless ($self->{config}->{writes_enabled} || $self->does_read_operation($req)) {
+	unless ($self->{config}->{writes_enabled} || $ld->does_read_operation($req)) {
 		return [ 405, [ 'Content-type', 'text/plain' ], [ 'Method not allowed' ] ];
 	}
 
@@ -359,20 +359,8 @@ sub call {
 sub auth_required {
 	my ($self, $env) = @_;
 	my $req = Plack::Request->new($env);
-	return ($self->{config}->{writes_enabled} && (! $self->does_read_operation($req)));
+	return ($self->{config}->{writes_enabled} && (! $self->{linkeddata}->does_read_operation($req)));
 
-}
-
-sub does_read_operation {
-	my ($self, $req) = @_;
-	my $uri = $req->uri;
-	my $endpoint_path;
-	my $ld = $self->{linkeddata}; # Might be a performance problem
-	if ($ld->has_endpoint) {
-	  $endpoint_path = $ld->endpoint_config->{endpoint_path};
-	}
-	return (($req->method eq 'GET') || ($req->method eq 'HEAD')
-			  || (($req->method eq 'POST') && defined($endpoint_path) && ($uri =~ m|$endpoint_path$|)))
 }
 
 1;

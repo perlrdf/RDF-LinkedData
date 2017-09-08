@@ -526,6 +526,16 @@ sub _client_error {
 	return $response;
 }
 
+sub does_read_operation {
+  my ($self, $req) = @_;
+  my $uri = $req->uri;
+  my $endpoint_path;
+  if ($self->has_endpoint) {
+	 $endpoint_path = $self->endpoint_config->{endpoint_path};
+  }
+  return (($req->method eq 'GET') || ($req->method eq 'HEAD')
+			 || (($req->method eq 'POST') && defined($endpoint_path) && ($uri =~ m|$endpoint_path$|)))
+}
 
 
 =item C<< helper_properties (  ) >>
