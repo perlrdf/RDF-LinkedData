@@ -269,6 +269,9 @@ has fragments_config => (is => 'rw', isa=>Maybe[HashRef], predicate => 'has_frag
 
 has rwhypermedia_config => (is => 'rw', isa=>Maybe[HashRef], predicate => 'has_rwhypermedia_config');
 
+has does_read_operation => (is => 'rw', isa => Bool, default => 0);
+
+
 =item C<< request ( [ $request ] ) >>
 
 Returns the L<Plack::Request> object, if it exists; or sets it if a L<Plack::Request> object is given as parameter.

@@ -340,7 +340,9 @@ sub call {
 	my $ld = $self->{linkeddata};
 
 	# Never return 405 here if writes are enabled by config, only do it if there isn't a read operation and writes are not enabled
-	unless ($self->{config}->{writes_enabled} || $self->does_read_operation($req)) {
+	my $does_read_operation = $self->does_read_operation($req);
+	$ld->does_read_operation($does_read_operation);
+	unless ($does_read_operation || $self->{config}->{writes_enabled}) {
 		return [ 405, [ 'Content-type', 'text/plain' ], [ 'Method not allowed' ] ];
 	}
 
