@@ -7,6 +7,7 @@ use URI::NamespaceMap;
 use Plack::Request;
 use Try::Tiny;
 use Carp;
+use Module::Load::Conditional qw[can_load];
 
 =head1 NAME
 
@@ -319,14 +320,20 @@ Will be called by Plack to process the request.
 sub prepare_app {
 	my $self = shift;
 	my $config = $self->{config};
-	my $class = $config->{'class'} || 'RDF::LinkedData';
-	try {
-		$self->{linkeddata} = $class->new($config);
-	} catch {
-		croak "Application cannot use $class as configured, need subclass of RDF::LinkedData";
-	};
-	croak "Configured $class not a subclass of RDF::LinkedData" unless ($self->{linkeddata}->isa('RDF::LinkedData'));
-
+	if (defined $config->{'class'}) {
+	  my $class = $config->{'class'};
+	  unless (can_load( modules => { $class => 0 })) {
+		 croak "Configured $class cannot be loaded, is it installed?";
+	  }
+	  try {
+		 $self->{linkeddata} = $class->new($config);
+	  } catch {
+		 croak "Application cannot use $class as configured.";
+	  };
+	  croak "Configured $class not a subclass of RDF::LinkedData" unless ($self->{linkeddata}->isa('RDF::LinkedData'));
+	} else {
+	  $self->{linkeddata} = RDF::LinkedData->new($config);
+	}
 	$self->{linkeddata}->namespaces(URI::NamespaceMap->new($config->{namespaces})) if ($config->{namespaces});
 	# Ensure that certain namespaces are always declared
 	$self->{linkeddata}->guess_namespaces('rdf', 'dc', 'xsd', 'void');
