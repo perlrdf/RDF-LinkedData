@@ -53,6 +53,11 @@ This will start a server with the default config on localhost on port
 5000, so the URIs you're going serve from the file data.ttl will have
 to have a base URI C<http://localhost:5000/>.
 
+There is also a C<LOG_ADAPTER> that can be set to any of
+L<Log::Any::Adapter> to send logging to the console. If used with
+L<Log::Any::Adapter::Screen>, several other environment variables can
+be used to further control it.
+
 =head3 Using perlrdf command line tool
 
 A slightly longer example requires L<App::perlrdf>, but sets up a
