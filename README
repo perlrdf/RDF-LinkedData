@@ -130,6 +130,14 @@ It is a more lightweight but less powerful way to query RDF data than
 SPARQL. If you have this, it is recommended to have CORS enabled and
 required to have at least a minimal VoID setup.
 
+It is also worth noting that an environment variable LOG_ADAPTER can
+be set to send log statements to the console. I recommend installing
+Log::Any::Adapter::Screen, which can be used by setting this variable
+like LOG_ADAPTER=Screen. Its documentation details more environment
+variables that can be used to control log levels, etc.
+
+  
+
 *Production server setup*
 
 In addition to the configuration above, a production system should set
