@@ -366,8 +366,7 @@ sub call {
 }
 
 sub auth_required {
-	my ($self, $env) = @_;
-	my $req = Plack::Request->new($env);
+	my ($self, $req) = @_;
 	return ($self->{config}->{writes_enabled} && (! $self->does_read_operation($req)));
 
 }
