@@ -36,6 +36,12 @@ BEGIN {
 	}
 }
 
+if ($ENV{'LOG_ADAPTER'}) {
+  use Log::Any::Adapter;
+  Log::Any::Adapter->set($ENV{'LOG_ADAPTER'});
+}
+
+
 my $linkeddata = Plack::App::RDF::LinkedData->new();
 
 $linkeddata->configure($config);

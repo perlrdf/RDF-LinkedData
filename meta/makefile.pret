@@ -8,6 +8,8 @@
     :runtime-recommendation      [ :on "Plack::Middleware::Expires"^^:CpanId; ];
     :runtime-recommendation      [ :on "RDF::Generator::Void 0.04"^^:CpanId ]; # Need porting to Attean
     :runtime-recommendation      [ :on "Log::Any::Adapter"^^:CpanId ];
+    :develop-recommendation      [ :on "Log::Any::Adapter::Screen"^^:CpanId ];
+    :develop-recommendation      [ :on "Dist::Inkt 0.001"^^:CpanId ];
     :runtime-requirement         [ :on "Moo"^^:CpanId ];
     :runtime-requirement         [ :on "parent"^^:CpanId ];
     :runtime-requirement         [ :on "List::Util 1.33"^^:CpanId ];
