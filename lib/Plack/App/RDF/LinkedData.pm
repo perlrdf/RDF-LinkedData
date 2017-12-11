@@ -363,8 +363,10 @@ sub call {
 	}
 
 	if ($uri->as_iri =~ m!^(.+?)/?(page|data|controls)$!) {
-		$uri = URI->new($1);
-		$ld->type($2);
+	  $uri = URI->new($1);
+	  $ld->type($2);
+	} else {
+	  $ld->type('');
 	}
 	$ld->request($req);
 	return $ld->response($uri)->finalize;
