@@ -61,10 +61,6 @@ builder {
 	$rdf_linkeddata;
 };
 
-sub authen_cb {
-    my($username, $password, $env) = @_;
-    return $username eq 'testuser' && $password eq 'sikrit';
-}
 __END__
 
 
