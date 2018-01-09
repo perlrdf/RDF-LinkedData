@@ -58,8 +58,6 @@ builder {
 		  expires => $config->{expires}
 	  };
 	if (can_load( modules => { 'Plack::Middleware::CrossOrigin' => 0 })) { enable 'CrossOrigin' => %{$config->{cors}}};
-#	enable_if { $linkeddata->auth_required($_[0]) } "Auth::Basic", authenticator => \&authen_cb;
-	# TODO: Find clever ways to support other auth modules
 	$rdf_linkeddata;
 };
 
