@@ -403,7 +403,8 @@ sub response {
 	}
 
 	if ($self->has_void) {
-		my $void_resp = $self->_void_content($uri, $endpoint_path);
+	   my $void_resp = $self->_void_content($uri, $endpoint_path);
+		$self->log->error("The dataset URI does not start with the base URI") unless (index($self->void->dataset_uri->as_string, $self->base_uri) == 1);
 		return $void_resp if (defined($void_resp));
 	}
 
