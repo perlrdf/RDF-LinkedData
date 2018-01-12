@@ -40,7 +40,7 @@ my:v_1-90-02
         ],
         [ rdfs:label "Many smaller improvements."@en ;
           a dcs:Addition
-        ] ,          ,
+        ] ,
         [ rdfs:label "Document read-write features."@en ;
           a dcs:Addition
         ]   
