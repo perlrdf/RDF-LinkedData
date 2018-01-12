@@ -280,6 +280,17 @@ checked on every request to see if the description must be
 regenerated. If you use the C<add_void> feature, you can force
 regeneration on the next request by touching the file.
 
+=head2 Read-write support
+
+Some recent effort has gone into experimental write support, which for
+this module has the implications that a boolean option
+C<writes_enabled> that configures the application for writes. This is
+also meant as security, unless set to true, writes will never be
+performed. To support writes, a C<class> option can be set with a
+class name, which can be instantiated to replace
+L<RDF::LinkedData>. See L<RDF::LinkedData::RWHypermedia> for more on
+this.
+
 =head1 FEEDBACK WANTED
 
 Please contact the author if this documentation is unclear. It is
