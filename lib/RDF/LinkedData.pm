@@ -79,7 +79,7 @@ Data" manner.
 =item C<< new ( store => $store, model => $model, base_uri => $base_uri, 
                 hypermedia => 1, namespaces_as_vocabularies => 1, 
                 request => $request, endpoint_config => $endpoint_config, 
-                void_config => $void_config ) >>
+                void_config => $void_config, writes_enabled => 0 ) >>
 
 Creates a new handler object based on the named parameters, given a store
 config (recommended usage is to pass a hashref of the type that can be
@@ -97,6 +97,9 @@ and vocabularies used using the L<VoID vocabulary|http://vocab.deri.ie/void>.
 Finally, it can provide experimental L<Triple Pattern
 Fragments|http://www.hydra-cg.com/spec/latest/triple-pattern-fragments/>
 support.
+
+Read-write  support is  even  more experimental,  and  is provided  by
+L<RDF::LinkedData::RWHypermedia>.
 
 =item C<< BUILD >>
 
@@ -257,6 +260,12 @@ has base_uri => (is => 'rw', isa => Str, default => '' );
 
 has hypermedia => (is => 'ro', isa => Bool, default => 1);
 
+=item C<< writes_enabled >>
+
+Attribute that indicates whether write operations are permitted.
+
+=cut
+  
 has writes_enabled => (is => 'ro', isa => Bool, default => 0);
 
 has namespaces_as_vocabularies => (is => 'ro', isa => Bool, default => 1);
@@ -268,6 +277,12 @@ has void_config => (is => 'rw', isa=>Maybe[HashRef], predicate => 'has_void_conf
 has fragments_config => (is => 'rw', isa=>Maybe[HashRef], predicate => 'has_fragments');
 
 has rwhypermedia_config => (is => 'rw', isa=>Maybe[HashRef], predicate => 'has_rwhypermedia_config');
+
+=item C<< does_read_operation >>
+
+Returns or sets whether the current request is a read operation.
+
+=cut
 
 has does_read_operation => (is => 'rw', isa => Bool, default => 0);
 
