@@ -383,11 +383,22 @@ sub call {
 	return $ld->response($uri)->finalize;
 }
 
+=item C<< auth_required ( $request ) >>
+
+A method that returns true if the current request will require authorization.
+
+=cut
+
 sub auth_required {
 	my ($self, $req) = @_;
 	return ($self->{config}->{writes_enabled} && (! $self->does_read_operation($req)));
-
 }
+
+=item C<< does_read_operation ( $request ) >>
+
+A method that will return true if the current request is a pure read operation.
+
+=cut
 
 sub does_read_operation {
 	my ($self, $req) = @_;
