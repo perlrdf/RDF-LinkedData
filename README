@@ -184,10 +184,9 @@ SUPPORT
 
         perldoc RDF::LinkedData
 
-    The perlrdf mailing list is the right place to seek help and discuss
-    this module:
+The perlrdf IRC channel is the right place to seek help and discuss this module:
 
-    <http://lists.perlrdf.org/listinfo/dev>
+irc://irc.perl.org/#perlrdf
 
 ACKNOWLEDGEMENTS
     This module was started by Gregory Todd Williams "<gwilliams@cpan.org>"

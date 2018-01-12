@@ -849,9 +849,9 @@ You can find documentation for this module with the perldoc command.
 
     perldoc RDF::LinkedData
 
-The perlrdf mailing list is the right place to seek help and discuss this module:
+The perlrdf IRC channel is the right place to seek help and discuss this module:
 
-L<http://lists.perlrdf.org/listinfo/dev>
+L<irc://irc.perl.org/#perlrdf>
 
 =head1 TODO
 
