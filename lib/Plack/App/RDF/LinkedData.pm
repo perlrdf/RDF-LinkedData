@@ -328,8 +328,6 @@ Will be called by Plack to set the application up.
 
 Will be called by Plack to process the request.
 
-=back
-
 =cut
 
 
@@ -415,6 +413,7 @@ sub does_read_operation {
 1;
 
 
+=back
 
 =head1 AUTHOR
 
