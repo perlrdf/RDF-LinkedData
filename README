@@ -136,7 +136,11 @@ Log::Any::Adapter::Screen, which can be used by setting this variable
 like LOG_ADAPTER=Screen. Its documentation details more environment
 variables that can be used to control log levels, etc.
 
-  
+This module now also contains some facilities to support read-write
+hypermedia RDF, as well as the possibility to subclass RDF::LinkedData
+itself. The read-write functionality is provided by a separate module,
+RDF::LinkedData::RWHypermedia, but is highly experimental at this
+point.
 
 *Production server setup*
 
