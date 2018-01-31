@@ -16,7 +16,7 @@ use URI;
 use HTTP::Headers;
 use Module::Load::Conditional qw[can_load];
 use Encode;
-use RDF::RDFa::Generator 0.199;
+use RDF::RDFa::Generator 0.200;
 use RDF::Trine::Serializer::RDFa;
 use HTML::HTML5::Writer qw(DOCTYPE_XHTML_RDFA);
 use Data::Dumper;
