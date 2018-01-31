@@ -26,7 +26,9 @@
     :runtime-requirement         [ :on "RDF::NS::Curated"^^:CpanId ];
     :runtime-requirement         [ :on "Module::Load::Conditional"^^:CpanId ];
     :runtime-requirement         [ :on "Encode"^^:CpanId ];
-    :runtime-requirement         [ :on "RDF::RDFa::Generator 0.102"^^:CpanId; ];
+    :runtime-requirement         [ :on "RDF::TrineX::Compatibility::Attean"^^:CpanId; ];
+    :runtime-requirement         [ :on "RDF::RDFa::Generator 0.199_05"^^:CpanId; ];
+    :runtime-requirement         [ :on "RDF::Trine::Serializer::RDFa 0.03_01"^^:CpanId; ];
     :runtime-requirement         [ :on "HTML::HTML5::Writer"^^:CpanId ];
     :runtime-requirement         [ :on "Digest::MD5"^^:CpanId ];
     :runtime-requirement         [ :on "Try::Tiny"^^:CpanId ];
