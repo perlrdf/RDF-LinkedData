@@ -16,13 +16,15 @@ use URI;
 use HTTP::Headers;
 use Module::Load::Conditional qw[can_load];
 use Encode;
-use RDF::RDFa::Generator 0.102;
+use RDF::RDFa::Generator 0.199;
+use RDF::Trine::Serializer::RDFa;
 use HTML::HTML5::Writer qw(DOCTYPE_XHTML_RDFA);
 use Data::Dumper;
 use Digest::MD5 ('md5_base64');
 use Carp;
 use Try::Tiny;
 use List::Util qw(any);
+use RDF::TrineX::Compatibility::Attean;
 
 with 'MooX::Log::Any';
 
@@ -669,7 +671,7 @@ sub _content {
 		my $gen  = RDF::RDFa::Generator->new( style => 'HTML::Pretty',
 														  title => $preds->title( $node ),
 														  base => $self->base_uri,
-														  namespaces => $self->_namespace_hashref);
+														  namespacemap => $self->namespaces);
 		my $writer = HTML::HTML5::Writer->new( charset => 'ascii', markup => 'html' );
 		$output{body} = $writer->document($gen->create_document($returnmodel));
 		$output{content_type} = 'text/html';
@@ -809,7 +811,7 @@ sub _void_content {
 			my $gen = RDF::RDFa::Generator->new( style => 'HTML::Pretty',
 															 title => $self->void_config->{pagetitle} || 'VoID Description',
 															 base => $self->base_uri,
-															 namespaces => $self->_namespace_hashref);
+															 namespacemap => $self->namespaces);
 			my $markup = ($ct eq 'application/xhtml+xml') ? 'xhtml' : 'html';
 			my $writer = HTML::HTML5::Writer->new( charset => 'ascii', markup => $markup );
 			$body = $writer->document($gen->create_document($self->_voidmodel));
