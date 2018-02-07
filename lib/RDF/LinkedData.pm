@@ -479,6 +479,14 @@ sub response {
 	}
 
 	my $type = $self->type;
+
+	if (($type eq 'controls')  && (!$self->writes_enabled)) {
+	  $response->status(404);
+	  $response->headers->content_type('text/plain');
+	  $response->body('HTTP 404: Controls are only available in read-enabled applications');
+	  return $response;
+	}
+
 	$self->type('');
 	my $node = $self->my_node($uri);
 	$self->log->info("Try rendering '$type' page for subject node: " . $node->as_string);
