@@ -680,7 +680,7 @@ sub _content {
 														  title => $preds->title( $node ),
 														  base => $self->base_uri,
 														  namespacemap => $self->namespaces);
-		my $writer = HTML::HTML5::Writer->new( charset => 'ascii', markup => 'html' );
+		my $writer = HTML::HTML5::Writer->new( charset => 'ascii', markup => 'html', end_tags => 1);
 		$output{body} = $writer->document($gen->create_document($returnmodel));
 		$output{content_type} = 'text/html';
 	}
@@ -821,7 +821,7 @@ sub _void_content {
 															 base => $self->base_uri,
 															 namespacemap => $self->namespaces);
 			my $markup = ($ct eq 'application/xhtml+xml') ? 'xhtml' : 'html';
-			my $writer = HTML::HTML5::Writer->new( charset => 'ascii', markup => $markup );
+			my $writer = HTML::HTML5::Writer->new( charset => 'ascii', markup => $markup, end_tags => 1 );
 			$body = $writer->document($gen->create_document($self->_voidmodel));
 		}
 		my $response = Plack::Response->new;
