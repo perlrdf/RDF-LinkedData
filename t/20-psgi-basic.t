@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 61 ;
+use Test::More;
 use Test::RDF;
 use Test::WWW::Mechanize::PSGI;
 use Module::Load::Conditional qw[can_load];
