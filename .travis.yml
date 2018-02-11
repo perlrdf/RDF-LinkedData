@@ -17,8 +17,6 @@ install:
   - cpan-install --toolchain
   - cpan-install --deps
   - cpan-install --coverage
-  - cpanm --notest KJETILK/RDF-RDFa-Generator-0.199_06.tar.gz
-  - cpanm --notest KJETILK/RDF-Trine-Serializer-RDFa-0.03_02.tar.gz
 before_script:
   - coverage-setup
 script:
