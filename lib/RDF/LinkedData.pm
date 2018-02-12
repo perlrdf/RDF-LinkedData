@@ -483,7 +483,7 @@ sub response {
 	if (($type eq 'controls')  && (!$self->writes_enabled)) {
 	  $response->status(404);
 	  $response->headers->content_type('text/plain');
-	  $response->body('HTTP 404: Controls are only available in read-enabled applications');
+	  $response->body('HTTP 404: Controls are only available in write-enabled applications');
 	  return $response;
 	}
 
