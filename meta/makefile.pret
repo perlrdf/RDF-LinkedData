@@ -3,7 +3,7 @@
 <http://purl.org/NET/cpan-uri/dist/RDF-LinkedData/project>
     :runtime-recommendation      [ :on "Config::ZOMG"^^:CpanId ];
     :runtime-recommendation      [ :on "JSON"^^:CpanId ];
-    :runtime-recommendation      [ :on "RDF::Endpoint 0.05"^^:CpanId ]; # AtteanX::Endpoint
+    :runtime-recommendation      [ :on "RDF::Endpoint 0.10"^^:CpanId ]; # AtteanX::Endpoint
     :runtime-recommendation      [ :on "Plack::Middleware::CrossOrigin"^^:CpanId; ];
     :runtime-recommendation      [ :on "Plack::Middleware::Expires"^^:CpanId; ];
     :runtime-recommendation      [ :on "RDF::Generator::Void 0.04"^^:CpanId ]; # Need porting to Attean
