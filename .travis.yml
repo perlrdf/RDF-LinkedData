@@ -1,31 +1,13 @@
 language: perl
 perl:
-  - "5.14"
+  - "5.14" 
   - "5.18"
   - "5.22"
-  - "5.24"
   - "5.26"
+sudo: false             # faster builds as long as you don't need sudo access
 before_install:
-  - export DIST_INKT_PROFILE="Dist::Inkt::Profile::TOBYINK"
-  - git clone git://github.com/tobyink/perl-travis-helper
-  - source perl-travis-helper/init
-  - build-perl
-  - perl -V
-  - build-dist
-  - cd $BUILD_DIR
-install:
-  - cpan-install --toolchain
-  - cpan-install --deps
-  - cpan-install --coverage
-before_script:
-  - coverage-setup
-script:
-  - prove -l $(test-dirs)
-after_success:
-  - coverage-report
-
-
-
+  - export DIST_INKT_PROFILE="Dist::Inkt::Profile::KJETILK"
+  - eval $(curl https://travis-perl.github.io/init) --auto
 notifications:
   irc: "irc://irc.perl.org/#perlrdf"
 
