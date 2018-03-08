@@ -4,6 +4,7 @@ perl:
   - "5.18"
   - "5.22"
   - "5.26"
+  - "dev"
 sudo: false             # faster builds as long as you don't need sudo access
 before_install:
   - export DIST_INKT_PROFILE="Dist::Inkt::Profile::KJETILK"
