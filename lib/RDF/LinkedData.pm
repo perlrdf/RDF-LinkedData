@@ -34,11 +34,11 @@ RDF::LinkedData - A Linked Data server implementation
 
 =head1 VERSION
 
-Version 1.940
+Version 1.941_01
 
 =cut
 
- our $VERSION = '1.940';
+ our $VERSION = '1.941_01';
 
 
 =head1 SYNOPSIS
