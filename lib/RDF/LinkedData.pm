@@ -922,7 +922,7 @@ Toby Inkster
 
 =head1 BUGS
 
-Please report any bugs using L<github|https://github.com/kjetilk/RDF-LinkedData/issues>
+Please report any bugs using L<github|https://github.com/perlrdf/RDF-LinkedData/issues>
 
 
 =head1 SUPPORT

@@ -188,7 +188,7 @@ this module and allow much more advanced use cases.
 
 BUGS
     Please report any bugs using github
-    <https://github.com/kjetilk/RDF-LinkedData/issues>
+    <https://github.com/perlrdf/RDF-LinkedData/issues>
 
 SUPPORT
     You can find documentation for this module with the perldoc command.
