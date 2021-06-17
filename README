@@ -179,6 +179,13 @@ i.e. set the host name to 0.0.0.0.
 AUTHOR
     Kjetil Kjernsmo, "<kjetilk@cpan.org>"
 
+FUTURE
+
+As the primary author of this module is now working on the L<Solid
+Project|https://solidproject.org/>, he isn't very interested in
+further development of this module, as a Solid server would supersede
+this module and allow much more advanced use cases.
+
 BUGS
     Please report any bugs using github
     <https://github.com/kjetilk/RDF-LinkedData/issues>
